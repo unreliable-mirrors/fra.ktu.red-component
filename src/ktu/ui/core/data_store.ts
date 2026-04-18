@@ -1,0 +1,30 @@
+import { EventDispatcher } from "./event_dispatcher.js";
+
+export class DataStore {
+  static _instance: DataStore;
+
+  _data: Record<string, any>;
+  constructor() {
+    this._data = {};
+  }
+
+  setStore(key: string, value: any) {
+    this._data[key] = value;
+    this.touch(key);
+  }
+
+  getStore(key: string): any {
+    return this._data[key];
+  }
+
+  touch(key: string): any {
+    EventDispatcher.getInstance().dispatchEvent(key, "update", this._data[key]);
+  }
+
+  static getInstance() {
+    if (!this._instance) {
+      this._instance = new DataStore();
+    }
+    return this._instance;
+  }
+}

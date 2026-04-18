@@ -13,7 +13,7 @@
     /* Strictness */
     "strict": true,
     "noUncheckedIndexedAccess": true,
-    "noImplicitOverride": true,
+    "noImplicitAny": true,
 
     /* If transpiling with TypeScript: */
     "module": "NodeNext",
@@ -25,6 +25,10 @@
     "declaration": true,
 
     /* AND if you're building for a library in a monorepo: */
-    "declarationMap": true
+    "declarationMap": true,
+
+    "jsx": "react",
+    "jsxFactory": "jsx",
+    "jsxFragmentFactory": "jsx.Fragment"
   }
 }
