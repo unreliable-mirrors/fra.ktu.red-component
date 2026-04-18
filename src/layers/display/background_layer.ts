@@ -11,8 +11,9 @@ export type BackgroundLayerState = LayerState & {
 
 export class BackgroundLayer extends DisplayLayer {
   declare _state: BackgroundLayerState;
-  graphics: Graphics;
   backgroundSize: Point;
+
+  declare mainSprite: Graphics;
 
   static getDefaultState(): BackgroundLayerState {
     return {
@@ -25,11 +26,12 @@ export class BackgroundLayer extends DisplayLayer {
 
   constructor(state: BackgroundLayerState) {
     super(state);
-    this.graphics = new Graphics();
+    this.mainSprite = new Graphics();
+
     const application = DataStore.getInstance().getStore(
       "application",
     ) as Application;
-    application.stage.addChild(this.graphics);
+    application.stage.addChild(this.mainSprite);
 
     this.backgroundSize = new Point(
       application.canvas.width,
@@ -54,11 +56,6 @@ export class BackgroundLayer extends DisplayLayer {
     }
   }
 
-  bind(): void {
-    super.bind();
-    this.repaint();
-  }
-
   innerRepaint() {
     console.log(
       "Repainting background layer with color",
@@ -66,19 +63,9 @@ export class BackgroundLayer extends DisplayLayer {
       "and size",
       this.backgroundSize,
     );
-    this.graphics.clear();
-    this.graphics
+    this.mainSprite.clear();
+    this.mainSprite
       .rect(0, 0, this.backgroundSize.x, this.backgroundSize.y)
       .fill({ color: this._state.color });
-
-    this.retexture();
-  }
-
-  retexture() {
-    const application = DataStore.getInstance().getStore(
-      "application",
-    ) as Application;
-    const texture = application.renderer.generateTexture(this.graphics);
-    this.mainSprite.texture = texture;
   }
 }

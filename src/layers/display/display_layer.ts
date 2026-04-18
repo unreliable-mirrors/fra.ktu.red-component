@@ -1,22 +1,13 @@
-import { Application, Sprite } from "pixi.js";
+import { Application, Graphics, Sprite } from "pixi.js";
 import { BaseLayer } from "../base_layer.js";
 import type { LayerState } from "../ilayer.js";
 import { DataStore } from "../../index.js";
 
 export abstract class DisplayLayer extends BaseLayer {
-  mainSprite!: Sprite;
+  mainSprite!: Sprite | Graphics;
 
   constructor(state: LayerState) {
     super(state);
-
-    const application = DataStore.getInstance().getStore(
-      "application",
-    ) as Application;
-    if (!this.mainSprite) {
-      this.mainSprite = new Sprite();
-      application.stage.addChild(this.mainSprite);
-      this.mainSprite.visible = false;
-    }
   }
 
   onStateChange(): void {
@@ -25,10 +16,19 @@ export abstract class DisplayLayer extends BaseLayer {
 
   repaint(): void {
     this.innerRepaint();
-    this.retexture();
+  }
+
+  bind(): void {
+    this.repaint();
+  }
+
+  unbind() {
+    const application = DataStore.getInstance().getStore(
+      "application",
+    ) as Application;
+    application.stage.removeChild(this.mainSprite);
+    this.mainSprite.destroy();
   }
 
   abstract innerRepaint(): void;
-
-  abstract retexture(): void;
 }

@@ -1,4 +1,5 @@
 import { getCount } from "../helpers/ids.js";
+import type { LayerType } from "../helpers/layers.js";
 import type { ILayer, LayerFields, LayerState } from "./ilayer.js";
 
 export abstract class BaseLayer implements ILayer {
@@ -7,7 +8,7 @@ export abstract class BaseLayer implements ILayer {
   static getDefaultState(): LayerState {
     return {
       id: Math.floor(Math.random() * 1000000),
-      type: "base",
+      type: "background",
       name: "Layer" + getCount(),
       visible: true,
     };
@@ -28,7 +29,7 @@ export abstract class BaseLayer implements ILayer {
     return this._state.id;
   }
 
-  get type(): string {
+  get type(): LayerType {
     return this._state.type;
   }
 
@@ -51,7 +52,7 @@ export abstract class BaseLayer implements ILayer {
   }
 
   onStateChange(): void {}
-  bind(): void {}
-  unbind(): void {}
+  abstract bind(): void;
+  abstract unbind(): void;
   tick(time: any, loop: boolean): void {}
 }

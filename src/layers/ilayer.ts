@@ -1,10 +1,11 @@
 import { Ticker } from "pixi.js";
+import type { LayerType } from "../helpers/layers.js";
 
 export type LayerFields = "visible";
 
 export type LayerState = {
   id: number;
-  type: string;
+  type: LayerType;
   name: string;
   visible: boolean;
 };
@@ -14,7 +15,7 @@ export interface ILayer {
 
   get id(): number;
 
-  get type(): string;
+  get type(): LayerType;
 
   set name(name: string);
   get name(): string;

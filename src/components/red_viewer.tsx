@@ -3,18 +3,13 @@ import { KTUComponent } from "../ktu/ui/core/ktu_component.js";
 import type { SceneState } from "../types/red_scene_state.js";
 import { Application, type ApplicationOptions } from "pixi.js";
 import { DataStore } from "../ktu/ui/core/data_store.js";
-import {
-  BackgroundLayer,
-  type BackgroundLayerState,
-} from "../layers/display/background_layer.js";
-import type { DisplayLayer } from "../layers/display/display_layer.js";
+import { subscribeToLayerUpdates } from "../managers/layer_manager.js";
+import { EventDispatcher } from "../index.js";
 
 class RedViewer extends KTUComponent {
   sceneStateId: string;
   app: Application;
   canvas: HTMLCanvasElement | null = null;
-
-  layers: DisplayLayer[] = [];
 
   constructor(props: { sceneState: string; resizeTo?: HTMLElement }) {
     super({ binding: props.sceneState });
@@ -37,15 +32,14 @@ class RedViewer extends KTUComponent {
 
     this.app.init(options).then(() => {
       this.canvas = this.app.canvas;
-      this.reRender();
       DataStore.getInstance().setStore("application", this.app);
-
-      this.materializeState();
-      this.bindTicker();
+      subscribeToLayerUpdates(this.sceneStateId);
+      DataStore.getInstance().touch(this.sceneStateId);
     });
   }
 
   render(): Element {
+    console.log("Rendering RedViewer with canvas", this.canvas);
     return (
       <div>
         <div class="red-viewer">{this.canvas}</div>
@@ -67,26 +61,14 @@ class RedViewer extends KTUComponent {
     };
   }
 
-  materializeState() {
-    const sceneState = this.sceneState();
-
-    console.log("MATERIALIZING STATE", sceneState);
-
-    for (const layerState of sceneState.layers) {
-      if (layerState.type === "background") {
-        const layer = new BackgroundLayer(layerState as BackgroundLayerState);
-        layer.bind();
-        this.layers.push(layer);
-      }
-    }
-  }
-
-  bindTicker() {
-    this.app.ticker.add((time) => {
-      for (const layer of this.layers) {
-        layer.tick(time, this.app.ticker.started);
-      }
-    });
+  updateState(): void {
+    super.updateState();
+    console.log("Updating RedViewer state with sceneState", this.sceneState());
+    EventDispatcher.getInstance().dispatchEvent(
+      this.sceneStateId + ".layers",
+      "update",
+      this.sceneState().layers,
+    );
   }
 }
 
