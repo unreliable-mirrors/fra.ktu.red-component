@@ -4,7 +4,6 @@ import type { SceneState } from "../types/red_scene_state.js";
 import { Application, type ApplicationOptions } from "pixi.js";
 import { DataStore } from "../ktu/ui/core/data_store.js";
 import { subscribeToLayerUpdates } from "../managers/layer_manager.js";
-import { EventDispatcher } from "../index.js";
 
 class RedViewer extends KTUComponent {
   sceneStateId: string;
@@ -64,11 +63,6 @@ class RedViewer extends KTUComponent {
   updateState(): void {
     super.updateState();
     console.log("Updating RedViewer state with sceneState", this.sceneState());
-    EventDispatcher.getInstance().dispatchEvent(
-      this.sceneStateId + ".layers",
-      "update",
-      this.sceneState().layers,
-    );
   }
 }
 

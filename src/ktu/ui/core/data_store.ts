@@ -9,16 +9,56 @@ export class DataStore {
   }
 
   setStore(key: string, value: any) {
-    this._data[key] = value;
+    const keys: string[] = key.split(".");
+    let current = this._data;
+    for (let i = 0; i < keys.length - 1; i++) {
+      const k: string = keys[i]!;
+      if (current[k] === undefined) {
+        current[k] = {};
+      }
+      current = current[k];
+    }
+    current[keys[keys.length - 1]!] = value;
     this.touch(key);
   }
 
   getStore(key: string): any {
-    return this._data[key];
+    return this.deepGet(key);
   }
 
   touch(key: string): any {
-    EventDispatcher.getInstance().dispatchEvent(key, "update", this._data[key]);
+    EventDispatcher.getInstance().dispatchEvent(
+      key,
+      "update",
+      this.deepGet(key),
+    );
+
+    const listenerKeys = EventDispatcher.getInstance().listenerKeys();
+    for (const listenerKey of listenerKeys) {
+      if (
+        listenerKey.startsWith(key + ".") &&
+        !listenerKey.startsWith(key + ".!")
+      ) {
+        this.touch(listenerKey);
+      }
+    }
+  }
+
+  deepGet(key: string): any {
+    const keys = key.split(".");
+    let current = this._data;
+    for (const k of keys) {
+      if (k.startsWith("!")) {
+        const id = k.slice(1);
+        current = current.filter((item: any) => item.id == id)[0];
+      } else {
+        if (current[k] === undefined) {
+          return undefined;
+        }
+        current = current[k];
+      }
+    }
+    return current;
   }
 
   static getInstance() {

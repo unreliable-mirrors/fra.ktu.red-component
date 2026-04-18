@@ -27,6 +27,10 @@ export class EventDispatcher {
     }
   }
 
+  listenerKeys() {
+    return Object.keys(this._listeners);
+  }
+
   static getInstance() {
     if (!this._instance) {
       this._instance = new EventDispatcher();
