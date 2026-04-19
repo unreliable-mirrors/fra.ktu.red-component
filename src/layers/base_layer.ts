@@ -1,8 +1,9 @@
-import { getCount } from "../helpers/ids.js";
 import type { LayerType } from "../helpers/layers.js";
+import { EventDispatcher } from "../index.js";
 import type { ILayer, LayerFields, LayerState } from "./ilayer.js";
 
 export abstract class BaseLayer implements ILayer {
+  protected sceneStateId: string;
   protected _state: LayerState;
 
   static getDefaultState(): LayerState {
@@ -14,15 +15,21 @@ export abstract class BaseLayer implements ILayer {
     };
   }
 
-  constructor(state: LayerState) {
+  constructor(sceneStateId: string, state: LayerState) {
+    this.sceneStateId = sceneStateId;
     this._state = state;
+
+    EventDispatcher.getInstance().addEventListener(
+      this.sceneStateId + ".layers.!" + this._state.id,
+      "update",
+      this.onStateChange.bind(this),
+    );
   }
 
   set(field: LayerFields, value: any): void {
     if (field === "visible") {
-      this._state.visible = value;
+      this.visible = value;
     }
-    this.onStateChange();
   }
 
   get id(): number {
@@ -35,7 +42,6 @@ export abstract class BaseLayer implements ILayer {
 
   set name(name: string) {
     this._state.name = name;
-    this.onStateChange();
   }
 
   get name(): string {

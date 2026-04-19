@@ -24,8 +24,8 @@ export class BackgroundLayer extends DisplayLayer {
     };
   }
 
-  constructor(state: BackgroundLayerState) {
-    super(state);
+  constructor(sceneStateId: string, state: BackgroundLayerState) {
+    super(sceneStateId, state);
     this.mainSprite = new Graphics();
 
     const application = DataStore.getInstance().getStore(
@@ -67,5 +67,6 @@ export class BackgroundLayer extends DisplayLayer {
     this.mainSprite
       .rect(0, 0, this.backgroundSize.x, this.backgroundSize.y)
       .fill({ color: this._state.color });
+    this.mainSprite.visible = this._state.visible;
   }
 }

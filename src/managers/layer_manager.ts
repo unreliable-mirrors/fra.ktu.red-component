@@ -32,7 +32,10 @@ export const subscribeToLayerUpdates = (sceneStateId: string) => {
         let layer = layers.find((l) => l.id === layerState.id);
         if (!layer) {
           if (layerState.type === "background") {
-            layer = new BackgroundLayer(layerState as BackgroundLayerState);
+            layer = new BackgroundLayer(
+              sceneStateId,
+              layerState as BackgroundLayerState,
+            );
             layer.bind();
             layers.push(layer);
           }

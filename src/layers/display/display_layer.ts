@@ -6,8 +6,8 @@ import { DataStore } from "../../index.js";
 export abstract class DisplayLayer extends BaseLayer {
   mainSprite!: Sprite | Graphics;
 
-  constructor(state: LayerState) {
-    super(state);
+  constructor(sceneStateId: string, state: LayerState) {
+    super(sceneStateId, state);
   }
 
   onStateChange(): void {
