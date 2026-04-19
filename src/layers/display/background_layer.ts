@@ -19,7 +19,7 @@ export class BackgroundLayer extends DisplayLayer {
     return {
       ...DisplayLayer.getDefaultState(),
       type: "background",
-      name: "Background" + getCount(),
+      name: "background_" + getCount(),
       color: getFunColor(),
     };
   }

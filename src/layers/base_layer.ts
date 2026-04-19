@@ -9,7 +9,7 @@ export abstract class BaseLayer implements ILayer {
     return {
       id: Math.floor(Math.random() * 1000000),
       type: "background",
-      name: "Layer" + getCount(),
+      name: "Layer",
       visible: true,
     };
   }
