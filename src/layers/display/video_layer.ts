@@ -1,0 +1,174 @@
+import {
+  Assets,
+  Sprite,
+  Texture,
+  Ticker,
+  VideoSource,
+  type Application,
+} from "pixi.js";
+import { getCount } from "../../helpers/ids.js";
+import { DataStore, EventDispatcher } from "../../index.js";
+import type { LayerState } from "../ilayer.js";
+import { DisplayLayer } from "./display_layer.js";
+import { GifSprite } from "pixi.js/gif";
+import { getAsset } from "../../helpers/assets.js";
+
+export type VideoLayerState = LayerState & {
+  panX: number;
+  panY: number;
+  scale: number;
+  vFlip: boolean;
+  hFlip: boolean;
+  imageHash: string;
+  timeFrom: number;
+  timeLength: number;
+  speed: number;
+};
+
+export class VideoLayer extends DisplayLayer {
+  declare _state: VideoLayerState;
+  declare mainSprite: Sprite | GifSprite;
+  videoElement?: HTMLVideoElement;
+
+  static getDefaultState(): VideoLayerState {
+    return {
+      ...DisplayLayer.getDefaultState(),
+      type: "video",
+      name: "video_" + getCount(),
+      panX: 0.5,
+      panY: 0.5,
+      scale: 1,
+      vFlip: false,
+      hFlip: false,
+      imageHash: "",
+      timeFrom: 0,
+      timeLength: -1,
+      speed: 1,
+    };
+  }
+
+  constructor(sceneStateId: string, state: VideoLayerState) {
+    super(sceneStateId, state);
+    this.mainSprite = new Sprite();
+
+    console.log("Constructed video layer with state", state);
+
+    const application = DataStore.getInstance().getStore(
+      "application",
+    ) as Application;
+    application.stage.addChild(this.mainSprite);
+  }
+
+  tick(time: Ticker, loop: boolean): void {
+    super.tick(time, loop);
+    if (loop) {
+      this.correctTime();
+    }
+  }
+
+  correctTime(): void {
+    if (this.videoElement) {
+      this.videoElement.currentTime =
+        DataStore.getInstance().getStore("elapsedTime") / 1000;
+    } else if (this.mainSprite instanceof GifSprite) {
+      const gif = this.mainSprite as GifSprite;
+      gif.currentFrame =
+        Math.floor(
+          (DataStore.getInstance().getStore("elapsedTime") / 1000) *
+            GifSprite.defaultOptions.fps!,
+        ) % gif.totalFrames;
+    }
+  }
+
+  innerRepaint() {
+    console.log("Repainting video layer with imageHash", this._state.imageHash);
+    const application = DataStore.getInstance().getStore(
+      "application",
+    ) as Application;
+
+    this.mainSprite.destroy();
+    if (this._state.imageHash) {
+      VideoSource.defaultOptions = {
+        ...VideoSource.defaultOptions,
+        loop: true,
+        autoPlay: true,
+        //TODO: IMPLEMENT PLAYING LOGIC
+        //autoPlay: DataStore.getInstance().getStore("playing") || false,
+      };
+
+      //GET THE CONTENT
+      const content = getAsset(
+        this.sceneStateId,
+        this._state.imageHash,
+        this._state.id,
+      );
+      if (
+        content.startsWith("data:image/gif;") ||
+        content.indexOf(".gif") >= 0
+      ) {
+        Assets.load(content).then((tex) => {
+          this.mainSprite = new GifSprite({
+            source: tex,
+            animationSpeed: 1,
+            loop: true,
+            autoPlay: DataStore.getInstance().getStore("playing") || false,
+            onFrameChange: (_currentFrame: number) => {
+              EventDispatcher.getInstance().dispatchEvent(
+                this.sceneStateId + ".layers.!" + this._state.id,
+                "change",
+                { sprite: this.mainSprite },
+              );
+            },
+          });
+          application.stage.addChild(this.mainSprite);
+          this.reposition();
+          DataStore.getInstance().touch("layers");
+        });
+      } else {
+        const texturePromise = Assets.load<Texture>(content);
+        texturePromise.then((resolvedTexture: Texture) => {
+          this.mainSprite = Sprite.from(resolvedTexture);
+          application.stage.addChild(this.mainSprite);
+          this.reposition();
+          DataStore.getInstance().touch("layers");
+        });
+      }
+    } else {
+      this.mainSprite = new Sprite();
+      const application = DataStore.getInstance().getStore(
+        "application",
+      ) as Application;
+      application.stage.addChild(this.mainSprite);
+    }
+  }
+  reposition() {
+    const application = DataStore.getInstance().getStore(
+      "application",
+    ) as Application;
+    this.mainSprite.anchor.set(0.5, 0.5);
+    this.mainSprite.x = application.canvas.width * this._state.panX;
+    this.mainSprite.y = application.canvas.height * this._state.panY;
+
+    if (this.mainSprite.width < this.mainSprite.height) {
+      this.mainSprite.width = application.canvas.width * this._state.scale;
+      this.mainSprite.scale.y = this.mainSprite.scale.x;
+    } else {
+      this.mainSprite.height = application.canvas.height * this._state.scale;
+      this.mainSprite.scale.x = this.mainSprite.scale.y;
+    }
+    //this.mainSprite.scale.set(this._state.scale);
+
+    this.mainSprite.scale.x *= this._state.hFlip ? -1 : 1;
+    this.mainSprite.scale.y *= this._state.vFlip ? -1 : 1;
+
+    console.log("HFLIP", this._state.hFlip, "VFLIP", this._state.vFlip);
+
+    console.log(
+      "Repositioned video layer to",
+      this.mainSprite.x,
+      this.mainSprite.y,
+      "with scale",
+      this.mainSprite.scale,
+    );
+  }
+}

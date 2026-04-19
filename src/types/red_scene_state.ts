@@ -4,4 +4,5 @@ export type SceneState = {
   width: number;
   height: number;
   layers: LayerState[];
+  assets: Record<string, string>;
 };

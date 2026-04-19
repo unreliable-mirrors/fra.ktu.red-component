@@ -7,6 +7,10 @@ import {
 } from "../layers/display/background_layer.js";
 import type { DisplayLayer } from "../layers/display/display_layer.js";
 import type { LayerState } from "../layers/ilayer.js";
+import {
+  VideoLayer,
+  type VideoLayerState,
+} from "../layers/display/video_layer.js";
 
 const layers: DisplayLayer[] = [];
 
@@ -16,7 +20,8 @@ export const subscribeToLayerUpdates = (sceneStateId: string) => {
   ) as Application;
   application.ticker.add((time) => {
     for (const layer of layers) {
-      layer.tick(time, application.ticker.started);
+      //TODO: IMPLEMENT LOOP DETECTION
+      layer.tick(time, false);
     }
   });
 
@@ -36,6 +41,10 @@ export const subscribeToLayerUpdates = (sceneStateId: string) => {
               sceneStateId,
               layerState as BackgroundLayerState,
             );
+            layer.bind();
+            layers.push(layer);
+          } else if (layerState.type === "video") {
+            layer = new VideoLayer(sceneStateId, layerState as VideoLayerState);
             layer.bind();
             layers.push(layer);
           }

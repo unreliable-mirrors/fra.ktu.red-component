@@ -11,17 +11,7 @@ export type LayerState = {
 };
 
 export interface ILayer {
-  set(field: LayerFields, value: any): void;
-
   get id(): number;
-
-  get type(): LayerType;
-
-  set name(name: string);
-  get name(): string;
-
-  set visible(visible: boolean);
-  get visible(): boolean;
 
   onStateChange(): void;
 
