@@ -29,6 +29,17 @@ export abstract class BaseLayer implements ILayer {
       "change",
       this.onStateChange.bind(this),
     );
+
+    EventDispatcher.getInstance().addEventListener(
+      this.sceneStateId + ".shaders.!" + this._state.id,
+      "update",
+      this.onStateChange.bind(this),
+    );
+    EventDispatcher.getInstance().addEventListener(
+      this.sceneStateId + ".shaders.!" + this._state.id,
+      "change",
+      this.onStateChange.bind(this),
+    );
   }
 
   get id(): number {

@@ -29,4 +29,9 @@ export class PixelateShader extends ShaderLayer {
       uPixelSize: { value: this._state.pixelSize, type: "f32" },
     };
   }
+
+  updateUniforms(): void {
+    super.updateUniforms();
+    this.uniforms.uniforms.uPixelSize = this._state.pixelSize;
+  }
 }

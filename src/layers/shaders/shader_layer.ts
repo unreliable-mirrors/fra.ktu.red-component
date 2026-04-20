@@ -39,7 +39,9 @@ export abstract class ShaderLayer extends BaseLayer {
     super(sceneStateId, state);
   }
 
-  onStateChange(): void {}
+  onStateChange(): void {
+    this.updateUniforms();
+  }
 
   bind(): void {
     this.buildShader();
@@ -84,6 +86,18 @@ export abstract class ShaderLayer extends BaseLayer {
         type: "f32",
       },
     };
+  }
+
+  updateUniforms() {
+    this.uniforms.uniforms.uRedDryWet = this._state.visible
+      ? this._state.redDryWet
+      : 0;
+    this.uniforms.uniforms.uGreenDryWet = this._state.visible
+      ? this._state.greenDryWet
+      : 0;
+    this.uniforms.uniforms.uBlueDryWet = this._state.visible
+      ? this._state.blueDryWet
+      : 0;
   }
 
   abstract setupUniformValues(): {
