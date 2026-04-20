@@ -6,14 +6,17 @@ export { EventDispatcher } from "./ktu/ui/core/event_dispatcher.js";
 
 export type { SceneState } from "./types/red_scene_state.js";
 
+export type { LayerState } from "./layers/ilayer.js";
+
 export type { BackgroundLayerState } from "./layers/display/background_layer.js";
 export { BackgroundLayer } from "./layers/display/background_layer.js";
-
 export type { VideoLayerState } from "./layers/display/video_layer.js";
 export { VideoLayer } from "./layers/display/video_layer.js";
 
-export { AVAILABLE_LAYERS } from "./helpers/layers.js";
+export type { ShaderLayerState } from "./layers/shaders/shader_layer.js";
+export type { PixelateShaderState } from "./layers/shaders/pixelate/pixelate_shader.js";
+export { PixelateShader } from "./layers/shaders/pixelate/pixelate_shader.js";
 
-export type { LayerState } from "./layers/ilayer.js";
+export { AVAILABLE_LAYERS, AVAILABLE_SHADERS } from "./helpers/layers.js";
 
 export { cacheAsset } from "./helpers/assets.js";

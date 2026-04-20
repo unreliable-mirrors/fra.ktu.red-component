@@ -1,0 +1,52 @@
+import type { Application } from "pixi.js";
+import { DataStore } from "../ktu/ui/core/data_store.js";
+import { EventDispatcher } from "../ktu/ui/core/event_dispatcher.js";
+import type { LayerState } from "../layers/ilayer.js";
+import {
+  PixelateShader,
+  type PixelateShaderState,
+} from "../layers/shaders/pixelate/pixelate_shader.js";
+import type { ShaderLayer } from "../layers/shaders/shader_layer.js";
+import type { SceneState } from "../types/red_scene_state.js";
+
+const shaders: ShaderLayer[] = [];
+
+export const subscribeToShaderUpdates = (sceneStateId: string) => {
+  EventDispatcher.getInstance().addEventListener(
+    sceneStateId + ".shaders",
+    "update",
+    () => {
+      const application = DataStore.getInstance().getStore(
+        "application",
+      ) as Application;
+      const sceneState = DataStore.getInstance().getStore(
+        sceneStateId,
+      ) as SceneState;
+      for (const shader of sceneState.shaders) {
+        let layer = shaders.find((l) => l.id === shader.id);
+        if (!layer) {
+          if (shader.type === "pixelate") {
+            layer = new PixelateShader(
+              sceneStateId,
+              shader as PixelateShaderState,
+            );
+            layer.bind();
+            shaders.push(layer);
+          }
+        }
+      }
+
+      for (const layer of shaders) {
+        const existsInSceneState = sceneState.shaders.some(
+          (ls: LayerState) => ls.id === layer.id,
+        );
+        if (!existsInSceneState) {
+          layer.unbind();
+          shaders.splice(shaders.indexOf(layer), 1);
+        }
+      }
+
+      application.stage.filters = shaders.map((s) => s.shader);
+    },
+  );
+};

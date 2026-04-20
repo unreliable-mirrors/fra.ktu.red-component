@@ -30,5 +30,6 @@
     "jsx": "react",
     "jsxFactory": "jsx",
     "jsxFragmentFactory": "jsx.Fragment"
-  }
+  },
+  "include": ["src/**/*"]
 }

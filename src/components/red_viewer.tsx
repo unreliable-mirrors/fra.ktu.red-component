@@ -4,6 +4,7 @@ import type { SceneState } from "../types/red_scene_state.js";
 import { Application, type ApplicationOptions } from "pixi.js";
 import { DataStore } from "../ktu/ui/core/data_store.js";
 import { subscribeToLayerUpdates } from "../managers/layer_manager.js";
+import { subscribeToShaderUpdates } from "../managers/shader_manager.js";
 
 class RedViewer extends KTUComponent {
   sceneStateId: string;
@@ -33,6 +34,7 @@ class RedViewer extends KTUComponent {
       this.canvas = this.app.canvas;
       DataStore.getInstance().setStore("application", this.app);
       subscribeToLayerUpdates(this.sceneStateId);
+      subscribeToShaderUpdates(this.sceneStateId);
       DataStore.getInstance().touch(this.sceneStateId);
     });
   }
