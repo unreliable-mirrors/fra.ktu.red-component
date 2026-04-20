@@ -33,6 +33,7 @@ export class VideoLayer extends DisplayLayer {
   declare _state: VideoLayerState;
   declare mainSprite: Sprite | GifSprite;
   videoElement?: HTMLVideoElement;
+  content?: string;
 
   static getDefaultState(): VideoLayerState {
     return {
@@ -146,14 +147,11 @@ export class VideoLayer extends DisplayLayer {
       "application",
     ) as Application;
 
-    this.mainSprite.destroy();
     if (this._state.imageHash) {
       VideoSource.defaultOptions = {
         ...VideoSource.defaultOptions,
         loop: true,
-        autoPlay: true,
-        //TODO: IMPLEMENT PLAYING LOGIC
-        //autoPlay: DataStore.getInstance().getStore("playing") || false,
+        autoPlay: DataStore.getInstance().getStore("playing") || false,
       };
 
       //GET THE CONTENT
@@ -162,10 +160,14 @@ export class VideoLayer extends DisplayLayer {
         this._state.imageHash,
         this._state.id,
       );
-      if (
+      if (this.content && this.content === content) {
+        this.reposition();
+        this.reshader();
+      } else if (
         content.startsWith("data:image/gif;") ||
         content.indexOf(".gif") >= 0
       ) {
+        this.mainSprite.destroy();
         Assets.load(content).then((tex) => {
           this.mainSprite = new GifSprite({
             source: tex,
@@ -183,9 +185,9 @@ export class VideoLayer extends DisplayLayer {
           application.stage.addChild(this.mainSprite);
           this.reposition();
           this.reshader();
-          DataStore.getInstance().touch("layers");
         });
       } else {
+        this.mainSprite.destroy();
         const textureSrc = isVideoAsset(content)
           ? getVideoAssetInstanceSrc(
               content,
@@ -198,9 +200,9 @@ export class VideoLayer extends DisplayLayer {
           application.stage.addChild(this.mainSprite);
           this.reposition();
           this.reshader();
-          DataStore.getInstance().touch("layers");
         });
       }
+      this.content = content;
     } else {
       this.mainSprite = new Sprite();
       const application = DataStore.getInstance().getStore(

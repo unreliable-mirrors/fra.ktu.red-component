@@ -23,11 +23,6 @@ export const subscribeToLayerUpdates = (sceneStateId: string) => {
     let loop = false;
     if (lastElapsedTime > DataStore.getInstance().getStore("elapsedTime")) {
       loop = true;
-      console.log(
-        "Looping animation",
-        lastElapsedTime,
-        DataStore.getInstance().getStore("elapsedTime"),
-      );
     }
     lastElapsedTime = DataStore.getInstance().getStore("elapsedTime");
     for (const layer of layers) {
