@@ -11,7 +11,11 @@ import { DataStore, EventDispatcher } from "../../index.js";
 import type { LayerState } from "../ilayer.js";
 import { DisplayLayer } from "./display_layer.js";
 import { GifSprite } from "pixi.js/gif";
-import { getAsset } from "../../helpers/assets.js";
+import {
+  getAsset,
+  getVideoAssetInstanceSrc,
+  isVideoAsset,
+} from "../../helpers/assets.js";
 
 export type VideoLayerState = LayerState & {
   panX: number;
@@ -181,7 +185,13 @@ export class VideoLayer extends DisplayLayer {
           DataStore.getInstance().touch("layers");
         });
       } else {
-        const texturePromise = Assets.load<Texture>(content);
+        const textureSrc = isVideoAsset(content)
+          ? getVideoAssetInstanceSrc(
+              content,
+              `${this.sceneStateId}:${this._state.id}:${this._state.imageHash}`,
+            )
+          : content;
+        const texturePromise = Assets.load<Texture>(textureSrc);
         texturePromise.then((resolvedTexture: Texture) => {
           this.mainSprite = Sprite.from(resolvedTexture);
           application.stage.addChild(this.mainSprite);
