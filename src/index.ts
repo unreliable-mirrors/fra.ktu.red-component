@@ -21,3 +21,5 @@ export { AVAILABLE_LAYERS, AVAILABLE_SHADERS } from "./helpers/layers.js";
 
 export { cacheAsset } from "./helpers/assets.js";
 export { resetCount } from "./helpers/ids.js";
+
+export { getStartingName } from "./helpers/sparkle.js";
