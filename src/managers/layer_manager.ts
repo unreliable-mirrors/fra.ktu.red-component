@@ -29,7 +29,6 @@ export const subscribeToLayerUpdates = (sceneStateId: string) => {
     sceneStateId + ".layers",
     "update",
     () => {
-      console.log("Received layer update event for sceneStateId", sceneStateId);
       const sceneState = DataStore.getInstance().getStore(sceneStateId);
 
       //CREATE LAYERS IF THEY DONT EXIST, DESTROY LAYERS THAT DONT EXIST IN SCENESTATE
@@ -51,7 +50,8 @@ export const subscribeToLayerUpdates = (sceneStateId: string) => {
         }
       }
 
-      for (const layer of layers) {
+      for (let i = layers.length - 1; i >= 0; i--) {
+        const layer = layers[i]!;
         const existsInSceneState = sceneState.layers.some(
           (ls: LayerState) => ls.id === layer.id,
         );

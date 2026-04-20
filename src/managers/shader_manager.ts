@@ -36,7 +36,8 @@ export const subscribeToShaderUpdates = (sceneStateId: string) => {
         }
       }
 
-      for (const layer of shaders) {
+      for (let i = shaders.length - 1; i >= 0; i--) {
+        const layer = shaders[i]!;
         const existsInSceneState = sceneState.shaders.some(
           (ls: LayerState) => ls.id === layer.id,
         );

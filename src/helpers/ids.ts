@@ -1,6 +1,10 @@
 let counter = 0;
 
-export function getCount() {
+export const getCount = () => {
   counter++;
   return counter;
-}
+};
+
+export const resetCount = (value: number = 0) => {
+  counter = value;
+};

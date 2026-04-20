@@ -6,4 +6,5 @@ export type SceneState = {
   layers: LayerState[];
   shaders: LayerState[];
   assets: Record<string, string>;
+  counter: number;
 };
