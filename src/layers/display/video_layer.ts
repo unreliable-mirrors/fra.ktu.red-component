@@ -64,19 +64,75 @@ export class VideoLayer extends DisplayLayer {
     if (loop) {
       this.correctTime();
     }
+    if (this.overtime()) {
+      this.correctTime();
+    }
+  }
+
+  overtime(): boolean {
+    let currentTime = 0;
+    let duration = 0;
+    if (
+      this.mainSprite.texture &&
+      this.mainSprite.texture.source instanceof VideoSource
+    ) {
+      const resource = this.mainSprite.texture.source.resource;
+      currentTime = resource.currentTime;
+      duration = resource.duration;
+    } else if (this.mainSprite instanceof GifSprite) {
+      const gif = this.mainSprite as GifSprite;
+      currentTime = gif.currentFrame / GifSprite.defaultOptions.fps!;
+      duration = gif.duration / 1000;
+    } else {
+      return false;
+    }
+    if (currentTime < this._state.timeFrom && duration > this._state.timeFrom)
+      return true;
+    if (this._state.timeLength > 0) {
+      return currentTime > this._state.timeLength + this._state.timeFrom;
+    }
+    return false;
   }
 
   correctTime(): void {
-    if (this.videoElement) {
-      this.videoElement.currentTime =
-        DataStore.getInstance().getStore("elapsedTime") / 1000;
+    let timeLength = this._state.timeLength;
+    if (timeLength <= 0.1 || isNaN(timeLength)) {
+      timeLength = 9999999;
+    }
+    const currentTime =
+      (((DataStore.getInstance().getStore("elapsedTime") / 1000) *
+        this._state.speed) %
+        timeLength) +
+      this._state.timeFrom;
+    if (
+      this.mainSprite.texture &&
+      this.mainSprite.texture.source instanceof VideoSource
+    ) {
+      const resource = this.mainSprite.texture.source.resource;
+      if (resource.duration < currentTime) {
+        if (this._state.timeFrom >= resource.duration) {
+          resource.currentTime = 0;
+        } else {
+          resource.currentTime = this._state.timeFrom;
+        }
+      } else {
+        resource.currentTime = currentTime;
+      }
     } else if (this.mainSprite instanceof GifSprite) {
       const gif = this.mainSprite as GifSprite;
-      gif.currentFrame =
-        Math.floor(
-          (DataStore.getInstance().getStore("elapsedTime") / 1000) *
-            GifSprite.defaultOptions.fps!,
-        ) % gif.totalFrames;
+      if (gif.duration / 1000 < currentTime) {
+        if (this._state.timeFrom >= gif.duration / 1000) {
+          gif.currentFrame = 0;
+        } else {
+          gif.currentFrame = Math.floor(
+            this._state.timeFrom * GifSprite.defaultOptions.fps!,
+          );
+        }
+      } else {
+        gif.currentFrame = Math.floor(
+          currentTime * GifSprite.defaultOptions.fps!,
+        );
+      }
     }
   }
 

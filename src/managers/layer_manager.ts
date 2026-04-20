@@ -13,15 +13,25 @@ import {
 } from "../layers/display/video_layer.js";
 
 const layers: DisplayLayer[] = [];
+let lastElapsedTime: number = 0;
 
 export const subscribeToLayerUpdates = (sceneStateId: string) => {
   const application = DataStore.getInstance().getStore(
     "application",
   ) as Application;
   application.ticker.add((time) => {
+    let loop = false;
+    if (lastElapsedTime > DataStore.getInstance().getStore("elapsedTime")) {
+      loop = true;
+      console.log(
+        "Looping animation",
+        lastElapsedTime,
+        DataStore.getInstance().getStore("elapsedTime"),
+      );
+    }
+    lastElapsedTime = DataStore.getInstance().getStore("elapsedTime");
     for (const layer of layers) {
-      //TODO: IMPLEMENT LOOP DETECTION
-      layer.tick(time, false);
+      layer.tick(time, loop);
     }
   });
 

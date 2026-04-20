@@ -27,7 +27,6 @@ export class DataStore {
   }
 
   touch(key: string): any {
-    console.log("Touching key", key);
     EventDispatcher.getInstance().dispatchEvent(
       key,
       "update",
@@ -37,7 +36,6 @@ export class DataStore {
     const listenerKeys = EventDispatcher.getInstance().listenerKeys();
     for (const listenerKey of listenerKeys) {
       if (listenerKey.startsWith(key + ".") && !listenerKey.includes(".!")) {
-        console.log("Matching key", listenerKey);
         this.touch(listenerKey);
       }
     }
