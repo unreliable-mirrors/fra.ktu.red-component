@@ -6,7 +6,7 @@ export abstract class BaseLayer implements ILayer {
   protected sceneStateId: string;
   protected _state: LayerState;
 
-  static getDefaultState(): LayerState {
+  static getDefaultState(sceneStateId: string): LayerState {
     return {
       id: Math.floor(Math.random() * 1000000),
       type: "background",

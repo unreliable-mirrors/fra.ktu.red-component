@@ -1,6 +1,5 @@
 import { Application, Graphics, Point, Ticker } from "pixi.js";
 import { DisplayLayer, type DisplayLayerState } from "./display_layer.js";
-import type { LayerState } from "../ilayer.js";
 import { DataStore } from "../../index.js";
 import { getCount } from "../../helpers/ids.js";
 import { getFunColor } from "../../helpers/sparkle.js";
@@ -15,11 +14,11 @@ export class BackgroundLayer extends DisplayLayer {
 
   declare mainSprite: Graphics;
 
-  static getDefaultState(): BackgroundLayerState {
+  static getDefaultState(sceneStateId: string): BackgroundLayerState {
     return {
-      ...DisplayLayer.getDefaultState(),
+      ...DisplayLayer.getDefaultState(sceneStateId),
       type: "background",
-      name: "background_" + getCount(),
+      name: "background_" + getCount(sceneStateId),
       color: getFunColor(),
     };
   }

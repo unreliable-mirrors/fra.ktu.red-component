@@ -24,9 +24,9 @@ export abstract class ShaderLayer extends BaseLayer {
   abstract fragment: string;
   uniforms!: UniformGroup;
 
-  static getDefaultState(): ShaderLayerState {
+  static getDefaultState(sceneStateId: string): ShaderLayerState {
     return {
-      ...BaseLayer.getDefaultState(),
+      ...BaseLayer.getDefaultState(sceneStateId),
       type: "pixelate",
       name: "shader",
       redDryWet: 1,

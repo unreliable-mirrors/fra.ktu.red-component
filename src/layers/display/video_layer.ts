@@ -35,11 +35,11 @@ export class VideoLayer extends DisplayLayer {
   videoElement?: HTMLVideoElement;
   content?: string;
 
-  static getDefaultState(): VideoLayerState {
+  static getDefaultState(sceneStateId: string): VideoLayerState {
     return {
-      ...DisplayLayer.getDefaultState(),
+      ...DisplayLayer.getDefaultState(sceneStateId),
       type: "video",
-      name: "video_" + getCount(),
+      name: "video_" + getCount(sceneStateId),
       panX: 0.5,
       panY: 0.5,
       scale: 1,

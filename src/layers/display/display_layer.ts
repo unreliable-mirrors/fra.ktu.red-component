@@ -18,9 +18,9 @@ export abstract class DisplayLayer extends BaseLayer {
   mainSprite!: Sprite | Graphics;
   shaders: ShaderLayer[] = [];
 
-  static getDefaultState(): DisplayLayerState {
+  static getDefaultState(sceneStateId: string): DisplayLayerState {
     return {
-      ...BaseLayer.getDefaultState(),
+      ...BaseLayer.getDefaultState(sceneStateId),
       shaders: [],
     };
   }

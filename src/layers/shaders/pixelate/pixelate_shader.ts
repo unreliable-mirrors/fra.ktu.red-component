@@ -11,11 +11,11 @@ export class PixelateShader extends ShaderLayer {
   declare _state: PixelateShaderState;
   fragment: string = fragment;
 
-  static getDefaultState(): PixelateShaderState {
+  static getDefaultState(sceneStateId: string): PixelateShaderState {
     return {
-      ...ShaderLayer.getDefaultState(),
+      ...ShaderLayer.getDefaultState(sceneStateId),
       type: "pixelate",
-      name: "pixelate_" + getCount(),
+      name: "pixelate_" + getCount(sceneStateId),
       pixelSize: 10,
     };
   }
