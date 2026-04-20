@@ -9,7 +9,7 @@ import {
 import { getCount } from "../../helpers/ids.js";
 import { DataStore, EventDispatcher } from "../../index.js";
 import type { LayerState } from "../ilayer.js";
-import { DisplayLayer } from "./display_layer.js";
+import { DisplayLayer, type DisplayLayerState } from "./display_layer.js";
 import { GifSprite } from "pixi.js/gif";
 import {
   getAsset,
@@ -17,7 +17,7 @@ import {
   isVideoAsset,
 } from "../../helpers/assets.js";
 
-export type VideoLayerState = LayerState & {
+export type VideoLayerState = DisplayLayerState & {
   panX: number;
   panY: number;
   scale: number;
@@ -182,6 +182,7 @@ export class VideoLayer extends DisplayLayer {
           });
           application.stage.addChild(this.mainSprite);
           this.reposition();
+          this.reshader();
           DataStore.getInstance().touch("layers");
         });
       } else {
@@ -196,6 +197,7 @@ export class VideoLayer extends DisplayLayer {
           this.mainSprite = Sprite.from(resolvedTexture);
           application.stage.addChild(this.mainSprite);
           this.reposition();
+          this.reshader();
           DataStore.getInstance().touch("layers");
         });
       }

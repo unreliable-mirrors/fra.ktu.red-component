@@ -8,6 +8,7 @@ export type { SceneState } from "./types/red_scene_state.js";
 
 export type { LayerState } from "./layers/ilayer.js";
 
+export type { DisplayLayerState } from "./layers/display/display_layer.js";
 export type { BackgroundLayerState } from "./layers/display/background_layer.js";
 export { BackgroundLayer } from "./layers/display/background_layer.js";
 export type { VideoLayerState } from "./layers/display/video_layer.js";

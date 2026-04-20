@@ -1,12 +1,13 @@
-import type { LayerState } from "../layers/ilayer.js";
+import type { DisplayLayerState } from "../layers/display/display_layer.js";
+import type { ShaderLayerState } from "../layers/shaders/shader_layer.js";
 
 export type SceneState = {
   name: string;
   width: number;
   height: number;
   duration: number;
-  layers: LayerState[];
-  shaders: LayerState[];
+  layers: DisplayLayerState[];
+  shaders: ShaderLayerState[];
   assets: Record<string, string>;
   counter: number;
 };

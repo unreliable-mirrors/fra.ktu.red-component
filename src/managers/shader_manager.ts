@@ -16,6 +16,7 @@ export const subscribeToShaderUpdates = (sceneStateId: string) => {
     sceneStateId + ".shaders",
     "update",
     () => {
+      console.log("Updating shaders for sceneStateId", sceneStateId);
       const application = DataStore.getInstance().getStore(
         "application",
       ) as Application;

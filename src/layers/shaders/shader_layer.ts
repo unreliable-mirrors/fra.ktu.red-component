@@ -45,13 +45,6 @@ export abstract class ShaderLayer extends BaseLayer {
 
   bind(): void {
     this.buildShader();
-    const application = DataStore.getInstance().getStore(
-      "application",
-    ) as Application;
-    application.stage.filters = [
-      ...(application.stage.filters || []),
-      this.shader,
-    ];
   }
 
   buildShader() {

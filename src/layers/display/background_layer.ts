@@ -1,11 +1,11 @@
 import { Application, Graphics, Point, Ticker } from "pixi.js";
-import { DisplayLayer } from "./display_layer.js";
+import { DisplayLayer, type DisplayLayerState } from "./display_layer.js";
 import type { LayerState } from "../ilayer.js";
 import { DataStore } from "../../index.js";
 import { getCount } from "../../helpers/ids.js";
 import { getFunColor } from "../../helpers/sparkle.js";
 
-export type BackgroundLayerState = LayerState & {
+export type BackgroundLayerState = DisplayLayerState & {
   color: string;
 };
 
