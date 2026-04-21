@@ -27,8 +27,9 @@ export class LfoModulator extends BaseModulator {
     const time = DataStore.getInstance().getStore("elapsedTime") || 0;
     return (
       Math.sin(
-        ((time % (1000 / this._state.hz)) / (1000 / this._state.hz) +
-          this._state.phase) *
+        ((time % (1000 / this.getFieldValue("hz"))) /
+          (1000 / this.getFieldValue("hz")) +
+          this.getFieldValue("phase")) *
           Math.PI *
           2,
       ) /

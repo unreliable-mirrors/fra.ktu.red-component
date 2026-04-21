@@ -12,12 +12,14 @@ export type LayerState = {
   type: LayerType | ShaderType | ModulatorType;
   name: string;
   visible: boolean;
+  signaledFields: { [key: string]: string };
 };
 
 export interface ILayer {
   get id(): number;
 
   onStateChange(): void;
+  onSignalChange(): void;
 
   bind(): void;
   unbind(): void;

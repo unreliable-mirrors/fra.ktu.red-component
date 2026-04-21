@@ -14,6 +14,18 @@ export const subscribeToShaderUpdates = (sceneStateId: string) => {
     "instances." + sceneStateId + ".shaders",
     [],
   );
+  const application = DataStore.getInstance().getStore(
+    "application",
+  ) as Application;
+  application.ticker.add((time) => {
+    const shaders: ShaderLayer[] = DataStore.getInstance().getStore(
+      "instances." + sceneStateId + ".shaders",
+    );
+    for (const shader of shaders) {
+      shader.tick(time, false);
+    }
+  });
+
   EventDispatcher.getInstance().addEventListener(
     sceneStateId + ".shaders",
     "update",

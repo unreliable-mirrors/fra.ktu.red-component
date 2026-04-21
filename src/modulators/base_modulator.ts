@@ -1,12 +1,14 @@
 import type { Ticker } from "pixi.js";
 import type { IModulator, ModulatorState } from "./imodulator.js";
 import { DataStore } from "../index.js";
+import { getSignal } from "../helpers/signals.js";
 
 export abstract class BaseModulator implements IModulator {
   protected sceneStateId: string;
   protected _state: ModulatorState;
   value: number = 0;
   valueLog: number[] = [];
+  changed: boolean = false;
   hook?: (value: number) => void;
 
   static getDefaultState(sceneStateId: string): ModulatorState {
@@ -18,6 +20,7 @@ export abstract class BaseModulator implements IModulator {
       running: true,
       factor: 1,
       offset: 0,
+      signaledFields: {},
     };
   }
 
@@ -34,21 +37,18 @@ export abstract class BaseModulator implements IModulator {
     return this._state.name;
   }
 
-  getValue(): number {
-    const value = this.computeValue();
-    this.valueLog.push(value);
-    return value;
-  }
-
   abstract computeValue(): number;
 
   tick(time: Ticker): void {
     const elapsedTime =
       DataStore.getInstance().getStore(this.sceneStateId + ".elapsedTime") || 0;
     if (this._state.running) {
+      const lastValue = this.value;
       const value =
-        this.computeValue() * this._state.factor + this._state.offset;
+        this.computeValue() * this.getFieldValue("factor") +
+        this.getFieldValue("offset");
       this.value = value;
+      this.changed = this.value !== lastValue;
       if (isNaN(this.value)) {
         this.value = 0;
       }
@@ -57,6 +57,17 @@ export abstract class BaseModulator implements IModulator {
         this.valueLog.shift();
       }
       this.hook?.(this.value);
+    } else {
+      this.changed = false;
     }
+  }
+
+  getFieldValue(fieldName: string): number {
+    const signaledField = this._state.signaledFields[fieldName];
+    if (!signaledField) {
+      return this._state[fieldName as keyof ModulatorState] as number;
+    }
+
+    return getSignal(this.sceneStateId, signaledField)?.getValue() || 0;
   }
 }

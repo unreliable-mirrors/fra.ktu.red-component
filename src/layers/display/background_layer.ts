@@ -60,16 +60,10 @@ export class BackgroundLayer extends DisplayLayer {
   }
 
   innerRepaint() {
-    console.log(
-      "Repainting background layer with color",
-      this._state.color,
-      "and size",
-      this.backgroundSize,
-    );
     this.mainSprite.clear();
     this.mainSprite
       .rect(0, 0, this.backgroundSize.x, this.backgroundSize.y)
-      .fill({ color: this._state.color });
+      .fill({ color: this.getFieldValue("color") });
     this.mainSprite.visible = this._state.visible;
   }
 }

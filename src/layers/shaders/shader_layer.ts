@@ -43,10 +43,12 @@ export abstract class ShaderLayer extends BaseLayer {
     this.updateUniforms();
   }
 
+  onSignalChange(): void {
+    this.updateUniforms();
+  }
+
   bind(): void {
-    console.log("Binding shader layer with state", this._state);
     this.buildShader();
-    console.log("Bound shader layer with uniforms", this.uniforms);
   }
 
   buildShader() {
@@ -69,38 +71,29 @@ export abstract class ShaderLayer extends BaseLayer {
   } {
     return {
       uRedDryWet: {
-        value: this._state.visible ? this._state.redDryWet : 0,
+        value: this._state.visible ? this.getFieldValue("redDryWet") : 0,
         type: "f32",
       },
       uGreenDryWet: {
-        value: this._state.visible ? this._state.greenDryWet : 0,
+        value: this._state.visible ? this.getFieldValue("greenDryWet") : 0,
         type: "f32",
       },
       uBlueDryWet: {
-        value: this._state.visible ? this._state.blueDryWet : 0,
+        value: this._state.visible ? this.getFieldValue("blueDryWet") : 0,
         type: "f32",
       },
     };
   }
 
   updateUniforms() {
-    console.log(
-      "Updating shader uniforms with state",
-      this,
-      this.uniforms,
-      this._state,
-      DataStore.getInstance().getStore(
-        "instances." + this.sceneStateId + ".shaders",
-      ),
-    );
     this.uniforms.uniforms.uRedDryWet = this._state.visible
-      ? this._state.redDryWet
+      ? this.getFieldValue("redDryWet")
       : 0;
     this.uniforms.uniforms.uGreenDryWet = this._state.visible
-      ? this._state.greenDryWet
+      ? this.getFieldValue("greenDryWet")
       : 0;
     this.uniforms.uniforms.uBlueDryWet = this._state.visible
-      ? this._state.blueDryWet
+      ? this.getFieldValue("blueDryWet")
       : 0;
   }
 

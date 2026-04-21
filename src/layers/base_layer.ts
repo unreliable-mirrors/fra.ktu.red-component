@@ -1,4 +1,4 @@
-import type { LayerType } from "../helpers/layers.js";
+import { getSignal } from "../helpers/signals.js";
 import { EventDispatcher } from "../index.js";
 import type { ILayer, LayerFields, LayerState } from "./ilayer.js";
 
@@ -12,6 +12,7 @@ export abstract class BaseLayer implements ILayer {
       type: "background",
       name: "Layer",
       visible: true,
+      signaledFields: {},
     };
   }
 
@@ -46,8 +47,32 @@ export abstract class BaseLayer implements ILayer {
     return this._state.id;
   }
 
+  getFieldValue(fieldName: string): any {
+    const signaledField = this._state.signaledFields[fieldName];
+    if (!signaledField) {
+      return this._state[fieldName as keyof LayerState] as any;
+    }
+
+    return getSignal(this.sceneStateId, signaledField)?.getValue() || 0;
+  }
+
   onStateChange(): void {}
+  abstract onSignalChange(): void;
+
   abstract bind(): void;
   abstract unbind(): void;
-  tick(time: any, loop: boolean): void {}
+  tick(time: any, loop: boolean): void {
+    let changed = false;
+    for (const signal of Object.values(this._state.signaledFields)) {
+      console.log(
+        "Checking signal",
+        signal,
+        getSignal(this.sceneStateId, signal)!.changed,
+      );
+      changed = changed || getSignal(this.sceneStateId, signal)!.changed;
+    }
+    if (changed) {
+      this.onSignalChange();
+    }
+  }
 }

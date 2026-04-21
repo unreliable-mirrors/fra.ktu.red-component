@@ -91,34 +91,40 @@ export class VideoLayer extends DisplayLayer {
     } else {
       return false;
     }
-    if (currentTime < this._state.timeFrom && duration > this._state.timeFrom)
+    if (
+      currentTime < this.getFieldValue("timeFrom") &&
+      duration > this.getFieldValue("timeFrom")
+    )
       return true;
-    if (this._state.timeLength > 0) {
-      return currentTime > this._state.timeLength + this._state.timeFrom;
+    if (this.getFieldValue("timeLength") > 0) {
+      return (
+        currentTime >
+        this.getFieldValue("timeLength") + this.getFieldValue("timeFrom")
+      );
     }
     return false;
   }
 
   correctTime(): void {
-    let timeLength = this._state.timeLength;
+    let timeLength = this.getFieldValue("timeLength");
     if (timeLength <= 0.1 || isNaN(timeLength)) {
       timeLength = 9999999;
     }
     const currentTime =
       (((DataStore.getInstance().getStore("elapsedTime") / 1000) *
-        this._state.speed) %
+        this.getFieldValue("speed")) %
         timeLength) +
-      this._state.timeFrom;
+      this.getFieldValue("timeFrom");
     if (
       this.mainSprite.texture &&
       this.mainSprite.texture.source instanceof VideoSource
     ) {
       const resource = this.mainSprite.texture.source.resource;
       if (resource.duration < currentTime) {
-        if (this._state.timeFrom >= resource.duration) {
+        if (this.getFieldValue("timeFrom") >= resource.duration) {
           resource.currentTime = 0;
         } else {
-          resource.currentTime = this._state.timeFrom;
+          resource.currentTime = this.getFieldValue("timeFrom");
         }
       } else {
         resource.currentTime = currentTime;
@@ -126,11 +132,11 @@ export class VideoLayer extends DisplayLayer {
     } else if (this.mainSprite instanceof GifSprite) {
       const gif = this.mainSprite as GifSprite;
       if (gif.duration / 1000 < currentTime) {
-        if (this._state.timeFrom >= gif.duration / 1000) {
+        if (this.getFieldValue("timeFrom") >= gif.duration / 1000) {
           gif.currentFrame = 0;
         } else {
           gif.currentFrame = Math.floor(
-            this._state.timeFrom * GifSprite.defaultOptions.fps!,
+            this.getFieldValue("timeFrom") * GifSprite.defaultOptions.fps!,
           );
         }
       } else {
@@ -216,29 +222,21 @@ export class VideoLayer extends DisplayLayer {
       "application",
     ) as Application;
     this.mainSprite.anchor.set(0.5, 0.5);
-    this.mainSprite.x = application.canvas.width * this._state.panX;
-    this.mainSprite.y = application.canvas.height * this._state.panY;
+    this.mainSprite.x = application.canvas.width * this.getFieldValue("panX");
+    this.mainSprite.y = application.canvas.height * this.getFieldValue("panY");
 
     if (this.mainSprite.width < this.mainSprite.height) {
-      this.mainSprite.width = application.canvas.width * this._state.scale;
+      this.mainSprite.width =
+        application.canvas.width * this.getFieldValue("scale");
       this.mainSprite.scale.y = this.mainSprite.scale.x;
     } else {
-      this.mainSprite.height = application.canvas.height * this._state.scale;
+      this.mainSprite.height =
+        application.canvas.height * this.getFieldValue("scale");
       this.mainSprite.scale.x = this.mainSprite.scale.y;
     }
-    //this.mainSprite.scale.set(this._state.scale);
+    //this.mainSprite.scale.set(this.getFieldValue("scale"));
 
-    this.mainSprite.scale.x *= this._state.hFlip ? -1 : 1;
-    this.mainSprite.scale.y *= this._state.vFlip ? -1 : 1;
-
-    console.log("HFLIP", this._state.hFlip, "VFLIP", this._state.vFlip);
-
-    console.log(
-      "Repositioned video layer to",
-      this.mainSprite.x,
-      this.mainSprite.y,
-      "with scale",
-      this.mainSprite.scale,
-    );
+    this.mainSprite.scale.x *= this.getFieldValue("hFlip") ? -1 : 1;
+    this.mainSprite.scale.y *= this.getFieldValue("vFlip") ? -1 : 1;
   }
 }

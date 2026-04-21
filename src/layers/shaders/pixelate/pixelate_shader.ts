@@ -28,12 +28,16 @@ export class PixelateShader extends ShaderLayer {
 
   setupUniformValues(): { [key: string]: UniformData } {
     return {
-      uPixelSize: { value: this._state.pixelSize, type: "f32" },
+      uPixelSize: { value: this.getFieldValue("pixelSize"), type: "f32" },
     };
   }
 
   updateUniforms(): void {
     super.updateUniforms();
-    this.uniforms.uniforms.uPixelSize = this._state.pixelSize;
+    this.uniforms.uniforms.uPixelSize = this.getFieldValue("pixelSize");
+    console.log(
+      "Updated pixelate shader uniforms to",
+      this.uniforms.uniforms.uPixelSize,
+    );
   }
 }

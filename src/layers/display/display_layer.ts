@@ -34,6 +34,10 @@ export abstract class DisplayLayer extends BaseLayer {
     this.reshader();
   }
 
+  onSignalChange(): void {
+    this.repaint();
+  }
+
   repaint(): void {
     this.innerRepaint();
   }
@@ -76,10 +80,6 @@ export abstract class DisplayLayer extends BaseLayer {
     if (!this.mainSprite || this.mainSprite.destroyed) {
       return;
     }
-    console.log(
-      "Applied shaders",
-      this.shaders.map((s) => s.id),
-    );
     this.mainSprite.filters = this.shaders.map((s) => s.shader);
   }
 
@@ -100,4 +100,11 @@ export abstract class DisplayLayer extends BaseLayer {
   }
 
   abstract innerRepaint(): void;
+
+  tick(time: any, loop: boolean): void {
+    super.tick(time, loop);
+    for (const shader of this.shaders) {
+      shader.tick(time, loop);
+    }
+  }
 }

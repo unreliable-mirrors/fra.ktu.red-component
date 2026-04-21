@@ -33,3 +33,4 @@ export { cacheAsset } from "./helpers/assets.js";
 export { getStartingName } from "./helpers/sparkle.js";
 
 export { getAvailableSignals } from "./helpers/signals.js";
+export type { Signal } from "./helpers/signals.js";

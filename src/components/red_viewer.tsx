@@ -35,15 +35,6 @@ class RedViewer extends KTUComponent {
     this.app.init(options).then(() => {
       this.canvas = this.app.canvas;
       DataStore.getInstance().setStore("application", this.app);
-      subscribeToLayerUpdates(this.sceneStateId);
-      subscribeToShaderUpdates(this.sceneStateId);
-      subscribeToModulatorUpdates(this.sceneStateId);
-      DataStore.getInstance().touch(this.sceneStateId);
-
-      this.elapsedTime = 0;
-      DataStore.getInstance().setStore("playing", true);
-      DataStore.getInstance().setStore("elapsedTime", this.elapsedTime);
-
       Ticker.shared.add((time) => {
         if (DataStore.getInstance().getStore("playing")) {
           this.elapsedTime += time.elapsedMS;
@@ -53,6 +44,15 @@ class RedViewer extends KTUComponent {
           );
         }
       });
+      subscribeToModulatorUpdates(this.sceneStateId);
+      subscribeToLayerUpdates(this.sceneStateId);
+      subscribeToShaderUpdates(this.sceneStateId);
+
+      DataStore.getInstance().touch(this.sceneStateId);
+
+      this.elapsedTime = 0;
+      DataStore.getInstance().setStore("playing", true);
+      DataStore.getInstance().setStore("elapsedTime", this.elapsedTime);
     });
   }
 
