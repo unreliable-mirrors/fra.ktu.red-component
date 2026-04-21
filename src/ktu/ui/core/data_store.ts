@@ -41,6 +41,15 @@ export class DataStore {
     }
   }
 
+  touchIds(prefix: string) {
+    const listenerKeys = EventDispatcher.getInstance().listenerKeys();
+    for (const listenerKey of listenerKeys) {
+      if (listenerKey.startsWith(prefix + ".") && listenerKey.includes(".!")) {
+        this.touch(listenerKey);
+      }
+    }
+  }
+
   deepGet(key: string): any {
     const keys = key.split(".");
     let current = this._data;
