@@ -6,6 +6,8 @@ uniform vec4 uInputSize;
 
 uniform float uPixelSize;
 
+uniform vec4 uDryWet;
+
 float PHI = 1.61803398874989484820459;  // Φ = Golden Ratio   
 
 float gold_noise(vec2 xy, float seed){
@@ -44,5 +46,5 @@ void main(){
     
     vec4 tex = texture(uTexture, coord);
     
-    gl_FragColor = vec4(tex.r, tex.g, tex.b, tex.a);
+    gl_FragColor = (1.0-uDryWet)*oTex +uDryWet * tex;
 }

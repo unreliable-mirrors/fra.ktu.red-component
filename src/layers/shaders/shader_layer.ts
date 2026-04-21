@@ -70,31 +70,25 @@ export abstract class ShaderLayer extends BaseLayer {
     [key: string]: UniformData;
   } {
     return {
-      uRedDryWet: {
-        value: this._state.visible ? this.getFieldValue("redDryWet") : 0,
-        type: "f32",
-      },
-      uGreenDryWet: {
-        value: this._state.visible ? this.getFieldValue("greenDryWet") : 0,
-        type: "f32",
-      },
-      uBlueDryWet: {
-        value: this._state.visible ? this.getFieldValue("blueDryWet") : 0,
-        type: "f32",
+      uDryWet: {
+        value: [
+          this._state.visible ? this.getFieldValue("redDryWet") : 0,
+          this._state.visible ? this.getFieldValue("greenDryWet") : 0,
+          this._state.visible ? this.getFieldValue("blueDryWet") : 0,
+          1,
+        ],
+        type: "vec4<f32>",
       },
     };
   }
 
   updateUniforms() {
-    this.uniforms.uniforms.uRedDryWet = this._state.visible
-      ? this.getFieldValue("redDryWet")
-      : 0;
-    this.uniforms.uniforms.uGreenDryWet = this._state.visible
-      ? this.getFieldValue("greenDryWet")
-      : 0;
-    this.uniforms.uniforms.uBlueDryWet = this._state.visible
-      ? this.getFieldValue("blueDryWet")
-      : 0;
+    this.uniforms.uniforms.uDryWet = [
+      this._state.visible ? this.getFieldValue("redDryWet") : 0,
+      this._state.visible ? this.getFieldValue("greenDryWet") : 0,
+      this._state.visible ? this.getFieldValue("blueDryWet") : 0,
+      1,
+    ];
   }
 
   abstract setupUniformValues(): {
