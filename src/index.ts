@@ -18,8 +18,18 @@ export type { ShaderLayerState } from "./layers/shaders/shader_layer.js";
 export type { PixelateShaderState } from "./layers/shaders/pixelate/pixelate_shader.js";
 export { PixelateShader } from "./layers/shaders/pixelate/pixelate_shader.js";
 
-export { AVAILABLE_LAYERS, AVAILABLE_SHADERS } from "./helpers/layers.js";
+export type { ModulatorState } from "./modulators/imodulator.js";
+export type { LfoModulatorState } from "./modulators/lfo_modulator.js";
+export { LfoModulator } from "./modulators/lfo_modulator.js";
+
+export {
+  AVAILABLE_LAYERS,
+  AVAILABLE_SHADERS,
+  AVAILABLE_MODULATORS,
+} from "./helpers/layers.js";
 
 export { cacheAsset } from "./helpers/assets.js";
 
 export { getStartingName } from "./helpers/sparkle.js";
+
+export { getAvailableSignals } from "./helpers/signals.js";

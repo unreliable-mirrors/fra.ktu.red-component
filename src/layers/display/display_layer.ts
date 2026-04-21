@@ -25,8 +25,8 @@ export abstract class DisplayLayer extends BaseLayer {
     };
   }
 
-  constructor(sceneStateId: string, state: DisplayLayerState) {
-    super(sceneStateId, state);
+  constructor(sceneStateId: string, state: DisplayLayerState, owner: string) {
+    super(sceneStateId, state, owner);
   }
 
   onStateChange(): void {
@@ -42,14 +42,23 @@ export abstract class DisplayLayer extends BaseLayer {
     for (const shader of this._state.shaders) {
       let layer = this.shaders.find((l) => l.id === shader.id);
       if (!layer) {
-        if (shader.type === "pixelate") {
-          layer = new PixelateShader(
-            this.sceneStateId,
-            shader as PixelateShaderState,
-          );
-          layer.bind();
-          this.shaders.push(layer);
+        switch (shader.type) {
+          case "pixelate":
+            layer = new PixelateShader(
+              this.sceneStateId,
+              shader as PixelateShaderState,
+              this.sceneStateId + ".layers.!" + this._state.id + ".shaders",
+            );
+            break;
+          default:
+            layer = new PixelateShader(
+              this.sceneStateId,
+              shader as PixelateShaderState,
+              this.sceneStateId + ".layers.!" + this._state.id + ".shaders",
+            );
         }
+        layer.bind();
+        this.shaders.push(layer);
       }
     }
 

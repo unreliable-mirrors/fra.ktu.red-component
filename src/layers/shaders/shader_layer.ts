@@ -35,8 +35,8 @@ export abstract class ShaderLayer extends BaseLayer {
     };
   }
 
-  constructor(sceneStateId: string, state: LayerState) {
-    super(sceneStateId, state);
+  constructor(sceneStateId: string, state: LayerState, owner: string) {
+    super(sceneStateId, state, owner);
   }
 
   onStateChange(): void {
@@ -44,7 +44,9 @@ export abstract class ShaderLayer extends BaseLayer {
   }
 
   bind(): void {
+    console.log("Binding shader layer with state", this._state);
     this.buildShader();
+    console.log("Bound shader layer with uniforms", this.uniforms);
   }
 
   buildShader() {
@@ -82,6 +84,15 @@ export abstract class ShaderLayer extends BaseLayer {
   }
 
   updateUniforms() {
+    console.log(
+      "Updating shader uniforms with state",
+      this,
+      this.uniforms,
+      this._state,
+      DataStore.getInstance().getStore(
+        "instances." + this.sceneStateId + ".shaders",
+      ),
+    );
     this.uniforms.uniforms.uRedDryWet = this._state.visible
       ? this._state.redDryWet
       : 0;

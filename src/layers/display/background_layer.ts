@@ -23,8 +23,12 @@ export class BackgroundLayer extends DisplayLayer {
     };
   }
 
-  constructor(sceneStateId: string, state: BackgroundLayerState) {
-    super(sceneStateId, state);
+  constructor(
+    sceneStateId: string,
+    state: BackgroundLayerState,
+    owner: string,
+  ) {
+    super(sceneStateId, state, owner);
     this.mainSprite = new Graphics();
 
     const application = DataStore.getInstance().getStore(

@@ -1,11 +1,15 @@
 import { Ticker } from "pixi.js";
-import type { LayerType, ShaderType } from "../helpers/layers.js";
+import type {
+  LayerType,
+  ShaderType,
+  ModulatorType,
+} from "../helpers/layers.js";
 
 export type LayerFields = "visible";
 
 export type LayerState = {
   id: number;
-  type: LayerType | ShaderType;
+  type: LayerType | ShaderType | ModulatorType;
   name: string;
   visible: boolean;
 };

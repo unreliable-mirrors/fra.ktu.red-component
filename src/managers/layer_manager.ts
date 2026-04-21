@@ -12,10 +12,10 @@ import {
   type VideoLayerState,
 } from "../layers/display/video_layer.js";
 
-const layers: DisplayLayer[] = [];
 let lastElapsedTime: number = 0;
 
 export const subscribeToLayerUpdates = (sceneStateId: string) => {
+  DataStore.getInstance().setStore("instances." + sceneStateId + ".layers", []);
   const application = DataStore.getInstance().getStore(
     "application",
   ) as Application;
@@ -25,6 +25,9 @@ export const subscribeToLayerUpdates = (sceneStateId: string) => {
       loop = true;
     }
     lastElapsedTime = DataStore.getInstance().getStore("elapsedTime");
+    const layers = DataStore.getInstance().getStore(
+      "instances." + sceneStateId + ".layers",
+    );
     for (const layer of layers) {
       layer.tick(time, loop);
     }
@@ -36,22 +39,40 @@ export const subscribeToLayerUpdates = (sceneStateId: string) => {
     () => {
       const sceneState = DataStore.getInstance().getStore(sceneStateId);
 
+      const layers = DataStore.getInstance().getStore(
+        "instances." + sceneStateId + ".layers",
+      ) as DisplayLayer[];
       //CREATE LAYERS IF THEY DONT EXIST, DESTROY LAYERS THAT DONT EXIST IN SCENESTATE
       for (const layerState of sceneState.layers) {
         let layer = layers.find((l) => l.id === layerState.id);
         if (!layer) {
-          if (layerState.type === "background") {
-            layer = new BackgroundLayer(
-              sceneStateId,
-              layerState as BackgroundLayerState,
-            );
-            layer.bind();
-            layers.push(layer);
-          } else if (layerState.type === "video") {
-            layer = new VideoLayer(sceneStateId, layerState as VideoLayerState);
-            layer.bind();
-            layers.push(layer);
+          switch (layerState.type) {
+            case "background":
+              layer = new BackgroundLayer(
+                sceneStateId,
+                layerState as BackgroundLayerState,
+                sceneStateId + ".layers",
+              );
+              break;
+            case "video":
+              layer = new VideoLayer(
+                sceneStateId,
+                layerState as VideoLayerState,
+                sceneStateId + ".layers",
+              );
+              break;
+            default:
+              layer = new BackgroundLayer(
+                sceneStateId,
+                BackgroundLayer.getDefaultState(sceneStateId),
+                sceneStateId + ".layers",
+              );
           }
+          layer.bind();
+          layers.push(layer);
+          DataStore.getInstance().touch(
+            "instances." + sceneStateId + ".layers",
+          );
         }
       }
 
@@ -63,6 +84,9 @@ export const subscribeToLayerUpdates = (sceneStateId: string) => {
         if (!existsInSceneState) {
           layer.unbind();
           layers.splice(layers.indexOf(layer), 1);
+          DataStore.getInstance().touch(
+            "instances." + sceneStateId + ".layers",
+          );
         }
       }
 

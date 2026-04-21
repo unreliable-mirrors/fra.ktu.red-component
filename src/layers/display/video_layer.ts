@@ -52,8 +52,8 @@ export class VideoLayer extends DisplayLayer {
     };
   }
 
-  constructor(sceneStateId: string, state: VideoLayerState) {
-    super(sceneStateId, state);
+  constructor(sceneStateId: string, state: VideoLayerState, owner: string) {
+    super(sceneStateId, state, owner);
     this.mainSprite = new Sprite();
 
     console.log("Constructed video layer with state", state);

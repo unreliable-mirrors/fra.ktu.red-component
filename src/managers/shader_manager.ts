@@ -9,9 +9,11 @@ import {
 import type { ShaderLayer } from "../layers/shaders/shader_layer.js";
 import type { SceneState } from "../types/red_scene_state.js";
 
-const shaders: ShaderLayer[] = [];
-
 export const subscribeToShaderUpdates = (sceneStateId: string) => {
+  DataStore.getInstance().setStore(
+    "instances." + sceneStateId + ".shaders",
+    [],
+  );
   EventDispatcher.getInstance().addEventListener(
     sceneStateId + ".shaders",
     "update",
@@ -23,28 +25,46 @@ export const subscribeToShaderUpdates = (sceneStateId: string) => {
       const sceneState = DataStore.getInstance().getStore(
         sceneStateId,
       ) as SceneState;
+      const shaders = DataStore.getInstance().getStore(
+        "instances." + sceneStateId + ".shaders",
+      ) as ShaderLayer[];
       for (const shader of sceneState.shaders) {
-        let layer = shaders.find((l) => l.id === shader.id);
-        if (!layer) {
-          if (shader.type === "pixelate") {
-            layer = new PixelateShader(
-              sceneStateId,
-              shader as PixelateShaderState,
-            );
-            layer.bind();
-            shaders.push(layer);
+        let shaderInstance = shaders.find((l) => l.id === shader.id);
+        if (!shaderInstance) {
+          switch (shader.type) {
+            case "pixelate":
+              shaderInstance = new PixelateShader(
+                sceneStateId,
+                shader as PixelateShaderState,
+                sceneStateId + ".shaders",
+              );
+              break;
+            default:
+              shaderInstance = new PixelateShader(
+                sceneStateId,
+                shader as PixelateShaderState,
+                sceneStateId + ".shaders",
+              );
           }
+          shaderInstance.bind();
+          shaders.push(shaderInstance);
+          DataStore.getInstance().touch(
+            "instances." + sceneStateId + ".shaders",
+          );
         }
       }
 
       for (let i = shaders.length - 1; i >= 0; i--) {
-        const layer = shaders[i]!;
+        const shaderInstance = shaders[i]!;
         const existsInSceneState = sceneState.shaders.some(
-          (ls: LayerState) => ls.id === layer.id,
+          (ls: LayerState) => ls.id === shaderInstance.id,
         );
         if (!existsInSceneState) {
-          layer.unbind();
-          shaders.splice(shaders.indexOf(layer), 1);
+          shaderInstance.unbind();
+          shaders.splice(shaders.indexOf(shaderInstance), 1);
+          DataStore.getInstance().touch(
+            "instances." + sceneStateId + ".shaders",
+          );
         }
       }
 

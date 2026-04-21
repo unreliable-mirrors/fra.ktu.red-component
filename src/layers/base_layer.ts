@@ -15,28 +15,28 @@ export abstract class BaseLayer implements ILayer {
     };
   }
 
-  constructor(sceneStateId: string, state: LayerState) {
+  constructor(sceneStateId: string, state: LayerState, owner: string) {
     this.sceneStateId = sceneStateId;
     this._state = state;
 
     EventDispatcher.getInstance().addEventListener(
-      this.sceneStateId + ".layers.!" + this._state.id,
+      owner + ".!" + this._state.id,
       "update",
       this.onStateChange.bind(this),
     );
     EventDispatcher.getInstance().addEventListener(
-      this.sceneStateId + ".layers.!" + this._state.id,
+      owner + ".!" + this._state.id,
       "change",
       this.onStateChange.bind(this),
     );
 
     EventDispatcher.getInstance().addEventListener(
-      this.sceneStateId + ".shaders.!" + this._state.id,
+      owner + ".shaders.!" + this._state.id,
       "update",
       this.onStateChange.bind(this),
     );
     EventDispatcher.getInstance().addEventListener(
-      this.sceneStateId + ".shaders.!" + this._state.id,
+      owner + ".shaders.!" + this._state.id,
       "change",
       this.onStateChange.bind(this),
     );

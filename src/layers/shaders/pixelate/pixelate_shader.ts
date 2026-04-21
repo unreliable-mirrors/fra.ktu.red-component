@@ -20,8 +20,10 @@ export class PixelateShader extends ShaderLayer {
     };
   }
 
-  constructor(sceneStateId: string, state: PixelateShaderState) {
-    super(sceneStateId, state);
+  constructor(sceneStateId: string, state: PixelateShaderState, owner: string) {
+    super(sceneStateId, state, owner);
+    console.log("Constructed pixelate shader layer with state", state);
+    console.trace();
   }
 
   setupUniformValues(): { [key: string]: UniformData } {
