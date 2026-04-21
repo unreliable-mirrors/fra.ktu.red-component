@@ -26,6 +26,7 @@ export {
   AVAILABLE_LAYERS,
   AVAILABLE_SHADERS,
   AVAILABLE_MODULATORS,
+  CATEGORIZED_SHADERS,
 } from "./helpers/layers.js";
 
 export { cacheAsset } from "./helpers/assets.js";

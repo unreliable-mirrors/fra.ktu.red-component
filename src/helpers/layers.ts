@@ -5,3 +5,7 @@ export type ModulatorType = "lfo";
 export const AVAILABLE_LAYERS: LayerType[] = ["background", "video"];
 export const AVAILABLE_SHADERS: ShaderType[] = ["pixelate"];
 export const AVAILABLE_MODULATORS: string[] = ["lfo"];
+
+export const CATEGORIZED_SHADERS: Record<string, ShaderType[]> = {
+  distortion: ["pixelate"],
+};
