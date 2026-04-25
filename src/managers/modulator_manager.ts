@@ -7,6 +7,7 @@ import {
   LfoModulator,
   type LfoModulatorState,
 } from "../modulators/lfo_modulator.js";
+import { RandomModulator } from "../modulators/random_modulator.js";
 
 export const subscribeToModulatorUpdates = (sceneStateId: string) => {
   const application = DataStore.getInstance().getStore(
@@ -47,6 +48,12 @@ export const subscribeToModulatorUpdates = (sceneStateId: string) => {
               modulatorInstance = new LfoModulator(
                 sceneStateId,
                 modulator as LfoModulatorState,
+              );
+              break;
+            case "random":
+              modulatorInstance = new RandomModulator(
+                sceneStateId,
+                modulator as ModulatorState,
               );
               break;
             default:

@@ -28,6 +28,7 @@
   },
   "dependencies": {
     "js-md5": "^0.8.3",
-    "pixi.js": "^8.18.1"
+    "pixi.js": "^8.18.1",
+    "rand-seed": "^3.0.0"
   }
 }

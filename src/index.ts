@@ -21,6 +21,8 @@ export { PixelateShader } from "./layers/shaders/pixelate/pixelate_shader.js";
 export type { ModulatorState } from "./modulators/imodulator.js";
 export type { LfoModulatorState } from "./modulators/lfo_modulator.js";
 export { LfoModulator } from "./modulators/lfo_modulator.js";
+export type { RandomModulatorState } from "./modulators/random_modulator.js";
+export { RandomModulator } from "./modulators/random_modulator.js";
 
 export {
   AVAILABLE_LAYERS,
