@@ -34,6 +34,7 @@ export class VideoLayer extends DisplayLayer {
   declare mainSprite: Sprite | GifSprite;
   videoElement?: HTMLVideoElement;
   content?: string;
+  playingBefore: boolean = false;
 
   static getDefaultState(sceneStateId: string): VideoLayerState {
     return {
@@ -69,6 +70,13 @@ export class VideoLayer extends DisplayLayer {
     if (loop) {
       this.correctTime();
     }
+    if (
+      DataStore.getInstance().getStore("playing") !== this.playingBefore ||
+      !DataStore.getInstance().getStore("playing")
+    ) {
+      this.correctTime();
+      this.playingBefore = DataStore.getInstance().getStore("playing");
+    }
     if (this.overtime()) {
       this.correctTime();
     }
@@ -82,6 +90,7 @@ export class VideoLayer extends DisplayLayer {
       this.mainSprite.texture.source instanceof VideoSource
     ) {
       const resource = this.mainSprite.texture.source.resource;
+
       currentTime = resource.currentTime;
       duration = resource.duration;
     } else if (this.mainSprite instanceof GifSprite) {
@@ -120,6 +129,13 @@ export class VideoLayer extends DisplayLayer {
       this.mainSprite.texture.source instanceof VideoSource
     ) {
       const resource = this.mainSprite.texture.source.resource;
+
+      if (!DataStore.getInstance().getStore("playing")) {
+        resource.pause();
+      } else {
+        resource.play();
+      }
+
       if (resource.duration < currentTime) {
         if (this.getFieldValue("timeFrom") >= resource.duration) {
           resource.currentTime = 0;
@@ -131,6 +147,13 @@ export class VideoLayer extends DisplayLayer {
       }
     } else if (this.mainSprite instanceof GifSprite) {
       const gif = this.mainSprite as GifSprite;
+
+      if (!DataStore.getInstance().getStore("playing")) {
+        gif.stop();
+      } else {
+        gif.play();
+      }
+
       if (gif.duration / 1000 < currentTime) {
         if (this.getFieldValue("timeFrom") >= gif.duration / 1000) {
           gif.currentFrame = 0;

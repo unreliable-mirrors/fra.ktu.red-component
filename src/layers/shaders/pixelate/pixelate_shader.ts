@@ -22,7 +22,6 @@ export class PixelateShader extends ShaderLayer {
 
   constructor(sceneStateId: string, state: PixelateShaderState, owner: string) {
     super(sceneStateId, state, owner);
-    console.log("Constructed pixelate shader layer with state", state);
     console.trace();
   }
 
@@ -35,9 +34,5 @@ export class PixelateShader extends ShaderLayer {
   updateUniforms(): void {
     super.updateUniforms();
     this.uniforms.uniforms.uPixelSize = this.getFieldValue("pixelSize");
-    console.log(
-      "Updated pixelate shader uniforms to",
-      this.uniforms.uniforms.uPixelSize,
-    );
   }
 }

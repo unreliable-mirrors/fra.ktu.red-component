@@ -2,14 +2,22 @@ import { Rectangle, type Application } from "pixi.js";
 import { DataStore } from "../ktu/ui/core/data_store.js";
 import type { SceneState } from "../types/red_scene_state.js";
 
-export const saveBase64Frame = (sceneStateId: string): void => {
+export const saveBase64Frame = (
+  sceneStateId: string,
+  filename?: string,
+): void => {
   const state = DataStore.getInstance().getStore(sceneStateId) as SceneState;
-  const filename = state.name + ".png";
+  filename = filename ?? state.name + ".png";
   const application = DataStore.getInstance().getStore(
     "application",
   ) as Application;
 
-  const content = application.renderer.extract
+  DataStore.getInstance().setStore(
+    "instances." + sceneStateId + ".exportNext",
+    false,
+  );
+
+  application.renderer.extract
     .base64({
       target: application.stage,
       frame: new Rectangle(0, 0, state.width, state.height),
@@ -19,5 +27,9 @@ export const saveBase64Frame = (sceneStateId: string): void => {
       link.download = filename;
       link.href = content;
       link.click();
+      DataStore.getInstance().setStore(
+        "instances." + sceneStateId + ".exportNext",
+        true,
+      );
     });
 };

@@ -30,7 +30,6 @@ export const subscribeToModulatorUpdates = (sceneStateId: string) => {
     sceneStateId + ".modulators",
     "update",
     () => {
-      console.log("Updating modulators for sceneStateId", sceneStateId);
       const application = DataStore.getInstance().getStore(
         "application",
       ) as Application;
