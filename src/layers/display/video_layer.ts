@@ -35,6 +35,8 @@ export class VideoLayer extends DisplayLayer {
   videoElement?: HTMLVideoElement;
   content?: string;
   playingBefore: boolean = false;
+  private pendingPausedSeekTime?: number;
+  private pausedSeekFlushInFlight: boolean = false;
 
   static getDefaultState(sceneStateId: string): VideoLayerState {
     return {
@@ -138,12 +140,12 @@ export class VideoLayer extends DisplayLayer {
 
       if (resource.duration < currentTime) {
         if (this.getFieldValue("timeFrom") >= resource.duration) {
-          resource.currentTime = 0;
+          this.seekVideoResource(resource, 0);
         } else {
-          resource.currentTime = this.getFieldValue("timeFrom");
+          this.seekVideoResource(resource, this.getFieldValue("timeFrom"));
         }
       } else {
-        resource.currentTime = currentTime;
+        this.seekVideoResource(resource, currentTime);
       }
     } else if (this.mainSprite instanceof GifSprite) {
       const gif = this.mainSprite as GifSprite;
@@ -168,6 +170,85 @@ export class VideoLayer extends DisplayLayer {
         );
       }
     }
+  }
+
+  private seekVideoResource(
+    resource: HTMLVideoElement,
+    targetTime: number,
+  ): void {
+    if (!isFinite(targetTime)) {
+      return;
+    }
+
+    const duration = isFinite(resource.duration) ? resource.duration : Infinity;
+    const clampedTarget = Math.max(0, Math.min(targetTime, duration));
+    const current = resource.currentTime;
+    if (Math.abs(current - clampedTarget) < 0.02) {
+      return;
+    }
+
+    const isPlaying = !!DataStore.getInstance().getStore("playing");
+    if (isPlaying) {
+      resource.currentTime = clampedTarget;
+      return;
+    }
+
+    this.pendingPausedSeekTime = clampedTarget;
+    resource.currentTime = clampedTarget;
+    this.flushPausedSeekFrame(resource, clampedTarget);
+  }
+
+  private flushPausedSeekFrame(
+    resource: HTMLVideoElement,
+    targetTime: number,
+  ): void {
+    if (this.pausedSeekFlushInFlight) {
+      return;
+    }
+    this.pausedSeekFlushInFlight = true;
+
+    const cleanup = () => {
+      resource.removeEventListener("seeked", onSettled);
+      resource.removeEventListener("loadeddata", onSettled);
+      resource.removeEventListener("canplay", onSettled);
+      this.pausedSeekFlushInFlight = false;
+    };
+
+    const onSettled = () => {
+      const pending = this.pendingPausedSeekTime;
+      const stillPaused = !DataStore.getInstance().getStore("playing");
+      const targetStillValid =
+        pending !== undefined && Math.abs(pending - targetTime) < 0.02;
+
+      if (!stillPaused || !targetStillValid) {
+        cleanup();
+        if (
+          stillPaused &&
+          pending !== undefined &&
+          Math.abs(resource.currentTime - pending) >= 0.02
+        ) {
+          resource.currentTime = pending;
+          this.flushPausedSeekFrame(resource, pending);
+        }
+        return;
+      }
+
+      // Some browsers only present the seeked frame after a decode tick.
+      resource
+        .play()
+        .then(() => {
+          resource.pause();
+          cleanup();
+        })
+        .catch(() => {
+          resource.pause();
+          cleanup();
+        });
+    };
+
+    resource.addEventListener("seeked", onSettled, { once: true });
+    resource.addEventListener("loadeddata", onSettled, { once: true });
+    resource.addEventListener("canplay", onSettled, { once: true });
   }
 
   innerRepaint() {
