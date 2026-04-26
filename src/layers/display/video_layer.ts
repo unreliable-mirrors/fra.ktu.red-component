@@ -38,6 +38,11 @@ export class VideoLayer extends DisplayLayer {
   private pendingPausedSeekTime?: number;
   private pausedSeekFlushInFlight: boolean = false;
 
+  private getResolvedSpeed(): number {
+    const speed = Number(this.getFieldValue("speed"));
+    return isFinite(speed) ? speed : 1;
+  }
+
   static getDefaultState(sceneStateId: string): VideoLayerState {
     return {
       ...DisplayLayer.getDefaultState(sceneStateId),
@@ -121,9 +126,9 @@ export class VideoLayer extends DisplayLayer {
     if (timeLength <= 0.1 || isNaN(timeLength)) {
       timeLength = 9999999;
     }
+    const speed = this.getResolvedSpeed();
     const currentTime =
-      (((DataStore.getInstance().getStore("elapsedTime") / 1000) *
-        this.getFieldValue("speed")) %
+      (((DataStore.getInstance().getStore("elapsedTime") / 1000) * speed) %
         timeLength) +
       this.getFieldValue("timeFrom");
     if (
@@ -251,6 +256,25 @@ export class VideoLayer extends DisplayLayer {
     resource.addEventListener("canplay", onSettled, { once: true });
   }
 
+  private applyPlaybackSpeed(): void {
+    const speed = this.getResolvedSpeed();
+    if (
+      this.mainSprite.texture &&
+      this.mainSprite.texture.source instanceof VideoSource
+    ) {
+      const resource = this.mainSprite.texture.source.resource;
+      const playbackRate = Math.max(0.1, speed);
+      if (resource.playbackRate !== playbackRate) {
+        resource.playbackRate = playbackRate;
+      }
+      return;
+    }
+
+    if (this.mainSprite instanceof GifSprite) {
+      this.mainSprite.animationSpeed = speed;
+    }
+  }
+
   innerRepaint() {
     console.log("Repainting video layer with imageHash", this._state.imageHash);
     const application = DataStore.getInstance().getStore(
@@ -272,6 +296,7 @@ export class VideoLayer extends DisplayLayer {
       );
       if (this.content && this.content === content) {
         this.reposition();
+        this.applyPlaybackSpeed();
         this.reshader();
       } else if (
         content.startsWith("data:image/gif;") ||
@@ -294,6 +319,7 @@ export class VideoLayer extends DisplayLayer {
           });
           application.stage.addChild(this.mainSprite);
           this.reposition();
+          this.applyPlaybackSpeed();
           this.reshader();
         });
       } else {
@@ -309,6 +335,7 @@ export class VideoLayer extends DisplayLayer {
           this.mainSprite = Sprite.from(resolvedTexture);
           application.stage.addChild(this.mainSprite);
           this.reposition();
+          this.applyPlaybackSpeed();
           this.reshader();
         });
       }
