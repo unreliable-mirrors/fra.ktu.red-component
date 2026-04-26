@@ -1,12 +1,18 @@
 import type { Application } from "pixi.js";
 import { DataStore } from "../ktu/ui/core/data_store.js";
-import { saveBase64Frame, type SceneState } from "../index.js";
+import {
+  captureBase64Frame,
+  saveBase64FramesZip,
+  type ExportedFrame,
+  type SceneState,
+} from "../index.js";
 
 export const subscribeExportManager = (sceneStateId: string) => {
   const application = DataStore.getInstance().getStore(
     "application",
   ) as Application;
   let frameInProgress = false;
+  let exportedFrames: ExportedFrame[] = [];
 
   application.ticker.add(async () => {
     const exporting = DataStore.getInstance().getStore(
@@ -28,16 +34,25 @@ export const subscribeExportManager = (sceneStateId: string) => {
         if (currentFrame === undefined) {
           currentFrame = 0;
         }
+
+        if (currentFrame === 0) {
+          exportedFrames = [];
+        }
+
         if (currentFrame !== 0) {
-          await saveBase64Frame(
-            sceneStateId,
-            `frame_${currentFrame.toString().padStart(4, "0")}.png`,
+          exportedFrames.push(
+            await captureBase64Frame(
+              sceneStateId,
+              `frame_${currentFrame.toString().padStart(4, "0")}.png`,
+            ),
           );
         }
         const totalFrames =
           (DataStore.getInstance().getStore(sceneStateId) as SceneState)
             .duration * 30;
         if (currentFrame >= totalFrames) {
+          await saveBase64FramesZip(sceneStateId, exportedFrames);
+          exportedFrames = [];
           DataStore.getInstance().setStore(
             "instances." + sceneStateId + ".exporting",
             false,
@@ -62,6 +77,7 @@ export const subscribeExportManager = (sceneStateId: string) => {
           `Failed to export frame ${currentFrame} for scene ${sceneStateId}`,
           error,
         );
+        exportedFrames = [];
         DataStore.getInstance().setStore(
           "instances." + sceneStateId + ".exporting",
           false,

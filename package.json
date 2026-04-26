@@ -23,11 +23,13 @@
     "ci": "npm run build"
   },
   "devDependencies": {
+    "@types/jszip": "^3.4.0",
     "texsaur": "^1.0.7",
     "typescript": "^6.0.2"
   },
   "dependencies": {
     "js-md5": "^0.8.3",
+    "jszip": "^3.10.1",
     "pixi.js": "^8.18.1",
     "rand-seed": "^3.0.0"
   }

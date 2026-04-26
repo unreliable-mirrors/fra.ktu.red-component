@@ -38,4 +38,6 @@ export { getStartingName } from "./helpers/sparkle.js";
 export { getAvailableSignals } from "./helpers/signals.js";
 export type { Signal } from "./helpers/signals.js";
 
-export { saveBase64Frame } from "./helpers/export.js";
+export { captureBase64Frame, saveBase64Frame } from "./helpers/export.js";
+export { saveBase64FramesZip } from "./helpers/export.js";
+export type { ExportedFrame } from "./helpers/export.js";
