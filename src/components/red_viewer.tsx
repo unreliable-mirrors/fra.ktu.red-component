@@ -59,7 +59,6 @@ class RedViewer extends KTUComponent {
   }
 
   render(): Element {
-    console.log("Rendering RedViewer with canvas", this.canvas);
     return (
       <div>
         <div class="red-viewer">{this.canvas}</div>

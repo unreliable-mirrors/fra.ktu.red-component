@@ -5,7 +5,7 @@ import type { SceneState } from "../types/red_scene_state.js";
 export const saveBase64Frame = (
   sceneStateId: string,
   filename?: string,
-): void => {
+): Promise<void> => {
   const state = DataStore.getInstance().getStore(sceneStateId) as SceneState;
   filename = filename ?? state.name + ".png";
   const application = DataStore.getInstance().getStore(
@@ -17,7 +17,7 @@ export const saveBase64Frame = (
     false,
   );
 
-  application.renderer.extract
+  return application.renderer.extract
     .base64({
       target: application.stage,
       frame: new Rectangle(0, 0, state.width, state.height),
@@ -27,6 +27,8 @@ export const saveBase64Frame = (
       link.download = filename;
       link.href = content;
       link.click();
+    })
+    .finally(() => {
       DataStore.getInstance().setStore(
         "instances." + sceneStateId + ".exportNext",
         true,
