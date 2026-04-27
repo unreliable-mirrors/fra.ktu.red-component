@@ -37,6 +37,7 @@ export class VideoLayer extends DisplayLayer {
   playingBefore: boolean = false;
   private pendingPausedSeekTime?: number;
   private pausedSeekFlushInFlight: boolean = false;
+  private pausedSeekStartTime?: number;
 
   private getResolvedSpeed(): number {
     const speed = Number(this.getFieldValue("speed"));
@@ -211,6 +212,8 @@ export class VideoLayer extends DisplayLayer {
       return;
     }
     this.pausedSeekFlushInFlight = true;
+    this.pausedSeekStartTime = performance.now();
+    console.log(`[VideoLayer] Seek requested to ${targetTime.toFixed(3)}s`);
 
     const cleanup = () => {
       resource.removeEventListener("seeked", onSettled);
@@ -243,6 +246,13 @@ export class VideoLayer extends DisplayLayer {
         .play()
         .then(() => {
           resource.pause();
+          const elapsed =
+            this.pausedSeekStartTime !== undefined
+              ? performance.now() - this.pausedSeekStartTime
+              : -1;
+          console.log(
+            `[VideoLayer] Frame rendered successfully at ${resource.currentTime.toFixed(3)}s (${elapsed.toFixed(2)}ms elapsed)`,
+          );
           cleanup();
         })
         .catch(() => {
