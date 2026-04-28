@@ -6,7 +6,6 @@ import { DataStore } from "../ktu/ui/core/data_store.js";
 import { subscribeToLayerUpdates } from "../managers/layer_manager.js";
 import { subscribeToShaderUpdates } from "../managers/shader_manager.js";
 import { subscribeToModulatorUpdates } from "../managers/modulator_manager.js";
-import { subscribeExportManager } from "../managers/export_manager.js";
 import { EventDispatcher } from "../index.js";
 
 class RedViewer extends KTUComponent {
@@ -26,7 +25,6 @@ class RedViewer extends KTUComponent {
       sharedTicker: true,
     };
 
-    console.log("RESIZE TO", props.resizeTo);
     if (props.resizeTo) {
       options.resizeTo = props.resizeTo;
     } else {
@@ -58,7 +56,6 @@ class RedViewer extends KTUComponent {
       subscribeToModulatorUpdates(this.sceneStateId);
       subscribeToLayerUpdates(this.sceneStateId);
       subscribeToShaderUpdates(this.sceneStateId);
-      //subscribeExportManager(this.sceneStateId);
 
       DataStore.getInstance().touch(this.sceneStateId);
 

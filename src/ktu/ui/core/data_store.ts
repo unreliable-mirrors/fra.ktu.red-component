@@ -35,7 +35,11 @@ export class DataStore {
 
     const listenerKeys = EventDispatcher.getInstance().listenerKeys();
     for (const listenerKey of listenerKeys) {
-      if (listenerKey.startsWith(key + ".") && !listenerKey.includes(".!")) {
+      if (
+        listenerKey.startsWith(key + ".") &&
+        !listenerKey.includes(".!") &&
+        !listenerKey.includes(".#")
+      ) {
         this.touch(listenerKey);
       }
     }
@@ -57,6 +61,9 @@ export class DataStore {
       if (k.startsWith("!")) {
         const id = k.slice(1);
         current = current.filter((item: any) => item.id == id)[0];
+      } else if (k.startsWith("#")) {
+        const position = parseInt(k.slice(1));
+        current = current[position];
       } else {
         if (current[k] === undefined) {
           return undefined;
