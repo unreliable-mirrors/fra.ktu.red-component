@@ -333,7 +333,6 @@ export class VideoLayer extends DisplayLayer {
           this.reshader();
         });
       } else {
-        this.mainSprite.destroy();
         const textureSrc = isVideoAsset(content)
           ? getVideoAssetInstanceSrc(
               content,
@@ -342,6 +341,7 @@ export class VideoLayer extends DisplayLayer {
           : content;
         const texturePromise = Assets.load<Texture>(textureSrc);
         texturePromise.then((resolvedTexture: Texture) => {
+          this.mainSprite.destroy();
           this.mainSprite = Sprite.from(resolvedTexture);
           application.stage.addChild(this.mainSprite);
           this.reposition();
@@ -350,7 +350,7 @@ export class VideoLayer extends DisplayLayer {
         });
       }
       this.content = content;
-    } else {
+    } else if (this.content) {
       const application = DataStore.getInstance().getStore(
         "application",
       ) as Application;
