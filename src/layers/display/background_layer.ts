@@ -12,6 +12,8 @@ export class BackgroundLayer extends DisplayLayer {
   declare _state: BackgroundLayerState;
   backgroundSize: Point;
 
+  layerFlag: number;
+
   declare mainSprite: Graphics;
 
   static getDefaultState(sceneStateId: string): BackgroundLayerState {
@@ -40,6 +42,8 @@ export class BackgroundLayer extends DisplayLayer {
       application.canvas.width,
       application.canvas.height,
     );
+
+    this.layerFlag = getCount("editorScene");
   }
 
   tick(time: Ticker, loop: boolean): void {

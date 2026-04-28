@@ -5,6 +5,9 @@ import type { ILayer, LayerFields, LayerState } from "./ilayer.js";
 export abstract class BaseLayer implements ILayer {
   protected sceneStateId: string;
   protected _state: LayerState;
+  protected owner: string;
+
+  handleStateChangeWrapper: Function = this.onStateChange.bind(this);
 
   static getDefaultState(sceneStateId: string): LayerState {
     return {
@@ -19,27 +22,28 @@ export abstract class BaseLayer implements ILayer {
   constructor(sceneStateId: string, state: LayerState, owner: string) {
     this.sceneStateId = sceneStateId;
     this._state = state;
+    this.owner = owner;
 
     EventDispatcher.getInstance().addEventListener(
       owner + ".!" + this._state.id,
       "update",
-      this.onStateChange.bind(this),
+      this.handleStateChangeWrapper,
     );
     EventDispatcher.getInstance().addEventListener(
       owner + ".!" + this._state.id,
       "change",
-      this.onStateChange.bind(this),
+      this.handleStateChangeWrapper,
     );
 
     EventDispatcher.getInstance().addEventListener(
       owner + ".shaders.!" + this._state.id,
       "update",
-      this.onStateChange.bind(this),
+      this.handleStateChangeWrapper,
     );
     EventDispatcher.getInstance().addEventListener(
       owner + ".shaders.!" + this._state.id,
       "change",
-      this.onStateChange.bind(this),
+      this.handleStateChangeWrapper,
     );
   }
 
@@ -60,15 +64,31 @@ export abstract class BaseLayer implements ILayer {
   abstract onSignalChange(): void;
 
   abstract bind(): void;
-  abstract unbind(): void;
+  unbind(): void {
+    EventDispatcher.getInstance().removeEventListener(
+      this.owner + ".!" + this._state.id,
+      "update",
+      this.handleStateChangeWrapper,
+    );
+    EventDispatcher.getInstance().removeEventListener(
+      this.owner + ".!" + this._state.id,
+      "change",
+      this.handleStateChangeWrapper,
+    );
+    EventDispatcher.getInstance().removeEventListener(
+      this.owner + ".shaders.!" + this._state.id,
+      "update",
+      this.handleStateChangeWrapper,
+    );
+    EventDispatcher.getInstance().removeEventListener(
+      this.owner + ".shaders.!" + this._state.id,
+      "change",
+      this.handleStateChangeWrapper,
+    );
+  }
   tick(time: any, loop: boolean): void {
     let changed = false;
     for (const signal of Object.values(this._state.signaledFields)) {
-      console.log(
-        "Checking signal",
-        signal,
-        getSignal(this.sceneStateId, signal)!.changed,
-      );
       changed = changed || getSignal(this.sceneStateId, signal)!.changed;
     }
     if (changed) {

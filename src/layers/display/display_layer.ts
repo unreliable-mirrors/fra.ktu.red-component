@@ -88,11 +88,13 @@ export abstract class DisplayLayer extends BaseLayer {
   }
 
   unbind() {
+    super.unbind();
     const application = DataStore.getInstance().getStore(
       "application",
     ) as Application;
     application.stage.removeChild(this.mainSprite);
     this.mainSprite.destroy();
+    this.mainSprite = undefined as any;
     for (const shader of this.shaders) {
       shader.unbind();
     }

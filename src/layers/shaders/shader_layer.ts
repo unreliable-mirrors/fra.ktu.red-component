@@ -104,6 +104,4 @@ export abstract class ShaderLayer extends BaseLayer {
   } {
     return {};
   }
-
-  unbind() {}
 }

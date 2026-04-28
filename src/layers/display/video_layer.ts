@@ -351,11 +351,16 @@ export class VideoLayer extends DisplayLayer {
       }
       this.content = content;
     } else {
-      this.mainSprite = new Sprite();
       const application = DataStore.getInstance().getStore(
         "application",
       ) as Application;
+      if (this.mainSprite) {
+        application.stage.removeChild(this.mainSprite);
+        this.mainSprite.destroy();
+      }
+      this.mainSprite = new Sprite();
       application.stage.addChild(this.mainSprite);
+      this.content = undefined;
     }
   }
   reposition() {
