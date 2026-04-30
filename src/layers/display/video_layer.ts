@@ -79,11 +79,17 @@ export class VideoLayer extends DisplayLayer {
       this.correctTime();
     }
     if (
-      DataStore.getInstance().getStore("playing") !== this.playingBefore ||
-      !DataStore.getInstance().getStore("playing")
+      DataStore.getInstance().getStore(
+        "instances." + this.sceneStateId + ".playing",
+      ) !== this.playingBefore ||
+      !DataStore.getInstance().getStore(
+        "instances." + this.sceneStateId + ".playing",
+      )
     ) {
       this.correctTime();
-      this.playingBefore = DataStore.getInstance().getStore("playing");
+      this.playingBefore = DataStore.getInstance().getStore(
+        "instances." + this.sceneStateId + ".playing",
+      );
     }
     if (this.overtime()) {
       this.correctTime();
@@ -129,7 +135,11 @@ export class VideoLayer extends DisplayLayer {
     }
     const speed = this.getResolvedSpeed();
     const currentTime =
-      (((DataStore.getInstance().getStore("elapsedTime") / 1000) * speed) %
+      (((DataStore.getInstance().getStore(
+        "instances." + this.sceneStateId + ".elapsedTime",
+      ) /
+        1000) *
+        speed) %
         timeLength) +
       this.getFieldValue("timeFrom");
     if (
@@ -138,7 +148,11 @@ export class VideoLayer extends DisplayLayer {
     ) {
       const resource = this.mainSprite.texture.source.resource;
 
-      if (!DataStore.getInstance().getStore("playing")) {
+      if (
+        !DataStore.getInstance().getStore(
+          "instances." + this.sceneStateId + ".playing",
+        )
+      ) {
         resource.pause();
       } else {
         resource.play();
@@ -156,7 +170,11 @@ export class VideoLayer extends DisplayLayer {
     } else if (this.mainSprite instanceof GifSprite) {
       const gif = this.mainSprite as GifSprite;
 
-      if (!DataStore.getInstance().getStore("playing")) {
+      if (
+        !DataStore.getInstance().getStore(
+          "instances." + this.sceneStateId + ".playing",
+        )
+      ) {
         gif.stop();
       } else {
         gif.play();
@@ -193,7 +211,9 @@ export class VideoLayer extends DisplayLayer {
       return;
     }
 
-    const isPlaying = !!DataStore.getInstance().getStore("playing");
+    const isPlaying = !!DataStore.getInstance().getStore(
+      "instances." + this.sceneStateId + ".playing",
+    );
     if (isPlaying) {
       resource.currentTime = clampedTarget;
       return;
@@ -224,7 +244,9 @@ export class VideoLayer extends DisplayLayer {
 
     const onSettled = () => {
       const pending = this.pendingPausedSeekTime;
-      const stillPaused = !DataStore.getInstance().getStore("playing");
+      const stillPaused = !DataStore.getInstance().getStore(
+        "instances." + this.sceneStateId + ".playing",
+      );
       const targetStillValid =
         pending !== undefined && Math.abs(pending - targetTime) < 0.02;
 
@@ -295,7 +317,10 @@ export class VideoLayer extends DisplayLayer {
       VideoSource.defaultOptions = {
         ...VideoSource.defaultOptions,
         loop: true,
-        autoPlay: DataStore.getInstance().getStore("playing") || false,
+        autoPlay:
+          DataStore.getInstance().getStore(
+            "instances." + this.sceneStateId + ".playing",
+          ) || false,
       };
 
       //GET THE CONTENT
@@ -318,7 +343,10 @@ export class VideoLayer extends DisplayLayer {
             source: tex,
             animationSpeed: 1,
             loop: true,
-            autoPlay: DataStore.getInstance().getStore("playing") || false,
+            autoPlay:
+              DataStore.getInstance().getStore(
+                "instances." + this.sceneStateId + ".playing",
+              ) || false,
             onFrameChange: (_currentFrame: number) => {
               EventDispatcher.getInstance().dispatchEvent(
                 this.sceneStateId + ".layers.!" + this._state.id,

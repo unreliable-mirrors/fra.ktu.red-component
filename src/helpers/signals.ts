@@ -24,15 +24,20 @@ export const getAvailableSignals = (sceneStateId: string): Signal[] => {
     {
       name: "scene.elapsedTime",
       getValue: () =>
-        DataStore.getInstance().getStore(sceneStateId + ".elapsedTime") || 0,
-      changed: false,
+        DataStore.getInstance().getStore(
+          "instances." + sceneStateId + ".elapsedTime",
+        ) / 1000 || 0,
+      changed: true,
     },
     {
       name: "scene.elapsedRatio",
       getValue: () =>
-        DataStore.getInstance().getStore(sceneStateId + ".elapsedTime") /
+        DataStore.getInstance().getStore(
+          "instances." + sceneStateId + ".elapsedTime",
+        ) /
+          1000 /
           DataStore.getInstance().getStore(sceneStateId + ".duration") || 0,
-      changed: false,
+      changed: true,
     },
     {
       name: "punk.master.volume",

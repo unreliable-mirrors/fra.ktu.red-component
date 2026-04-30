@@ -21,10 +21,17 @@ export const subscribeToLayerUpdates = (sceneStateId: string) => {
   ) as Application;
   application.ticker.add((time) => {
     let loop = false;
-    if (lastElapsedTime > DataStore.getInstance().getStore("elapsedTime")) {
+    if (
+      lastElapsedTime >
+      DataStore.getInstance().getStore(
+        "instances." + sceneStateId + ".elapsedTime",
+      )
+    ) {
       loop = true;
     }
-    lastElapsedTime = DataStore.getInstance().getStore("elapsedTime");
+    lastElapsedTime = DataStore.getInstance().getStore(
+      "instances." + sceneStateId + ".elapsedTime",
+    );
     const layers = DataStore.getInstance().getStore(
       "instances." + sceneStateId + ".layers",
     );

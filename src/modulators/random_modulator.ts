@@ -22,7 +22,10 @@ export class RandomModulator extends BaseModulator {
     };
   }
   computeValue(): number {
-    const elapsedTime = DataStore.getInstance().getStore("elapsedTime") || 0;
+    const elapsedTime =
+      DataStore.getInstance().getStore(
+        "instances." + this.sceneStateId + ".elapsedTime",
+      ) || 0;
 
     const seed = Math.floor((elapsedTime / 1000) * this._state.hz);
     const rand = new Rand(seed.toString() + this._state.salt);

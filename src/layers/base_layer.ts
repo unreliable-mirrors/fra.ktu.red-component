@@ -90,6 +90,13 @@ export abstract class BaseLayer implements ILayer {
     let changed = false;
     for (const signal of Object.values(this._state.signaledFields)) {
       changed = changed || getSignal(this.sceneStateId, signal)!.changed;
+      console.log(
+        "Signal",
+        signal,
+        "changed:",
+        getSignal(this.sceneStateId, signal),
+        getSignal(this.sceneStateId, signal)?.getValue(),
+      );
     }
     if (changed) {
       this.onSignalChange();

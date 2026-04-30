@@ -36,10 +36,28 @@ class RedViewer extends KTUComponent {
       this.canvas = this.app.canvas;
       DataStore.getInstance().setStore("application", this.app);
       Ticker.shared.add((time) => {
-        if (DataStore.getInstance().getStore("playing")) {
+        if (
+          DataStore.getInstance().getStore(
+            "instances." + this.sceneStateId + ".playing",
+          )
+        ) {
           this.elapsedTime += time.elapsedMS;
           DataStore.getInstance().setStore(
-            "elapsedTime",
+            "instances." + this.sceneStateId + ".elapsedTime",
+            this.elapsedTime % (this.sceneState().duration * 1000),
+          );
+        } else {
+          this.elapsedTime = DataStore.getInstance().getStore(
+            "instances." + this.sceneStateId + ".elapsedTime",
+          );
+          if (this.elapsedTime < 0) {
+            this.elapsedTime =
+              this.sceneState().duration * 1000 + this.elapsedTime;
+          }
+          this.elapsedTime =
+            this.elapsedTime % (this.sceneState().duration * 1000);
+          DataStore.getInstance().setStore(
+            "instances." + this.sceneStateId + ".elapsedTime",
             this.elapsedTime % (this.sceneState().duration * 1000),
           );
         }
@@ -50,7 +68,10 @@ class RedViewer extends KTUComponent {
         "resetTime",
         () => {
           this.elapsedTime = 0;
-          DataStore.getInstance().setStore("elapsedTime", this.elapsedTime);
+          DataStore.getInstance().setStore(
+            "instances." + this.sceneStateId + ".elapsedTime",
+            this.elapsedTime,
+          );
         },
       );
       subscribeToModulatorUpdates(this.sceneStateId);
@@ -60,8 +81,14 @@ class RedViewer extends KTUComponent {
       DataStore.getInstance().touch(this.sceneStateId);
 
       this.elapsedTime = 0;
-      DataStore.getInstance().setStore("playing", true);
-      DataStore.getInstance().setStore("elapsedTime", this.elapsedTime);
+      DataStore.getInstance().setStore(
+        "instances." + this.sceneStateId + ".playing",
+        true,
+      );
+      DataStore.getInstance().setStore(
+        "instances." + this.sceneStateId + ".elapsedTime",
+        this.elapsedTime,
+      );
     });
   }
 

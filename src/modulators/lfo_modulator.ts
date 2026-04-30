@@ -26,7 +26,10 @@ export class LfoModulator extends BaseModulator {
     if (!this._state.running) {
       return 0;
     }
-    const time = DataStore.getInstance().getStore("elapsedTime") || 0;
+    const time =
+      DataStore.getInstance().getStore(
+        "instances." + this.sceneStateId + ".elapsedTime",
+      ) || 0;
 
     if (this._state.waveform === "triangle") {
       const beatDuration = 1000 / this._state.hz;
