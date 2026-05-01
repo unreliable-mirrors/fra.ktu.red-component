@@ -10,6 +10,7 @@ export type SceneState = {
   layers: DisplayLayerState[];
   shaders: ShaderLayerState[];
   modulators: ModulatorState[];
+  signals: string[];
   assets: Record<string, string>;
   counter: number;
 };

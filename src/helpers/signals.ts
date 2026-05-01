@@ -39,18 +39,15 @@ export const getAvailableSignals = (sceneStateId: string): Signal[] => {
           DataStore.getInstance().getStore(sceneStateId + ".duration") || 0,
       changed: true,
     },
-    {
-      name: "punk.master.volume",
+    ...(
+      DataStore.getInstance().getStore(sceneStateId + ".signals") ||
+      ([] as IModulator[])
+    ).map((signal: string) => ({
+      name: "signal." + signal,
       getValue: () =>
-        DataStore.getInstance().getStore("punk.master.volume") || 0,
-      changed: false,
-    },
-    {
-      name: "punk.master.pitch",
-      getValue: () =>
-        DataStore.getInstance().getStore("punk.master.pitch") || 0,
-      changed: false,
-    },
+        DataStore.getInstance().getStore("signals." + signal) || 0,
+      changed: true,
+    })),
     ...(
       DataStore.getInstance().getStore(
         "instances." + sceneStateId + ".modulators",
