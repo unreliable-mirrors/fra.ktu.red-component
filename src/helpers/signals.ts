@@ -7,6 +7,35 @@ export type Signal = {
   changed: boolean;
 };
 
+export type SignalValue = {
+  value: number;
+  emulator?: number;
+};
+
+export const getSignalValue = (
+  signal: string,
+  sceneStateId: string,
+): number => {
+  const signalValue = DataStore.getInstance().getStore(
+    "signals." + signal,
+  ) as SignalValue;
+  if (!signalValue) {
+    return 0;
+  }
+  return signalValue.value !== undefined
+    ? signalValue.value
+    : signalValue.emulator !== undefined && signalValue !== null
+      ? (
+          DataStore.getInstance().getStore(
+            "instances." +
+              sceneStateId +
+              ".modulators.!" +
+              signalValue.emulator,
+          ) as IModulator
+        ).value
+      : 0;
+};
+
 export const getAvailableSignals = (sceneStateId: string): Signal[] => {
   return [
     {
@@ -44,8 +73,7 @@ export const getAvailableSignals = (sceneStateId: string): Signal[] => {
       ([] as IModulator[])
     ).map((signal: string) => ({
       name: "signal." + signal,
-      getValue: () =>
-        DataStore.getInstance().getStore("signals." + signal) || 0,
+      getValue: () => getSignalValue(signal, sceneStateId),
       changed: true,
     })),
     ...(
