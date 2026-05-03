@@ -19,12 +19,13 @@ export const getSignalValue = (
   const signalValue = DataStore.getInstance().getStore(
     "signals." + signal,
   ) as SignalValue;
+  console.log("Getting signal value for", signal, ":", signalValue);
   if (!signalValue) {
     return 0;
   }
   return signalValue.value !== undefined
     ? signalValue.value
-    : signalValue.emulator !== undefined && signalValue !== null
+    : signalValue.emulator !== undefined && signalValue.emulator !== null
       ? (
           DataStore.getInstance().getStore(
             "instances." +
