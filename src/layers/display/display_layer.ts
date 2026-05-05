@@ -2,10 +2,12 @@ import { Application, Graphics, Sprite } from "pixi.js";
 import { BaseLayer } from "../base_layer.js";
 import type { LayerState } from "../ilayer.js";
 import {
+  AnaglyphShader,
   BnwShader,
   DataStore,
   MontecarloShader,
   PixelateShader,
+  type AnaglyphShaderState,
   type MontecarloShaderState,
   type PixelateShaderState,
   type ShaderLayerState,
@@ -68,6 +70,13 @@ export abstract class DisplayLayer extends BaseLayer {
             layer = new MontecarloShader(
               this.sceneStateId,
               shader as MontecarloShaderState,
+              this.sceneStateId + ".layers.!" + this._state.id + ".shaders",
+            );
+            break;
+          case "anaglyph":
+            layer = new AnaglyphShader(
+              this.sceneStateId,
+              shader as AnaglyphShaderState,
               this.sceneStateId + ".layers.!" + this._state.id + ".shaders",
             );
             break;

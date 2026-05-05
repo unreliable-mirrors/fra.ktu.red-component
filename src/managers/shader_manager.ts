@@ -12,7 +12,12 @@ import type {
 } from "../layers/shaders/shader_layer.js";
 import type { SceneState } from "../types/red_scene_state.js";
 import { BnwShader } from "../layers/shaders/bnw/bnw_shader.js";
-import { MontecarloShader, type MontecarloShaderState } from "../index.js";
+import {
+  AnaglyphShader,
+  MontecarloShader,
+  type AnaglyphShaderState,
+  type MontecarloShaderState,
+} from "../index.js";
 
 export const subscribeToShaderUpdates = (sceneStateId: string) => {
   DataStore.getInstance().setStore(
@@ -41,7 +46,7 @@ export const subscribeToShaderUpdates = (sceneStateId: string) => {
       const sceneState = DataStore.getInstance().getStore(
         sceneStateId,
       ) as SceneState;
-      const shaders = DataStore.getInstance().getStore(
+      let shaders = DataStore.getInstance().getStore(
         "instances." + sceneStateId + ".shaders",
       ) as ShaderLayer[];
       for (const shader of sceneState.shaders) {
@@ -66,6 +71,13 @@ export const subscribeToShaderUpdates = (sceneStateId: string) => {
               shaderInstance = new MontecarloShader(
                 sceneStateId,
                 shader as MontecarloShaderState,
+                sceneStateId + ".shaders",
+              );
+              break;
+            case "anaglyph":
+              shaderInstance = new AnaglyphShader(
+                sceneStateId,
+                shader as AnaglyphShaderState,
                 sceneStateId + ".shaders",
               );
               break;
@@ -97,6 +109,15 @@ export const subscribeToShaderUpdates = (sceneStateId: string) => {
           );
         }
       }
+
+      shaders = sceneState.shaders.map((shaderState) => {
+        return shaders.find((l) => l.id === shaderState.id);
+      }) as ShaderLayer[];
+
+      DataStore.getInstance().setStore(
+        "instances." + sceneStateId + ".shaders",
+        shaders,
+      );
 
       application.stage.filters = shaders.map((s) => s.shader);
     },

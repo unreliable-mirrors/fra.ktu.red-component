@@ -308,7 +308,6 @@ export class VideoLayer extends DisplayLayer {
   }
 
   innerRepaint() {
-    console.log("Repainting video layer with imageHash", this._state.imageHash);
     const application = DataStore.getInstance().getStore(
       "application",
     ) as Application;
