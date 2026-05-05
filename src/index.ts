@@ -17,6 +17,7 @@ export { VideoLayer } from "./layers/display/video_layer.js";
 export type { ShaderLayerState } from "./layers/shaders/shader_layer.js";
 export type { PixelateShaderState } from "./layers/shaders/pixelate/pixelate_shader.js";
 export { PixelateShader } from "./layers/shaders/pixelate/pixelate_shader.js";
+export { BnwShader } from "./layers/shaders/bnw/bnw_shader.js";
 
 export type { ModulatorState } from "./modulators/imodulator.js";
 export type { LfoModulatorState } from "./modulators/lfo_modulator.js";

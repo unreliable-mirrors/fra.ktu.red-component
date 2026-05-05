@@ -6,8 +6,12 @@ import {
   PixelateShader,
   type PixelateShaderState,
 } from "../layers/shaders/pixelate/pixelate_shader.js";
-import type { ShaderLayer } from "../layers/shaders/shader_layer.js";
+import type {
+  ShaderLayer,
+  ShaderLayerState,
+} from "../layers/shaders/shader_layer.js";
 import type { SceneState } from "../types/red_scene_state.js";
+import { BnwShader } from "../layers/shaders/bnw/bnw_shader.js";
 
 export const subscribeToShaderUpdates = (sceneStateId: string) => {
   DataStore.getInstance().setStore(
@@ -47,6 +51,13 @@ export const subscribeToShaderUpdates = (sceneStateId: string) => {
               shaderInstance = new PixelateShader(
                 sceneStateId,
                 shader as PixelateShaderState,
+                sceneStateId + ".shaders",
+              );
+              break;
+            case "bnw":
+              shaderInstance = new BnwShader(
+                sceneStateId,
+                shader as ShaderLayerState,
                 sceneStateId + ".shaders",
               );
               break;
