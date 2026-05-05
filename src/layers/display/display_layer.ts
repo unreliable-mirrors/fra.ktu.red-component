@@ -84,13 +84,13 @@ export abstract class DisplayLayer extends BaseLayer {
     }
 
     for (let i = this.shaders.length - 1; i >= 0; i--) {
-      const layer = this.shaders[i]!;
+      const shader = this.shaders[i]!;
       const existsInSceneState = this._state.shaders.some(
-        (ls: LayerState) => ls.id === layer.id,
+        (ls: LayerState) => ls.id === shader.id,
       );
       if (!existsInSceneState) {
-        layer.unbind();
-        this.shaders.splice(this.shaders.indexOf(layer), 1);
+        shader.unbind();
+        this.shaders.splice(this.shaders.indexOf(shader), 1);
       }
     }
 

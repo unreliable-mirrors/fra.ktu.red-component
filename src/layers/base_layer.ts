@@ -96,6 +96,17 @@ export abstract class BaseLayer implements ILayer {
       "change",
       this.handleStateChangeWrapper,
     );
+
+    EventDispatcher.getInstance().removeEventListener(
+      this.sceneStateId + ".width",
+      "update",
+      this.handleStateChangeWrapper,
+    );
+    EventDispatcher.getInstance().removeEventListener(
+      this.sceneStateId + ".height",
+      "update",
+      this.handleStateChangeWrapper,
+    );
   }
   tick(time: any, loop: boolean): void {
     let changed = false;

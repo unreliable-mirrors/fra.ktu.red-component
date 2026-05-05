@@ -23,7 +23,9 @@ export class EventDispatcher {
 
   dispatchEvent(target: string, event: string, payload: any) {
     if (this._listeners[target] && this._listeners[target][event]) {
-      this._listeners[target][event].forEach((callback) => callback(payload));
+      for (const callback of [...this._listeners[target][event]]) {
+        callback!(payload);
+      }
     }
   }
 

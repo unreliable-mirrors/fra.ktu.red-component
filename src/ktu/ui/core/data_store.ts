@@ -27,6 +27,7 @@ export class DataStore {
   }
 
   touch(key: string): any {
+    console.log("Touching key", key, "with value", this.deepGet(key));
     EventDispatcher.getInstance().dispatchEvent(
       key,
       "update",

@@ -133,7 +133,6 @@ export abstract class ShaderLayer extends BaseLayer {
   }
 
   reTime() {
-    console.log("Re-timing shader", this.id);
     this.uniforms.uniforms.uTime = Math.random();
   }
 }

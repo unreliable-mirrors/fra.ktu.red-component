@@ -42,10 +42,12 @@ class RedViewer extends KTUComponent {
           )
         ) {
           this.elapsedTime += time.elapsedMS;
+          /*
           DataStore.getInstance().setStore(
             "instances." + this.sceneStateId + ".elapsedTime",
             this.elapsedTime % (this.sceneState().duration * 1000),
           );
+          */
         } else {
           this.elapsedTime = DataStore.getInstance().getStore(
             "instances." + this.sceneStateId + ".elapsedTime",
