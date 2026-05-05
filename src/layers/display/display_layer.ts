@@ -2,8 +2,11 @@ import { Application, Graphics, Sprite } from "pixi.js";
 import { BaseLayer } from "../base_layer.js";
 import type { LayerState } from "../ilayer.js";
 import {
+  BnwShader,
   DataStore,
+  MontecarloShader,
   PixelateShader,
+  type MontecarloShaderState,
   type PixelateShaderState,
   type ShaderLayerState,
 } from "../../index.js";
@@ -51,6 +54,20 @@ export abstract class DisplayLayer extends BaseLayer {
             layer = new PixelateShader(
               this.sceneStateId,
               shader as PixelateShaderState,
+              this.sceneStateId + ".layers.!" + this._state.id + ".shaders",
+            );
+            break;
+          case "bnw":
+            layer = new BnwShader(
+              this.sceneStateId,
+              shader as ShaderLayerState,
+              this.sceneStateId + ".layers.!" + this._state.id + ".shaders",
+            );
+            break;
+          case "montecarlo":
+            layer = new MontecarloShader(
+              this.sceneStateId,
+              shader as MontecarloShaderState,
               this.sceneStateId + ".layers.!" + this._state.id + ".shaders",
             );
             break;

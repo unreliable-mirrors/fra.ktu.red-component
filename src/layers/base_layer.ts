@@ -45,6 +45,17 @@ export abstract class BaseLayer implements ILayer {
       "change",
       this.handleStateChangeWrapper,
     );
+
+    EventDispatcher.getInstance().addEventListener(
+      this.sceneStateId + ".width",
+      "update",
+      this.handleStateChangeWrapper,
+    );
+    EventDispatcher.getInstance().addEventListener(
+      this.sceneStateId + ".height",
+      "update",
+      this.handleStateChangeWrapper,
+    );
   }
 
   get id(): number {
@@ -88,7 +99,10 @@ export abstract class BaseLayer implements ILayer {
   }
   tick(time: any, loop: boolean): void {
     let changed = false;
-    for (const signal of Object.values(this._state.signaledFields)) {
+    const values: string[] = Object.keys(this._state.signaledFields)
+      .filter((field) => field !== "refresh")
+      .map((key) => this._state.signaledFields[key]!);
+    for (const signal of values) {
       changed = changed || getSignal(this.sceneStateId, signal)!.changed;
       console.log(
         "Signal",

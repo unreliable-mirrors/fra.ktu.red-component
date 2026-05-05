@@ -2,6 +2,7 @@ import {
   Application,
   Filter,
   Graphics,
+  Point,
   Sprite,
   TextureSource,
   UniformGroup,
@@ -11,6 +12,7 @@ import { BaseLayer } from "../base_layer.js";
 import type { LayerState } from "../ilayer.js";
 import { DataStore } from "../../index.js";
 import vertex from "./defaultFilter.vert?raw";
+import { getSignal } from "../../helpers/signals.js";
 
 export type ShaderLayerState = LayerState & {
   redDryWet: number;
@@ -79,6 +81,14 @@ export abstract class ShaderLayer extends BaseLayer {
         ],
         type: "vec4<f32>",
       },
+      uSize: {
+        value: new Point(
+          DataStore.getInstance().getStore(this.sceneStateId + ".width"),
+          DataStore.getInstance().getStore(this.sceneStateId + ".height"),
+        ),
+        type: "vec2<f32>",
+      },
+      uTime: { value: Math.random(), type: "f32" },
     };
   }
 
@@ -89,6 +99,10 @@ export abstract class ShaderLayer extends BaseLayer {
       this._state.visible ? this.getFieldValue("blueDryWet") : 0,
       1,
     ];
+    this.uniforms.uniforms.uSize = new Point(
+      DataStore.getInstance().getStore(this.sceneStateId + ".width"),
+      DataStore.getInstance().getStore(this.sceneStateId + ".height"),
+    );
   }
 
   abstract setupUniformValues(): {
@@ -103,5 +117,23 @@ export abstract class ShaderLayer extends BaseLayer {
     [key: string]: TextureSource;
   } {
     return {};
+  }
+
+  tick(time: any, loop: boolean): void {
+    super.tick(time, loop);
+    if (this._state.signaledFields["refresh"]) {
+      const signal = getSignal(
+        this.sceneStateId,
+        this._state.signaledFields["refresh"],
+      );
+      if (signal?.changed && signal.getValue() === 1) {
+        this.reTime();
+      }
+    }
+  }
+
+  reTime() {
+    console.log("Re-timing shader", this.id);
+    this.uniforms.uniforms.uTime = Math.random();
   }
 }

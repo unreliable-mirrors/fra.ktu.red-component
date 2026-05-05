@@ -12,6 +12,7 @@ import type {
 } from "../layers/shaders/shader_layer.js";
 import type { SceneState } from "../types/red_scene_state.js";
 import { BnwShader } from "../layers/shaders/bnw/bnw_shader.js";
+import { MontecarloShader, type MontecarloShaderState } from "../index.js";
 
 export const subscribeToShaderUpdates = (sceneStateId: string) => {
   DataStore.getInstance().setStore(
@@ -58,6 +59,13 @@ export const subscribeToShaderUpdates = (sceneStateId: string) => {
               shaderInstance = new BnwShader(
                 sceneStateId,
                 shader as ShaderLayerState,
+                sceneStateId + ".shaders",
+              );
+              break;
+            case "montecarlo":
+              shaderInstance = new MontecarloShader(
+                sceneStateId,
+                shader as MontecarloShaderState,
                 sceneStateId + ".shaders",
               );
               break;
