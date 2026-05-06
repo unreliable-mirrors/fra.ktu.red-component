@@ -20,6 +20,10 @@ import {
   type MontecarloShaderState,
   type VLinesShaderState,
 } from "../index.js";
+import {
+  HLinesShader,
+  type HLinesShaderState,
+} from "../layers/shaders/hlines/hlines_shader.js";
 
 export const subscribeToShaderUpdates = (sceneStateId: string) => {
   DataStore.getInstance().setStore(
@@ -87,6 +91,13 @@ export const subscribeToShaderUpdates = (sceneStateId: string) => {
               shaderInstance = new VLinesShader(
                 sceneStateId,
                 shader as VLinesShaderState,
+                sceneStateId + ".shaders",
+              );
+              break;
+            case "hlines":
+              shaderInstance = new HLinesShader(
+                sceneStateId,
+                shader as HLinesShaderState,
                 sceneStateId + ".shaders",
               );
               break;

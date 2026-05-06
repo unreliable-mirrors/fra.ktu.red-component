@@ -15,6 +15,10 @@ import {
   type VLinesShaderState,
 } from "../../index.js";
 import type { ShaderLayer } from "../shaders/shader_layer.js";
+import {
+  HLinesShader,
+  type HLinesShaderState,
+} from "../shaders/hlines/hlines_shader.js";
 
 export type DisplayLayerState = LayerState & {
   shaders: ShaderLayerState[];
@@ -86,6 +90,13 @@ export abstract class DisplayLayer extends BaseLayer {
             layer = new VLinesShader(
               this.sceneStateId,
               shader as VLinesShaderState,
+              this.sceneStateId + ".layers.!" + this._state.id + ".shaders",
+            );
+            break;
+          case "hlines":
+            layer = new HLinesShader(
+              this.sceneStateId,
+              shader as HLinesShaderState,
               this.sceneStateId + ".layers.!" + this._state.id + ".shaders",
             );
             break;
