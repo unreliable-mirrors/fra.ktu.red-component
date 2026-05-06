@@ -25,9 +25,13 @@ export { AnaglyphShader } from "./layers/shaders/anaglyph/anaglyph_shader.js";
 
 export type { ModulatorState } from "./modulators/imodulator.js";
 export type { LfoModulatorState } from "./modulators/lfo_modulator.js";
-export { LfoModulator } from "./modulators/lfo_modulator.js";
+export type { RingModulatorState } from "./modulators/ring_modulator.js";
 export type { RandomModulatorState } from "./modulators/random_modulator.js";
+export type { CompressorModulatorState } from "./modulators/compressor_modulator.js";
+export { LfoModulator } from "./modulators/lfo_modulator.js";
 export { RandomModulator } from "./modulators/random_modulator.js";
+export { RingModulator } from "./modulators/ring_modulator.js";
+export { CompressorModulator } from "./modulators/compressor_modulator.js";
 
 export {
   AVAILABLE_LAYERS,

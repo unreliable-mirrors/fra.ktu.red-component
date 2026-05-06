@@ -32,9 +32,10 @@ export class LfoModulator extends BaseModulator {
       ) || 0;
 
     if (this._state.waveform === "triangle") {
-      const beatDuration = 1000 / this._state.hz;
+      const beatDuration = 1000 / this.getFieldValue("hz");
       const position =
-        ((time % beatDuration) / beatDuration + this._state.phase) % 1;
+        ((time % beatDuration) / beatDuration + this.getFieldValue("phase")) %
+        1;
       if (position < 0.5) {
         return position * 2;
       } else {
@@ -42,8 +43,9 @@ export class LfoModulator extends BaseModulator {
       }
     } else if (this._state.waveform === "sawtooth") {
       return (
-        ((time % (1000 / this._state.hz)) / (1000 / this._state.hz) +
-          this._state.phase) %
+        ((time % (1000 / this.getFieldValue("hz"))) /
+          (1000 / this.getFieldValue("hz")) +
+          this.getFieldValue("phase")) %
         1
       );
     }

@@ -8,6 +8,11 @@ import {
   type LfoModulatorState,
 } from "../modulators/lfo_modulator.js";
 import { RandomModulator } from "../modulators/random_modulator.js";
+import {
+  RingModulator,
+  type RingModulatorState,
+} from "../modulators/ring_modulator.js";
+import { CompressorModulator } from "../modulators/compressor_modulator.js";
 
 export const subscribeToModulatorUpdates = (sceneStateId: string) => {
   const application = DataStore.getInstance().getStore(
@@ -51,6 +56,18 @@ export const subscribeToModulatorUpdates = (sceneStateId: string) => {
               break;
             case "random":
               modulatorInstance = new RandomModulator(
+                sceneStateId,
+                modulator as ModulatorState,
+              );
+              break;
+            case "ring":
+              modulatorInstance = new RingModulator(
+                sceneStateId,
+                modulator as RingModulatorState,
+              );
+              break;
+            case "compressor":
+              modulatorInstance = new CompressorModulator(
                 sceneStateId,
                 modulator as ModulatorState,
               );

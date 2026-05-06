@@ -70,4 +70,12 @@ export abstract class BaseModulator implements IModulator {
 
     return getSignal(this.sceneStateId, signaledField)?.getValue() || 0;
   }
+
+  getFieldBoolean(fieldName: string): boolean {
+    const signaledField = this._state.signaledFields[fieldName];
+    if (!signaledField) {
+      return this._state[fieldName as keyof ModulatorState] as boolean;
+    }
+    return !!getSignal(this.sceneStateId, signaledField)?.getValue();
+  }
 }
