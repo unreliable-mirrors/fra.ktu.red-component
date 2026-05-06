@@ -114,14 +114,8 @@ export abstract class BaseLayer implements ILayer {
       .filter((field) => field !== "refresh")
       .map((key) => this._state.signaledFields[key]!);
     for (const signal of values) {
-      changed = changed || getSignal(this.sceneStateId, signal)!.changed;
-      console.log(
-        "Signal",
-        signal,
-        "changed:",
-        getSignal(this.sceneStateId, signal),
-        getSignal(this.sceneStateId, signal)?.getValue(),
-      );
+      changed =
+        (changed || getSignal(this.sceneStateId, signal)?.changed) ?? false;
     }
     if (changed) {
       this.onSignalChange();

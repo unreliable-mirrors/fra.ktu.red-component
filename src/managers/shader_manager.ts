@@ -15,8 +15,10 @@ import { BnwShader } from "../layers/shaders/bnw/bnw_shader.js";
 import {
   AnaglyphShader,
   MontecarloShader,
+  VLinesShader,
   type AnaglyphShaderState,
   type MontecarloShaderState,
+  type VLinesShaderState,
 } from "../index.js";
 
 export const subscribeToShaderUpdates = (sceneStateId: string) => {
@@ -78,6 +80,13 @@ export const subscribeToShaderUpdates = (sceneStateId: string) => {
               shaderInstance = new AnaglyphShader(
                 sceneStateId,
                 shader as AnaglyphShaderState,
+                sceneStateId + ".shaders",
+              );
+              break;
+            case "vlines":
+              shaderInstance = new VLinesShader(
+                sceneStateId,
+                shader as VLinesShaderState,
                 sceneStateId + ".shaders",
               );
               break;

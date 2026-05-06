@@ -1,5 +1,10 @@
 export type LayerType = "background" | "video";
-export type ShaderType = "pixelate" | "bnw" | "montecarlo" | "anaglyph";
+export type ShaderType =
+  | "pixelate"
+  | "bnw"
+  | "montecarlo"
+  | "anaglyph"
+  | "vlines";
 export type ModulatorType = "lfo" | "random" | "ring" | "compressor";
 
 export const AVAILABLE_LAYERS: LayerType[] = ["background", "video"];
@@ -8,6 +13,7 @@ export const AVAILABLE_SHADERS: ShaderType[] = [
   "bnw",
   "montecarlo",
   "anaglyph",
+  "vlines",
 ];
 export const AVAILABLE_MODULATORS: ModulatorType[] = [
   "lfo",
@@ -19,5 +25,5 @@ export const AVAILABLE_MODULATORS: ModulatorType[] = [
 export const CATEGORIZED_SHADERS: Record<string, ShaderType[]> = {
   color: ["bnw"],
   distortion: ["montecarlo", "pixelate"],
-  stylize: ["anaglyph"],
+  stylize: ["anaglyph", "vlines"],
 };

@@ -17,4 +17,6 @@ export interface IModulator {
   valueLog: number[];
   hook?: (value: number) => void;
   tick(time: Ticker): void;
+
+  unbind(): void;
 }

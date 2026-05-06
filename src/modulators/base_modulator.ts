@@ -1,6 +1,10 @@
 import type { Ticker } from "pixi.js";
 import type { IModulator, ModulatorState } from "./imodulator.js";
-import { DataStore } from "../index.js";
+import {
+  DataStore,
+  type DisplayLayerState,
+  type LayerState,
+} from "../index.js";
 import { getSignal } from "../helpers/signals.js";
 
 export abstract class BaseModulator implements IModulator {
@@ -77,5 +81,61 @@ export abstract class BaseModulator implements IModulator {
       return this._state[fieldName as keyof ModulatorState] as boolean;
     }
     return !!getSignal(this.sceneStateId, signaledField)?.getValue();
+  }
+
+  unbind(): void {
+    const layers = DataStore.getInstance().getStore(
+      this.sceneStateId + ".layers",
+    ) as DisplayLayerState[];
+    for (const layer of layers) {
+      for (const key in layer.signaledFields) {
+        if (layer.signaledFields[key] === "modulator." + this._state.name) {
+          delete layer.signaledFields[key];
+          DataStore.getInstance().touch(
+            this.sceneStateId + ".layers.!" + layer.id,
+          );
+        }
+      }
+      for (const shader of layer.shaders) {
+        for (const key in shader.signaledFields) {
+          if (shader.signaledFields[key] === "modulator." + this._state.name) {
+            delete shader.signaledFields[key];
+            DataStore.getInstance().touch(
+              this.sceneStateId +
+                ".layers.!" +
+                layer.id +
+                ".shaders.!" +
+                shader.id,
+            );
+          }
+        }
+      }
+    }
+    const shaders = DataStore.getInstance().getStore(
+      this.sceneStateId + ".shaders",
+    ) as LayerState[];
+    for (const shader of shaders) {
+      for (const key in shader.signaledFields) {
+        if (shader.signaledFields[key] === "modulator." + this._state.name) {
+          delete shader.signaledFields[key];
+          DataStore.getInstance().touch(
+            this.sceneStateId + ".shaders.!" + shader.id,
+          );
+        }
+      }
+    }
+    const modulators = DataStore.getInstance().getStore(
+      this.sceneStateId + ".modulators",
+    ) as ModulatorState[];
+    for (const modulator of modulators) {
+      for (const key in modulator.signaledFields) {
+        if (modulator.signaledFields[key] === "modulator." + this._state.name) {
+          delete modulator.signaledFields[key];
+          DataStore.getInstance().touch(
+            this.sceneStateId + ".modulators.!" + modulator.id,
+          );
+        }
+      }
+    }
   }
 }

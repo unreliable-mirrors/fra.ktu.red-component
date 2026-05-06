@@ -91,6 +91,7 @@ export const subscribeToModulatorUpdates = (sceneStateId: string) => {
           (ls: ModulatorState) => ls.id === modulatorInstance.id,
         );
         if (!existsInSceneState) {
+          modulatorInstance.unbind();
           modulators.splice(modulators.indexOf(modulatorInstance), 1);
           DataStore.getInstance().touch(
             "instances." + sceneStateId + ".modulators",

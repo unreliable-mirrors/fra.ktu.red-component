@@ -10,7 +10,7 @@ import {
 } from "pixi.js";
 import { BaseLayer } from "../base_layer.js";
 import type { LayerState } from "../ilayer.js";
-import { DataStore } from "../../index.js";
+import { DataStore, type DisplayLayerState } from "../../index.js";
 import vertex from "./defaultFilter.vert?raw";
 import { getSignal } from "../../helpers/signals.js";
 
@@ -134,5 +134,13 @@ export abstract class ShaderLayer extends BaseLayer {
 
   reTime() {
     this.uniforms.uniforms.uTime = Math.random();
+  }
+
+  unbind(): void {
+    super.unbind();
+
+    this.shader.destroy();
+    this.shader = undefined as any;
+    this.uniforms = undefined as any;
   }
 }
