@@ -49,7 +49,6 @@ export class KTUComponent extends HTMLElement {
   }
 
   disconnectedCallback() {
-    //TODO: THIS IS BROKEN
     for (const bindingKey of this.bindingKeys) {
       EventDispatcher.getInstance().removeEventListener(
         bindingKey,

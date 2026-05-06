@@ -18,6 +18,7 @@ export type ShaderLayerState = LayerState & {
   redDryWet: number;
   greenDryWet: number;
   blueDryWet: number;
+  alphaDryWet: number;
 };
 
 export abstract class ShaderLayer extends BaseLayer {
@@ -34,6 +35,7 @@ export abstract class ShaderLayer extends BaseLayer {
       redDryWet: 1,
       greenDryWet: 1,
       blueDryWet: 1,
+      alphaDryWet: 1,
     };
   }
 
@@ -77,6 +79,7 @@ export abstract class ShaderLayer extends BaseLayer {
           this._state.visible ? this.getFieldValue("redDryWet") : 0,
           this._state.visible ? this.getFieldValue("greenDryWet") : 0,
           this._state.visible ? this.getFieldValue("blueDryWet") : 0,
+          this._state.visible ? this.getFieldValue("alphaDryWet") : 0,
           1,
         ],
         type: "vec4<f32>",
@@ -97,6 +100,7 @@ export abstract class ShaderLayer extends BaseLayer {
       this._state.visible ? this.getFieldValue("redDryWet") : 0,
       this._state.visible ? this.getFieldValue("greenDryWet") : 0,
       this._state.visible ? this.getFieldValue("blueDryWet") : 0,
+      this._state.visible ? this.getFieldValue("alphaDryWet") : 0,
       1,
     ];
     this.uniforms.uniforms.uSize = new Point(

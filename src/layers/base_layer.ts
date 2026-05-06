@@ -1,5 +1,5 @@
 import { getSignal } from "../helpers/signals.js";
-import { EventDispatcher } from "../index.js";
+import { EventDispatcher, type ModulatorState } from "../index.js";
 import type { ILayer, LayerFields, LayerState } from "./ilayer.js";
 
 export abstract class BaseLayer implements ILayer {
@@ -69,6 +69,14 @@ export abstract class BaseLayer implements ILayer {
     }
 
     return getSignal(this.sceneStateId, signaledField)?.getValue() || 0;
+  }
+
+  getFieldBoolean(fieldName: string): boolean {
+    const signaledField = this._state.signaledFields[fieldName];
+    if (!signaledField) {
+      return this._state[fieldName as keyof LayerState] as boolean;
+    }
+    return !!getSignal(this.sceneStateId, signaledField)?.getValue();
   }
 
   onStateChange(): void {}

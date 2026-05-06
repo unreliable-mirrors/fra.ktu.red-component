@@ -24,6 +24,10 @@ import {
   HLinesShader,
   type HLinesShaderState,
 } from "../layers/shaders/hlines/hlines_shader.js";
+import {
+  ChromaShader,
+  type ChromaShaderState,
+} from "../layers/shaders/chroma/chroma_shader.js";
 
 export const subscribeToShaderUpdates = (sceneStateId: string) => {
   DataStore.getInstance().setStore(
@@ -98,6 +102,13 @@ export const subscribeToShaderUpdates = (sceneStateId: string) => {
               shaderInstance = new HLinesShader(
                 sceneStateId,
                 shader as HLinesShaderState,
+                sceneStateId + ".shaders",
+              );
+              break;
+            case "chroma":
+              shaderInstance = new ChromaShader(
+                sceneStateId,
+                shader as ChromaShaderState,
                 sceneStateId + ".shaders",
               );
               break;

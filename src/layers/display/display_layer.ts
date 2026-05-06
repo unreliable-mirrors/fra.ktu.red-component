@@ -19,6 +19,10 @@ import {
   HLinesShader,
   type HLinesShaderState,
 } from "../shaders/hlines/hlines_shader.js";
+import {
+  ChromaShader,
+  type ChromaShaderState,
+} from "../shaders/chroma/chroma_shader.js";
 
 export type DisplayLayerState = LayerState & {
   shaders: ShaderLayerState[];
@@ -97,6 +101,13 @@ export abstract class DisplayLayer extends BaseLayer {
             layer = new HLinesShader(
               this.sceneStateId,
               shader as HLinesShaderState,
+              this.sceneStateId + ".layers.!" + this._state.id + ".shaders",
+            );
+            break;
+          case "chroma":
+            layer = new ChromaShader(
+              this.sceneStateId,
+              shader as ChromaShaderState,
               this.sceneStateId + ".layers.!" + this._state.id + ".shaders",
             );
             break;
