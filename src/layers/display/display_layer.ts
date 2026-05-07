@@ -27,6 +27,7 @@ import {
   ScrambleShader,
   type ScrambleShaderState,
 } from "../shaders/scramble/scramble_shader.js";
+import { NegativeShader } from "../shaders/negative/negative_shader.js";
 
 export type DisplayLayerState = LayerState & {
   shaders: ShaderLayerState[];
@@ -119,6 +120,13 @@ export abstract class DisplayLayer extends BaseLayer {
             layer = new ScrambleShader(
               this.sceneStateId,
               shader as ScrambleShaderState,
+              this.sceneStateId + ".layers.!" + this._state.id + ".shaders",
+            );
+            break;
+          case "negative":
+            layer = new NegativeShader(
+              this.sceneStateId,
+              shader as ShaderLayerState,
               this.sceneStateId + ".layers.!" + this._state.id + ".shaders",
             );
             break;

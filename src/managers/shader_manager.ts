@@ -32,6 +32,7 @@ import {
   ScrambleShader,
   type ScrambleShaderState,
 } from "../layers/shaders/scramble/scramble_shader.js";
+import { NegativeShader } from "../layers/shaders/negative/negative_shader.js";
 
 export const subscribeToShaderUpdates = (sceneStateId: string) => {
   DataStore.getInstance().setStore(
@@ -120,6 +121,13 @@ export const subscribeToShaderUpdates = (sceneStateId: string) => {
               shaderInstance = new ScrambleShader(
                 sceneStateId,
                 shader as ScrambleShaderState,
+                sceneStateId + ".shaders",
+              );
+              break;
+            case "negative":
+              shaderInstance = new NegativeShader(
+                sceneStateId,
+                shader as ShaderLayerState,
                 sceneStateId + ".shaders",
               );
               break;
