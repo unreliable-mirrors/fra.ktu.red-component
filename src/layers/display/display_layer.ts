@@ -32,6 +32,10 @@ import {
   CrossesShader,
   type CrossesShaderState,
 } from "../shaders/crosses/crosses_shader.js";
+import {
+  RecolourShader,
+  type RecolourShaderState,
+} from "../shaders/recolour/recolour_shader.js";
 
 export type DisplayLayerState = LayerState & {
   shaders: ShaderLayerState[];
@@ -138,6 +142,13 @@ export abstract class DisplayLayer extends BaseLayer {
             layer = new CrossesShader(
               this.sceneStateId,
               shader as CrossesShaderState,
+              this.sceneStateId + ".layers.!" + this._state.id + ".shaders",
+            );
+            break;
+          case "recolour":
+            layer = new RecolourShader(
+              this.sceneStateId,
+              shader as RecolourShaderState,
               this.sceneStateId + ".layers.!" + this._state.id + ".shaders",
             );
             break;

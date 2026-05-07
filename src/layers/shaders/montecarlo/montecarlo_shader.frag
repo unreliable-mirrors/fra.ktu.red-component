@@ -5,6 +5,7 @@ uniform sampler2D uTexture;
 uniform vec2 uSize;
 uniform float uTime;
 uniform float uStrength;
+uniform int uNot;
 uniform vec4 uDryWet;
 
 float PHI = 1.61803398874989484820459;  // Φ = Golden Ratio   
@@ -18,6 +19,10 @@ void main(){
     float noise = gold_noise(vTextureCoord*uSize, uTime);
     vec4 tex = vec4(0.0, 0.0, 0.0, 0.0);
     if(noise < 1.0-uStrength){
+        if(uNot == 0){
+            tex = oTex;
+        }
+    }else if(uNot == 1){
         tex = oTex;
     }
     

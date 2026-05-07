@@ -8,6 +8,7 @@ uniform float uGridSize;
 uniform float uCrossSize;
 uniform float uLineThickness;
 uniform float uVariableCrossSize;
+uniform int uNot;
 uniform vec4 uDryWet;
 
 vec2 mapCoord( vec2 coord )
@@ -65,7 +66,11 @@ void main(){
     if((pixelCoord.x >= newCoords.x-crossSize && pixelCoord.x <= newCoords.x+crossSize && pixelCoord.y > newCoords.y-(uLineThickness/2.0) && pixelCoord.y < newCoords.y+(uLineThickness/2.0)) 
     || 
     (pixelCoord.y >= newCoords.y-crossSize && pixelCoord.y <= newCoords.y+crossSize && pixelCoord.x > newCoords.x-(uLineThickness/2.0) && pixelCoord.x < newCoords.x+(uLineThickness/2.0))){
-        tex = ntex;
+        if(uNot == 0){
+            tex = ntex;
+        }
+    }else if(uNot == 1){
+        tex = oTex;
     }
     
     //DRY/WET

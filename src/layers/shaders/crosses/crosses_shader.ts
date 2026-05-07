@@ -8,6 +8,7 @@ export type CrossesShaderState = ShaderLayerState & {
   crossSize: number;
   lineThickness: number;
   variableCrossSize: boolean;
+  not: boolean;
 };
 
 export class CrossesShader extends ShaderLayer {
@@ -23,6 +24,7 @@ export class CrossesShader extends ShaderLayer {
       crossSize: 9,
       lineThickness: 1,
       variableCrossSize: false,
+      not: false,
     };
   }
 
@@ -43,6 +45,10 @@ export class CrossesShader extends ShaderLayer {
         value: this.getFieldBoolean("variableCrossSize") ? 1 : 0,
         type: "f32",
       },
+      uNot: {
+        value: this.getFieldBoolean("not") ? 1 : 0,
+        type: "i32",
+      },
     };
   }
 
@@ -56,5 +62,6 @@ export class CrossesShader extends ShaderLayer {
     )
       ? 1
       : 0;
+    this.uniforms.uniforms.uNot = this.getFieldBoolean("not") ? 1 : 0;
   }
 }

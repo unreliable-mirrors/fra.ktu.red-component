@@ -37,6 +37,10 @@ import {
   CrossesShader,
   type CrossesShaderState,
 } from "../layers/shaders/crosses/crosses_shader.js";
+import {
+  RecolourShader,
+  type RecolourShaderState,
+} from "../layers/shaders/recolour/recolour_shader.js";
 
 export const subscribeToShaderUpdates = (sceneStateId: string) => {
   DataStore.getInstance().setStore(
@@ -139,6 +143,13 @@ export const subscribeToShaderUpdates = (sceneStateId: string) => {
               shaderInstance = new CrossesShader(
                 sceneStateId,
                 shader as CrossesShaderState,
+                sceneStateId + ".shaders",
+              );
+              break;
+            case "recolour":
+              shaderInstance = new RecolourShader(
+                sceneStateId,
+                shader as RecolourShaderState,
                 sceneStateId + ".shaders",
               );
               break;

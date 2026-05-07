@@ -5,6 +5,7 @@ import fragment from "./montecarlo_shader.frag?raw";
 
 export type MontecarloShaderState = ShaderLayerState & {
   strength: number;
+  not: boolean;
 };
 
 export class MontecarloShader extends ShaderLayer {
@@ -17,6 +18,7 @@ export class MontecarloShader extends ShaderLayer {
       type: "montecarlo",
       name: "montecarlo_" + getCount(sceneStateId),
       strength: 0.1,
+      not: false,
     };
   }
 
@@ -32,11 +34,13 @@ export class MontecarloShader extends ShaderLayer {
   setupUniformValues(): { [key: string]: UniformData } {
     return {
       uStrength: { value: this.getFieldValue("strength"), type: "f32" },
+      uNot: { value: this.getFieldValue("not"), type: "i32" },
     };
   }
 
   updateUniforms(): void {
     super.updateUniforms();
     this.uniforms.uniforms.uStrength = this.getFieldValue("strength");
+    this.uniforms.uniforms.uNot = this.getFieldValue("not");
   }
 }
