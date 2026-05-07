@@ -16,9 +16,9 @@ float gold_noise(vec2 xy, float seed){
 void main(){
     vec4 oTex = texture(uTexture, vTextureCoord);
     float noise = gold_noise(vTextureCoord*uSize, uTime);
-    vec4 tex = vec4(0.0);
+    vec4 tex = vec4(0.0, 0.0, 0.0, 0.0);
     if(noise < 1.0-uStrength){
-        tex = vec4( oTex.r, oTex.g, oTex.b, oTex.a );
+        tex = oTex;
     }
     
     //DRY/WET

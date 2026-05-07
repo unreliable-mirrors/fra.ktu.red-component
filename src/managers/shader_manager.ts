@@ -28,6 +28,10 @@ import {
   ChromaShader,
   type ChromaShaderState,
 } from "../layers/shaders/chroma/chroma_shader.js";
+import {
+  ScrambleShader,
+  type ScrambleShaderState,
+} from "../layers/shaders/scramble/scramble_shader.js";
 
 export const subscribeToShaderUpdates = (sceneStateId: string) => {
   DataStore.getInstance().setStore(
@@ -109,6 +113,13 @@ export const subscribeToShaderUpdates = (sceneStateId: string) => {
               shaderInstance = new ChromaShader(
                 sceneStateId,
                 shader as ChromaShaderState,
+                sceneStateId + ".shaders",
+              );
+              break;
+            case "scramble":
+              shaderInstance = new ScrambleShader(
+                sceneStateId,
+                shader as ScrambleShaderState,
                 sceneStateId + ".shaders",
               );
               break;

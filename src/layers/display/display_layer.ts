@@ -23,6 +23,10 @@ import {
   ChromaShader,
   type ChromaShaderState,
 } from "../shaders/chroma/chroma_shader.js";
+import {
+  ScrambleShader,
+  type ScrambleShaderState,
+} from "../shaders/scramble/scramble_shader.js";
 
 export type DisplayLayerState = LayerState & {
   shaders: ShaderLayerState[];
@@ -108,6 +112,13 @@ export abstract class DisplayLayer extends BaseLayer {
             layer = new ChromaShader(
               this.sceneStateId,
               shader as ChromaShaderState,
+              this.sceneStateId + ".layers.!" + this._state.id + ".shaders",
+            );
+            break;
+          case "scramble":
+            layer = new ScrambleShader(
+              this.sceneStateId,
+              shader as ScrambleShaderState,
               this.sceneStateId + ".layers.!" + this._state.id + ".shaders",
             );
             break;
