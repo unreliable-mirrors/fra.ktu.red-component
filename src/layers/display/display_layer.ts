@@ -36,6 +36,8 @@ import {
   RecolourShader,
   type RecolourShaderState,
 } from "../shaders/recolour/recolour_shader.js";
+import { HNoiseShader } from "../shaders/hnoise/hnoise_shader.js";
+import type { HNoiseShaderState } from "../shaders/hnoise/hnoise_shader.js";
 
 export type DisplayLayerState = LayerState & {
   shaders: ShaderLayerState[];
@@ -149,6 +151,13 @@ export abstract class DisplayLayer extends BaseLayer {
             layer = new RecolourShader(
               this.sceneStateId,
               shader as RecolourShaderState,
+              this.sceneStateId + ".layers.!" + this._state.id + ".shaders",
+            );
+            break;
+          case "hnoise":
+            layer = new HNoiseShader(
+              this.sceneStateId,
+              shader as HNoiseShaderState,
               this.sceneStateId + ".layers.!" + this._state.id + ".shaders",
             );
             break;

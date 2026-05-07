@@ -41,6 +41,10 @@ import {
   RecolourShader,
   type RecolourShaderState,
 } from "../layers/shaders/recolour/recolour_shader.js";
+import {
+  HNoiseShader,
+  type HNoiseShaderState,
+} from "../layers/shaders/hnoise/hnoise_shader.js";
 
 export const subscribeToShaderUpdates = (sceneStateId: string) => {
   DataStore.getInstance().setStore(
@@ -150,6 +154,13 @@ export const subscribeToShaderUpdates = (sceneStateId: string) => {
               shaderInstance = new RecolourShader(
                 sceneStateId,
                 shader as RecolourShaderState,
+                sceneStateId + ".shaders",
+              );
+              break;
+            case "hnoise":
+              shaderInstance = new HNoiseShader(
+                sceneStateId,
+                shader as HNoiseShaderState,
                 sceneStateId + ".shaders",
               );
               break;
