@@ -22,6 +22,7 @@ export type { VLinesShaderState } from "./layers/shaders/vlines/vlines_shader.js
 export type { HLinesShaderState } from "./layers/shaders/hlines/hlines_shader.js";
 export type { ChromaShaderState } from "./layers/shaders/chroma/chroma_shader.js";
 export type { ScrambleShaderState } from "./layers/shaders/scramble/scramble_shader.js";
+export type { CrossesShaderState } from "./layers/shaders/crosses/crosses_shader.js";
 export { PixelateShader } from "./layers/shaders/pixelate/pixelate_shader.js";
 export { BnwShader } from "./layers/shaders/bnw/bnw_shader.js";
 export { MontecarloShader } from "./layers/shaders/montecarlo/montecarlo_shader.js";
@@ -31,6 +32,7 @@ export { HLinesShader } from "./layers/shaders/hlines/hlines_shader.js";
 export { ChromaShader } from "./layers/shaders/chroma/chroma_shader.js";
 export { ScrambleShader } from "./layers/shaders/scramble/scramble_shader.js";
 export { NegativeShader } from "./layers/shaders/negative/negative_shader.js";
+export { CrossesShader } from "./layers/shaders/crosses/crosses_shader.js";
 export type { ModulatorState } from "./modulators/imodulator.js";
 export type { LfoModulatorState } from "./modulators/lfo_modulator.js";
 export type { RingModulatorState } from "./modulators/ring_modulator.js";

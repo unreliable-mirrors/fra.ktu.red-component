@@ -8,7 +8,8 @@ export type ShaderType =
   | "hlines"
   | "chroma"
   | "scramble"
-  | "negative";
+  | "negative"
+  | "crosses";
 export type ModulatorType = "lfo" | "random" | "ring" | "compressor";
 
 export const AVAILABLE_LAYERS: LayerType[] = ["background", "video"];
@@ -22,6 +23,7 @@ export const AVAILABLE_SHADERS: ShaderType[] = [
   "chroma",
   "scramble",
   "negative",
+  "crosses",
 ];
 export const AVAILABLE_MODULATORS: ModulatorType[] = [
   "lfo",
@@ -33,6 +35,6 @@ export const AVAILABLE_MODULATORS: ModulatorType[] = [
 export const CATEGORIZED_SHADERS: Record<string, ShaderType[]> = {
   color: ["bnw", "negative"],
   distortion: ["montecarlo", "pixelate", "scramble"],
-  stylize: ["anaglyph", "hlines", "vlines"],
+  stylize: ["anaglyph", "crosses", "hlines", "vlines"],
   keying: ["chroma"],
 };

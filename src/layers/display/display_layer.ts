@@ -28,6 +28,10 @@ import {
   type ScrambleShaderState,
 } from "../shaders/scramble/scramble_shader.js";
 import { NegativeShader } from "../shaders/negative/negative_shader.js";
+import {
+  CrossesShader,
+  type CrossesShaderState,
+} from "../shaders/crosses/crosses_shader.js";
 
 export type DisplayLayerState = LayerState & {
   shaders: ShaderLayerState[];
@@ -127,6 +131,13 @@ export abstract class DisplayLayer extends BaseLayer {
             layer = new NegativeShader(
               this.sceneStateId,
               shader as ShaderLayerState,
+              this.sceneStateId + ".layers.!" + this._state.id + ".shaders",
+            );
+            break;
+          case "crosses":
+            layer = new CrossesShader(
+              this.sceneStateId,
+              shader as CrossesShaderState,
               this.sceneStateId + ".layers.!" + this._state.id + ".shaders",
             );
             break;

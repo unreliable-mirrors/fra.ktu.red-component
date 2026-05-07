@@ -33,6 +33,10 @@ import {
   type ScrambleShaderState,
 } from "../layers/shaders/scramble/scramble_shader.js";
 import { NegativeShader } from "../layers/shaders/negative/negative_shader.js";
+import {
+  CrossesShader,
+  type CrossesShaderState,
+} from "../layers/shaders/crosses/crosses_shader.js";
 
 export const subscribeToShaderUpdates = (sceneStateId: string) => {
   DataStore.getInstance().setStore(
@@ -128,6 +132,13 @@ export const subscribeToShaderUpdates = (sceneStateId: string) => {
               shaderInstance = new NegativeShader(
                 sceneStateId,
                 shader as ShaderLayerState,
+                sceneStateId + ".shaders",
+              );
+              break;
+            case "crosses":
+              shaderInstance = new CrossesShader(
+                sceneStateId,
+                shader as CrossesShaderState,
                 sceneStateId + ".shaders",
               );
               break;
