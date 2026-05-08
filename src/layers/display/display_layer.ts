@@ -38,6 +38,10 @@ import {
 } from "../shaders/recolour/recolour_shader.js";
 import { HNoiseShader } from "../shaders/hnoise/hnoise_shader.js";
 import type { HNoiseShaderState } from "../shaders/hnoise/hnoise_shader.js";
+import {
+  LightSplitShader,
+  type LightSplitShaderState,
+} from "../shaders/light_split/light_split_shader.js";
 
 export type DisplayLayerState = LayerState & {
   shaders: ShaderLayerState[];
@@ -158,6 +162,13 @@ export abstract class DisplayLayer extends BaseLayer {
             layer = new HNoiseShader(
               this.sceneStateId,
               shader as HNoiseShaderState,
+              this.sceneStateId + ".layers.!" + this._state.id + ".shaders",
+            );
+            break;
+          case "light_split":
+            layer = new LightSplitShader(
+              this.sceneStateId,
+              shader as LightSplitShaderState,
               this.sceneStateId + ".layers.!" + this._state.id + ".shaders",
             );
             break;

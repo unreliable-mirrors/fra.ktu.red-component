@@ -45,6 +45,10 @@ import {
   HNoiseShader,
   type HNoiseShaderState,
 } from "../layers/shaders/hnoise/hnoise_shader.js";
+import {
+  LightSplitShader,
+  type LightSplitShaderState,
+} from "../layers/shaders/light_split/light_split_shader.js";
 
 export const subscribeToShaderUpdates = (sceneStateId: string) => {
   DataStore.getInstance().setStore(
@@ -161,6 +165,13 @@ export const subscribeToShaderUpdates = (sceneStateId: string) => {
               shaderInstance = new HNoiseShader(
                 sceneStateId,
                 shader as HNoiseShaderState,
+                sceneStateId + ".shaders",
+              );
+              break;
+            case "light_split":
+              shaderInstance = new LightSplitShader(
+                sceneStateId,
+                shader as LightSplitShaderState,
                 sceneStateId + ".shaders",
               );
               break;
