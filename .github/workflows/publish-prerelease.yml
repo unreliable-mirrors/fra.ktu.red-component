@@ -32,6 +32,12 @@ jobs:
       - name: Build package
         run: npm run build
 
+      - name: Set alpha prerelease version
+        shell: bash
+        run: |
+          BASE_VERSION=$(node -p "require('./package.json').version.split('-')[0]")
+          npm version "$BASE_VERSION-alpha.${GITHUB_RUN_NUMBER}" --no-git-tag-version
+
       - name: Publish prerelease package
         run: npm publish --tag alpha
         env:
