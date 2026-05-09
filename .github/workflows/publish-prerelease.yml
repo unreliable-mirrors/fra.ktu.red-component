@@ -27,10 +27,13 @@ jobs:
           token: ${{ secrets.NPM_TOKEN }}
 
       - name: Verify npm token
-        if: ${{ secrets.NPM_TOKEN == '' }}
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
-          echo "NPM_TOKEN secret is not configured for this repository." >&2
-          exit 1
+          if [ -z "${NPM_TOKEN}" ]; then
+            echo "NPM_TOKEN secret is not configured for this repository." >&2
+            exit 1
+          fi
 
       - name: Install dependencies
         run: npm ci
