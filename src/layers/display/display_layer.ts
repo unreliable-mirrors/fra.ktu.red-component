@@ -42,6 +42,10 @@ import {
   LightSplitShader,
   type LightSplitShaderState,
 } from "../shaders/light_split/light_split_shader.js";
+import {
+  PosterizeShader,
+  type PosterizeShaderState,
+} from "../shaders/posterize/posterize_shader.js";
 
 export type DisplayLayerState = LayerState & {
   shaders: ShaderLayerState[];
@@ -169,6 +173,13 @@ export abstract class DisplayLayer extends BaseLayer {
             layer = new LightSplitShader(
               this.sceneStateId,
               shader as LightSplitShaderState,
+              this.sceneStateId + ".layers.!" + this._state.id + ".shaders",
+            );
+            break;
+          case "posterize":
+            layer = new PosterizeShader(
+              this.sceneStateId,
+              shader as PosterizeShaderState,
               this.sceneStateId + ".layers.!" + this._state.id + ".shaders",
             );
             break;

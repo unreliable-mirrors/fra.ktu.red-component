@@ -26,6 +26,7 @@ export type { CrossesShaderState } from "./layers/shaders/crosses/crosses_shader
 export type { RecolourShaderState } from "./layers/shaders/recolour/recolour_shader.js";
 export type { HNoiseShaderState } from "./layers/shaders/hnoise/hnoise_shader.js";
 export type { LightSplitShaderState } from "./layers/shaders/light_split/light_split_shader.js";
+export type { PosterizeShaderState } from "./layers/shaders/posterize/posterize_shader.js";
 export { PixelateShader } from "./layers/shaders/pixelate/pixelate_shader.js";
 export { BnwShader } from "./layers/shaders/bnw/bnw_shader.js";
 export { MontecarloShader } from "./layers/shaders/montecarlo/montecarlo_shader.js";
@@ -39,6 +40,7 @@ export { CrossesShader } from "./layers/shaders/crosses/crosses_shader.js";
 export { RecolourShader } from "./layers/shaders/recolour/recolour_shader.js";
 export { HNoiseShader } from "./layers/shaders/hnoise/hnoise_shader.js";
 export { LightSplitShader } from "./layers/shaders/light_split/light_split_shader.js";
+export { PosterizeShader } from "./layers/shaders/posterize/posterize_shader.js";
 export type { ModulatorState } from "./modulators/imodulator.js";
 export type { LfoModulatorState } from "./modulators/lfo_modulator.js";
 export type { RingModulatorState } from "./modulators/ring_modulator.js";

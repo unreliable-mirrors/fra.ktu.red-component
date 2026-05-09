@@ -49,6 +49,10 @@ import {
   LightSplitShader,
   type LightSplitShaderState,
 } from "../layers/shaders/light_split/light_split_shader.js";
+import {
+  PosterizeShader,
+  type PosterizeShaderState,
+} from "../layers/shaders/posterize/posterize_shader.js";
 
 export const subscribeToShaderUpdates = (sceneStateId: string) => {
   DataStore.getInstance().setStore(
@@ -172,6 +176,13 @@ export const subscribeToShaderUpdates = (sceneStateId: string) => {
               shaderInstance = new LightSplitShader(
                 sceneStateId,
                 shader as LightSplitShaderState,
+                sceneStateId + ".shaders",
+              );
+              break;
+            case "posterize":
+              shaderInstance = new PosterizeShader(
+                sceneStateId,
+                shader as PosterizeShaderState,
                 sceneStateId + ".shaders",
               );
               break;
