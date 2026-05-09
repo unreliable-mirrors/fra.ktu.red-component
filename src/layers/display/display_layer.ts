@@ -46,6 +46,10 @@ import {
   PosterizeShader,
   type PosterizeShaderState,
 } from "../shaders/posterize/posterize_shader.js";
+import {
+  BlurShader,
+  type BlurShaderState,
+} from "../shaders/blur/blur_shader.js";
 
 export type DisplayLayerState = LayerState & {
   shaders: ShaderLayerState[];
@@ -180,6 +184,13 @@ export abstract class DisplayLayer extends BaseLayer {
             layer = new PosterizeShader(
               this.sceneStateId,
               shader as PosterizeShaderState,
+              this.sceneStateId + ".layers.!" + this._state.id + ".shaders",
+            );
+            break;
+          case "blur":
+            layer = new BlurShader(
+              this.sceneStateId,
+              shader as BlurShaderState,
               this.sceneStateId + ".layers.!" + this._state.id + ".shaders",
             );
             break;

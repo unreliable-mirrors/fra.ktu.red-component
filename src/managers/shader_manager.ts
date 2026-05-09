@@ -53,6 +53,10 @@ import {
   PosterizeShader,
   type PosterizeShaderState,
 } from "../layers/shaders/posterize/posterize_shader.js";
+import {
+  BlurShader,
+  type BlurShaderState,
+} from "../layers/shaders/blur/blur_shader.js";
 
 export const subscribeToShaderUpdates = (sceneStateId: string) => {
   DataStore.getInstance().setStore(
@@ -183,6 +187,13 @@ export const subscribeToShaderUpdates = (sceneStateId: string) => {
               shaderInstance = new PosterizeShader(
                 sceneStateId,
                 shader as PosterizeShaderState,
+                sceneStateId + ".shaders",
+              );
+              break;
+            case "blur":
+              shaderInstance = new BlurShader(
+                sceneStateId,
+                shader as BlurShaderState,
                 sceneStateId + ".shaders",
               );
               break;
