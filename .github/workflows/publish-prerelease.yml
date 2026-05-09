@@ -23,7 +23,6 @@ jobs:
           node-version: 20
           cache: npm
           registry-url: https://registry.npmjs.org
-          scope: "@unreliable-mirrors"
           token: ${{ secrets.NPM_TOKEN }}
 
       - name: Verify npm token
@@ -48,4 +47,4 @@ jobs:
           npm version "$BASE_VERSION-alpha.${GITHUB_RUN_NUMBER}" --no-git-tag-version
 
       - name: Publish prerelease package
-        run: npm publish --access public --tag alpha
+        run: npm publish --tag alpha
