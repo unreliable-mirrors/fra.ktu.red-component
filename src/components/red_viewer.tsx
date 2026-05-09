@@ -18,6 +18,8 @@ class RedViewer extends KTUComponent {
     super({ binding: props.sceneState });
     this.sceneStateId = props.sceneState;
 
+    console.log("LALALALA");
+
     this.app = new Application();
 
     const options: Partial<ApplicationOptions> = {
