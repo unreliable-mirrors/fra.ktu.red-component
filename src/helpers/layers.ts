@@ -2,6 +2,7 @@ export type LayerType = "background" | "video";
 export type ShaderType =
   | "pixelate"
   | "blur"
+  | "hsb_blur"
   | "bnw"
   | "montecarlo"
   | "anaglyph"
@@ -21,6 +22,7 @@ export const AVAILABLE_LAYERS: LayerType[] = ["background", "video"];
 export const AVAILABLE_SHADERS: ShaderType[] = [
   "pixelate",
   "blur",
+  "hsb_blur",
   "bnw",
   "montecarlo",
   "anaglyph",
@@ -44,7 +46,7 @@ export const AVAILABLE_MODULATORS: ModulatorType[] = [
 
 export const CATEGORIZED_SHADERS: Record<string, ShaderType[]> = {
   color: ["bnw", "negative", "recolour", "light_split", "posterize"],
-  distortion: ["montecarlo", "pixelate", "scramble", "blur"],
+  distortion: ["montecarlo", "pixelate", "scramble", "blur", "hsb_blur"],
   stylize: ["anaglyph", "crosses", "hlines", "hnoise", "vlines"],
   keying: ["chroma"],
 };

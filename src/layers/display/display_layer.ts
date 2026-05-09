@@ -50,6 +50,10 @@ import {
   BlurShader,
   type BlurShaderState,
 } from "../shaders/blur/blur_shader.js";
+import {
+  HSBBlurShader,
+  type HSBBlurShaderState,
+} from "../shaders/hsb_blur/hsb_blur_shader.js";
 
 export type DisplayLayerState = LayerState & {
   shaders: ShaderLayerState[];
@@ -191,6 +195,13 @@ export abstract class DisplayLayer extends BaseLayer {
             layer = new BlurShader(
               this.sceneStateId,
               shader as BlurShaderState,
+              this.sceneStateId + ".layers.!" + this._state.id + ".shaders",
+            );
+            break;
+          case "hsb_blur":
+            layer = new HSBBlurShader(
+              this.sceneStateId,
+              shader as HSBBlurShaderState,
               this.sceneStateId + ".layers.!" + this._state.id + ".shaders",
             );
             break;

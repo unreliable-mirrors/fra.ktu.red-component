@@ -28,8 +28,10 @@ export type { HNoiseShaderState } from "./layers/shaders/hnoise/hnoise_shader.js
 export type { LightSplitShaderState } from "./layers/shaders/light_split/light_split_shader.js";
 export type { PosterizeShaderState } from "./layers/shaders/posterize/posterize_shader.js";
 export type { BlurShaderState } from "./layers/shaders/blur/blur_shader.js";
+export type { HSBBlurShaderState } from "./layers/shaders/hsb_blur/hsb_blur_shader.js";
 export { PixelateShader } from "./layers/shaders/pixelate/pixelate_shader.js";
 export { BlurShader } from "./layers/shaders/blur/blur_shader.js";
+export { HSBBlurShader } from "./layers/shaders/hsb_blur/hsb_blur_shader.js";
 export { BnwShader } from "./layers/shaders/bnw/bnw_shader.js";
 export { MontecarloShader } from "./layers/shaders/montecarlo/montecarlo_shader.js";
 export { AnaglyphShader } from "./layers/shaders/anaglyph/anaglyph_shader.js";

@@ -57,6 +57,10 @@ import {
   BlurShader,
   type BlurShaderState,
 } from "../layers/shaders/blur/blur_shader.js";
+import {
+  HSBBlurShader,
+  type HSBBlurShaderState,
+} from "../layers/shaders/hsb_blur/hsb_blur_shader.js";
 
 export const subscribeToShaderUpdates = (sceneStateId: string) => {
   DataStore.getInstance().setStore(
@@ -194,6 +198,13 @@ export const subscribeToShaderUpdates = (sceneStateId: string) => {
               shaderInstance = new BlurShader(
                 sceneStateId,
                 shader as BlurShaderState,
+                sceneStateId + ".shaders",
+              );
+              break;
+            case "hsb_blur":
+              shaderInstance = new HSBBlurShader(
+                sceneStateId,
+                shader as HSBBlurShaderState,
                 sceneStateId + ".shaders",
               );
               break;
