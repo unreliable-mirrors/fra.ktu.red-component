@@ -1,6 +1,6 @@
 {
-  "name": "fra.ktu.red-component",
-  "version": "0.0.1",
+  "name": "@unreliable-mirrors/fra.ktu.red-component",
+  "version": "0.1.0",
   "description": "fra.ktu.red renderer component for application use",
   "homepage": "https://github.com/unreliable-mirrors/fra.ktu.red-component#readme",
   "bugs": {
@@ -21,6 +21,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc && node scripts/copy-shaders.mjs",
     "ci": "npm run build"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
   },
   "devDependencies": {
     "@types/jszip": "^3.4.0",
