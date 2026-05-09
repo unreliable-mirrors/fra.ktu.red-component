@@ -12,6 +12,8 @@ permissions:
 jobs:
   publish-prerelease:
     runs-on: ubuntu-latest
+    env:
+      NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
     steps:
       - name: Checkout repository
@@ -33,6 +35,10 @@ jobs:
             echo "NPM_TOKEN secret is not configured for this repository." >&2
             exit 1
           fi
+
+      - name: Verify npm authentication
+        run: |
+          npm whoami
 
       - name: Verify npm ownership for package
         shell: bash
