@@ -73,6 +73,10 @@ import {
   BrightnessPosterizeShader,
   type BrightnessPosterizeShaderState,
 } from "../layers/shaders/brightness_posterize/brightness_posterize_shader.js";
+import {
+  PaletteRecolourShader,
+  type PaletteRecolourShaderState,
+} from "../layers/shaders/palette_recolour/palette_recolour_shader.js";
 
 export const subscribeToShaderUpdates = (sceneStateId: string) => {
   DataStore.getInstance().setStore(
@@ -238,6 +242,13 @@ export const subscribeToShaderUpdates = (sceneStateId: string) => {
               shaderInstance = new BrightnessPosterizeShader(
                 sceneStateId,
                 shader as BrightnessPosterizeShaderState,
+                sceneStateId + ".shaders",
+              );
+              break;
+            case "palette_recolour":
+              shaderInstance = new PaletteRecolourShader(
+                sceneStateId,
+                shader as PaletteRecolourShaderState,
                 sceneStateId + ".shaders",
               );
               break;

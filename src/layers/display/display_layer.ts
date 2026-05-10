@@ -66,6 +66,10 @@ import {
   BrightnessPosterizeShader,
   type BrightnessPosterizeShaderState,
 } from "../shaders/brightness_posterize/brightness_posterize_shader.js";
+import {
+  PaletteRecolourShader,
+  type PaletteRecolourShaderState,
+} from "../shaders/palette_recolour/palette_recolour_shader.js";
 
 export type DisplayLayerState = LayerState & {
   shaders: ShaderLayerState[];
@@ -235,6 +239,13 @@ export abstract class DisplayLayer extends BaseLayer {
             layer = new BrightnessPosterizeShader(
               this.sceneStateId,
               shader as BrightnessPosterizeShaderState,
+              this.sceneStateId + ".layers.!" + this._state.id + ".shaders",
+            );
+            break;
+          case "palette_recolour":
+            layer = new PaletteRecolourShader(
+              this.sceneStateId,
+              shader as PaletteRecolourShaderState,
               this.sceneStateId + ".layers.!" + this._state.id + ".shaders",
             );
             break;
