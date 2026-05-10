@@ -3,6 +3,7 @@ export type ShaderType =
   | "pixelate"
   | "blur"
   | "hsb_blur"
+  | "hue_offset"
   | "bnw"
   | "montecarlo"
   | "anaglyph"
@@ -23,6 +24,7 @@ export const AVAILABLE_SHADERS: ShaderType[] = [
   "pixelate",
   "blur",
   "hsb_blur",
+  "hue_offset",
   "bnw",
   "montecarlo",
   "anaglyph",
@@ -45,7 +47,14 @@ export const AVAILABLE_MODULATORS: ModulatorType[] = [
 ];
 
 export const CATEGORIZED_SHADERS: Record<string, ShaderType[]> = {
-  color: ["bnw", "negative", "recolour", "light_split", "posterize"],
+  color: [
+    "bnw",
+    "negative",
+    "recolour",
+    "light_split",
+    "posterize",
+    "hue_offset",
+  ],
   distortion: ["montecarlo", "pixelate", "scramble", "blur", "hsb_blur"],
   stylize: ["anaglyph", "crosses", "hlines", "hnoise", "vlines"],
   keying: ["chroma"],

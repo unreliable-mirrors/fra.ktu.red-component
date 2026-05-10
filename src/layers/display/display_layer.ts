@@ -54,6 +54,10 @@ import {
   HSBBlurShader,
   type HSBBlurShaderState,
 } from "../shaders/hsb_blur/hsb_blur_shader.js";
+import {
+  HueOffsetShader,
+  type HueOffsetShaderState,
+} from "../shaders/hue_offset/hue_offset_shader.js";
 
 export type DisplayLayerState = LayerState & {
   shaders: ShaderLayerState[];
@@ -202,6 +206,13 @@ export abstract class DisplayLayer extends BaseLayer {
             layer = new HSBBlurShader(
               this.sceneStateId,
               shader as HSBBlurShaderState,
+              this.sceneStateId + ".layers.!" + this._state.id + ".shaders",
+            );
+            break;
+          case "hue_offset":
+            layer = new HueOffsetShader(
+              this.sceneStateId,
+              shader as HueOffsetShaderState,
               this.sceneStateId + ".layers.!" + this._state.id + ".shaders",
             );
             break;

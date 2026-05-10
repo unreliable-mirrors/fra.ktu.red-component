@@ -61,6 +61,10 @@ import {
   HSBBlurShader,
   type HSBBlurShaderState,
 } from "../layers/shaders/hsb_blur/hsb_blur_shader.js";
+import {
+  HueOffsetShader,
+  type HueOffsetShaderState,
+} from "../layers/shaders/hue_offset/hue_offset_shader.js";
 
 export const subscribeToShaderUpdates = (sceneStateId: string) => {
   DataStore.getInstance().setStore(
@@ -205,6 +209,13 @@ export const subscribeToShaderUpdates = (sceneStateId: string) => {
               shaderInstance = new HSBBlurShader(
                 sceneStateId,
                 shader as HSBBlurShaderState,
+                sceneStateId + ".shaders",
+              );
+              break;
+            case "hue_offset":
+              shaderInstance = new HueOffsetShader(
+                sceneStateId,
+                shader as HueOffsetShaderState,
                 sceneStateId + ".shaders",
               );
               break;
