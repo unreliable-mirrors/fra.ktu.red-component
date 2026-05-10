@@ -69,6 +69,10 @@ import {
   HuePosterizeShader,
   type HuePosterizeShaderState,
 } from "../layers/shaders/hue_posterize/hue_posterize_shader.js";
+import {
+  BrightnessPosterizeShader,
+  type BrightnessPosterizeShaderState,
+} from "../layers/shaders/brightness_posterize/brightness_posterize_shader.js";
 
 export const subscribeToShaderUpdates = (sceneStateId: string) => {
   DataStore.getInstance().setStore(
@@ -227,6 +231,13 @@ export const subscribeToShaderUpdates = (sceneStateId: string) => {
               shaderInstance = new HuePosterizeShader(
                 sceneStateId,
                 shader as HuePosterizeShaderState,
+                sceneStateId + ".shaders",
+              );
+              break;
+            case "brightness_posterize":
+              shaderInstance = new BrightnessPosterizeShader(
+                sceneStateId,
+                shader as BrightnessPosterizeShaderState,
                 sceneStateId + ".shaders",
               );
               break;

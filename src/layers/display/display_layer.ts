@@ -62,6 +62,10 @@ import {
   HuePosterizeShader,
   type HuePosterizeShaderState,
 } from "../shaders/hue_posterize/hue_posterize_shader.js";
+import {
+  BrightnessPosterizeShader,
+  type BrightnessPosterizeShaderState,
+} from "../shaders/brightness_posterize/brightness_posterize_shader.js";
 
 export type DisplayLayerState = LayerState & {
   shaders: ShaderLayerState[];
@@ -224,6 +228,13 @@ export abstract class DisplayLayer extends BaseLayer {
             layer = new HuePosterizeShader(
               this.sceneStateId,
               shader as HuePosterizeShaderState,
+              this.sceneStateId + ".layers.!" + this._state.id + ".shaders",
+            );
+            break;
+          case "brightness_posterize":
+            layer = new BrightnessPosterizeShader(
+              this.sceneStateId,
+              shader as BrightnessPosterizeShaderState,
               this.sceneStateId + ".layers.!" + this._state.id + ".shaders",
             );
             break;
