@@ -58,6 +58,10 @@ import {
   HueOffsetShader,
   type HueOffsetShaderState,
 } from "../shaders/hue_offset/hue_offset_shader.js";
+import {
+  HuePosterizeShader,
+  type HuePosterizeShaderState,
+} from "../shaders/hue_posterize/hue_posterize_shader.js";
 
 export type DisplayLayerState = LayerState & {
   shaders: ShaderLayerState[];
@@ -213,6 +217,13 @@ export abstract class DisplayLayer extends BaseLayer {
             layer = new HueOffsetShader(
               this.sceneStateId,
               shader as HueOffsetShaderState,
+              this.sceneStateId + ".layers.!" + this._state.id + ".shaders",
+            );
+            break;
+          case "hue_posterize":
+            layer = new HuePosterizeShader(
+              this.sceneStateId,
+              shader as HuePosterizeShaderState,
               this.sceneStateId + ".layers.!" + this._state.id + ".shaders",
             );
             break;

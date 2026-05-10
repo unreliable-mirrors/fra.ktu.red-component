@@ -4,6 +4,7 @@ export type ShaderType =
   | "blur"
   | "hsb_blur"
   | "hue_offset"
+  | "hue_posterize"
   | "bnw"
   | "montecarlo"
   | "anaglyph"
@@ -25,6 +26,7 @@ export const AVAILABLE_SHADERS: ShaderType[] = [
   "blur",
   "hsb_blur",
   "hue_offset",
+  "hue_posterize",
   "bnw",
   "montecarlo",
   "anaglyph",
@@ -54,6 +56,7 @@ export const CATEGORIZED_SHADERS: Record<string, ShaderType[]> = {
     "light_split",
     "posterize",
     "hue_offset",
+    "hue_posterize",
   ],
   distortion: ["montecarlo", "pixelate", "scramble", "blur", "hsb_blur"],
   stylize: ["anaglyph", "crosses", "hlines", "hnoise", "vlines"],

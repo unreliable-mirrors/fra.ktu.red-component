@@ -65,6 +65,10 @@ import {
   HueOffsetShader,
   type HueOffsetShaderState,
 } from "../layers/shaders/hue_offset/hue_offset_shader.js";
+import {
+  HuePosterizeShader,
+  type HuePosterizeShaderState,
+} from "../layers/shaders/hue_posterize/hue_posterize_shader.js";
 
 export const subscribeToShaderUpdates = (sceneStateId: string) => {
   DataStore.getInstance().setStore(
@@ -216,6 +220,13 @@ export const subscribeToShaderUpdates = (sceneStateId: string) => {
               shaderInstance = new HueOffsetShader(
                 sceneStateId,
                 shader as HueOffsetShaderState,
+                sceneStateId + ".shaders",
+              );
+              break;
+            case "hue_posterize":
+              shaderInstance = new HuePosterizeShader(
+                sceneStateId,
+                shader as HuePosterizeShaderState,
                 sceneStateId + ".shaders",
               );
               break;
