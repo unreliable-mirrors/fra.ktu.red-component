@@ -74,6 +74,10 @@ import {
   type BrightnessPosterizeShaderState,
 } from "../layers/shaders/brightness_posterize/brightness_posterize_shader.js";
 import {
+  AdjustmentShader,
+  type AdjustmentShaderState,
+} from "../layers/shaders/adjustment/adjustment_shader.js";
+import {
   PaletteRecolourShader,
   type PaletteRecolourShaderState,
 } from "../layers/shaders/palette_recolour/palette_recolour_shader.js";
@@ -242,6 +246,13 @@ export const subscribeToShaderUpdates = (sceneStateId: string) => {
               shaderInstance = new BrightnessPosterizeShader(
                 sceneStateId,
                 shader as BrightnessPosterizeShaderState,
+                sceneStateId + ".shaders",
+              );
+              break;
+            case "adjustment":
+              shaderInstance = new AdjustmentShader(
+                sceneStateId,
+                shader as AdjustmentShaderState,
                 sceneStateId + ".shaders",
               );
               break;

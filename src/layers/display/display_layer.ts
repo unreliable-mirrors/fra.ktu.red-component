@@ -67,6 +67,10 @@ import {
   type BrightnessPosterizeShaderState,
 } from "../shaders/brightness_posterize/brightness_posterize_shader.js";
 import {
+  AdjustmentShader,
+  type AdjustmentShaderState,
+} from "../shaders/adjustment/adjustment_shader.js";
+import {
   PaletteRecolourShader,
   type PaletteRecolourShaderState,
 } from "../shaders/palette_recolour/palette_recolour_shader.js";
@@ -239,6 +243,13 @@ export abstract class DisplayLayer extends BaseLayer {
             layer = new BrightnessPosterizeShader(
               this.sceneStateId,
               shader as BrightnessPosterizeShaderState,
+              this.sceneStateId + ".layers.!" + this._state.id + ".shaders",
+            );
+            break;
+          case "adjustment":
+            layer = new AdjustmentShader(
+              this.sceneStateId,
+              shader as AdjustmentShaderState,
               this.sceneStateId + ".layers.!" + this._state.id + ".shaders",
             );
             break;

@@ -32,8 +32,10 @@ export type { HSBBlurShaderState } from "./layers/shaders/hsb_blur/hsb_blur_shad
 export type { HueOffsetShaderState } from "./layers/shaders/hue_offset/hue_offset_shader.js";
 export type { HuePosterizeShaderState } from "./layers/shaders/hue_posterize/hue_posterize_shader.js";
 export type { BrightnessPosterizeShaderState } from "./layers/shaders/brightness_posterize/brightness_posterize_shader.js";
+export type { AdjustmentShaderState } from "./layers/shaders/adjustment/adjustment_shader.js";
 export type { PaletteRecolourShaderState } from "./layers/shaders/palette_recolour/palette_recolour_shader.js";
 export { PixelateShader } from "./layers/shaders/pixelate/pixelate_shader.js";
+export { AdjustmentShader } from "./layers/shaders/adjustment/adjustment_shader.js";
 export { BlurShader } from "./layers/shaders/blur/blur_shader.js";
 export { HSBBlurShader } from "./layers/shaders/hsb_blur/hsb_blur_shader.js";
 export { HueOffsetShader } from "./layers/shaders/hue_offset/hue_offset_shader.js";

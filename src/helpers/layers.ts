@@ -1,6 +1,7 @@
 export type LayerType = "background" | "video";
 export type ShaderType =
   | "pixelate"
+  | "adjustment"
   | "blur"
   | "hsb_blur"
   | "hue_offset"
@@ -25,6 +26,7 @@ export type ModulatorType = "lfo" | "random" | "ring" | "compressor";
 export const AVAILABLE_LAYERS: LayerType[] = ["background", "video"];
 export const AVAILABLE_SHADERS: ShaderType[] = [
   "pixelate",
+  "adjustment",
   "blur",
   "hsb_blur",
   "hue_offset",
@@ -63,6 +65,7 @@ export const CATEGORIZED_SHADERS: Record<string, ShaderType[]> = {
     "hue_posterize",
     "brightness_posterize",
     "palette_recolour",
+    "adjustment",
   ],
   distortion: ["montecarlo", "pixelate", "scramble", "blur", "hsb_blur"],
   stylize: ["anaglyph", "crosses", "hlines", "hnoise", "vlines"],
