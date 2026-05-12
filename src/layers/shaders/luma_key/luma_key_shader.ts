@@ -4,7 +4,8 @@ import { ShaderLayer, type ShaderLayerState } from "../shader_layer.js";
 import fragment from "./luma_key_shader.frag?raw";
 
 export type LumaKeyShaderState = ShaderLayerState & {
-  threshold: number;
+  lowThreshold: number;
+  topThreshold: number;
   not: boolean;
 };
 
@@ -17,7 +18,8 @@ export class LumaKeyShader extends ShaderLayer {
       ...ShaderLayer.getDefaultState(sceneStateId),
       type: "luma_key",
       name: "luma_key_" + getCount(sceneStateId),
-      threshold: 0.5,
+      lowThreshold: 0.35,
+      topThreshold: 0.65,
       not: false,
     };
   }
@@ -28,15 +30,24 @@ export class LumaKeyShader extends ShaderLayer {
   }
 
   setupUniformValues(): { [key: string]: UniformData } {
+    const legacyThreshold = this.getFieldValue("threshold") ?? 0.5;
+    const lowThreshold = this.getFieldValue("lowThreshold") ?? legacyThreshold;
+    const topThreshold = this.getFieldValue("topThreshold") ?? legacyThreshold;
+
     return {
-      uThreshold: { value: this.getFieldValue("threshold"), type: "f32" },
+      uLowThreshold: { value: lowThreshold, type: "f32" },
+      uTopThreshold: { value: topThreshold, type: "f32" },
       uNot: { value: this.getFieldBoolean("not") ? 1 : 0, type: "i32" },
     };
   }
 
   updateUniforms(): void {
     super.updateUniforms();
-    this.uniforms.uniforms.uThreshold = this.getFieldValue("threshold");
+    const legacyThreshold = this.getFieldValue("threshold") ?? 0.5;
+    this.uniforms.uniforms.uLowThreshold =
+      this.getFieldValue("lowThreshold") ?? legacyThreshold;
+    this.uniforms.uniforms.uTopThreshold =
+      this.getFieldValue("topThreshold") ?? legacyThreshold;
     this.uniforms.uniforms.uNot = this.getFieldBoolean("not") ? 1 : 0;
   }
 }
