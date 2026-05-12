@@ -1,0 +1,39 @@
+{
+  "name": "fra.ktu.red-component",
+  "version": "0.1.0",
+  "description": "fra.ktu.red renderer component for application use",
+  "homepage": "https://github.com/unreliable-mirrors/fra.ktu.red-component#readme",
+  "bugs": {
+    "url": "https://github.com/unreliable-mirrors/fra.ktu.red-component/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/unreliable-mirrors/fra.ktu.red-component.git"
+  },
+  "license": "VMMU-EULA-1.0",
+  "author": "colorrin",
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc && node scripts/copy-shaders.mjs",
+    "ci": "npm run build"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org"
+  },
+  "devDependencies": {
+    "@types/jszip": "^3.4.0",
+    "texsaur": "^1.0.7",
+    "typescript": "^6.0.2"
+  },
+  "dependencies": {
+    "js-md5": "^0.8.3",
+    "jszip": "^3.10.1",
+    "pixi.js": "^8.18.1",
+    "rand-seed": "^3.0.0"
+  }
+}

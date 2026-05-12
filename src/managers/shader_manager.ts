@@ -81,6 +81,10 @@ import {
   PaletteRecolourShader,
   type PaletteRecolourShaderState,
 } from "../layers/shaders/palette_recolour/palette_recolour_shader.js";
+import {
+  LumaKeyShader,
+  type LumaKeyShaderState,
+} from "../layers/shaders/luma_key/luma_key_shader.js";
 
 export const subscribeToShaderUpdates = (sceneStateId: string) => {
   DataStore.getInstance().setStore(
@@ -260,6 +264,13 @@ export const subscribeToShaderUpdates = (sceneStateId: string) => {
               shaderInstance = new PaletteRecolourShader(
                 sceneStateId,
                 shader as PaletteRecolourShaderState,
+                sceneStateId + ".shaders",
+              );
+              break;
+            case "luma_key":
+              shaderInstance = new LumaKeyShader(
+                sceneStateId,
+                shader as LumaKeyShaderState,
                 sceneStateId + ".shaders",
               );
               break;

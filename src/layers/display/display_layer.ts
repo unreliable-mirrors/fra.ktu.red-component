@@ -74,6 +74,10 @@ import {
   PaletteRecolourShader,
   type PaletteRecolourShaderState,
 } from "../shaders/palette_recolour/palette_recolour_shader.js";
+import {
+  LumaKeyShader,
+  type LumaKeyShaderState,
+} from "../shaders/luma_key/luma_key_shader.js";
 
 export type DisplayLayerState = LayerState & {
   shaders: ShaderLayerState[];
@@ -257,6 +261,13 @@ export abstract class DisplayLayer extends BaseLayer {
             layer = new PaletteRecolourShader(
               this.sceneStateId,
               shader as PaletteRecolourShaderState,
+              this.sceneStateId + ".layers.!" + this._state.id + ".shaders",
+            );
+            break;
+          case "luma_key":
+            layer = new LumaKeyShader(
+              this.sceneStateId,
+              shader as LumaKeyShaderState,
               this.sceneStateId + ".layers.!" + this._state.id + ".shaders",
             );
             break;
