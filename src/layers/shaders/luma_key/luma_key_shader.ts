@@ -30,9 +30,8 @@ export class LumaKeyShader extends ShaderLayer {
   }
 
   setupUniformValues(): { [key: string]: UniformData } {
-    const legacyThreshold = this.getFieldValue("threshold") ?? 0.5;
-    const lowThreshold = this.getFieldValue("lowThreshold") ?? legacyThreshold;
-    const topThreshold = this.getFieldValue("topThreshold") ?? legacyThreshold;
+    const lowThreshold = this.getFieldValue("lowThreshold");
+    const topThreshold = this.getFieldValue("topThreshold");
 
     return {
       uLowThreshold: { value: lowThreshold, type: "f32" },

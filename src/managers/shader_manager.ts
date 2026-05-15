@@ -85,6 +85,10 @@ import {
   LumaKeyShader,
   type LumaKeyShaderState,
 } from "../layers/shaders/luma_key/luma_key_shader.js";
+import {
+  MaskToShader,
+  type MaskToShaderState,
+} from "../layers/shaders/mask_to/mask_to_shader.js";
 
 export const subscribeToShaderUpdates = (sceneStateId: string) => {
   DataStore.getInstance().setStore(
@@ -271,6 +275,13 @@ export const subscribeToShaderUpdates = (sceneStateId: string) => {
               shaderInstance = new LumaKeyShader(
                 sceneStateId,
                 shader as LumaKeyShaderState,
+                sceneStateId + ".shaders",
+              );
+              break;
+            case "mask_to":
+              shaderInstance = new MaskToShader(
+                sceneStateId,
+                shader as MaskToShaderState,
                 sceneStateId + ".shaders",
               );
               break;

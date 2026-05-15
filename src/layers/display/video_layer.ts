@@ -331,7 +331,6 @@ export class VideoLayer extends DisplayLayer {
       if (this.content && this.content === content) {
         this.reposition();
         this.applyPlaybackSpeed();
-        this.reshader();
       } else if (
         content.startsWith("data:image/gif;") ||
         content.indexOf(".gif") >= 0
@@ -357,7 +356,6 @@ export class VideoLayer extends DisplayLayer {
           application.stage.addChild(this.mainSprite);
           this.reposition();
           this.applyPlaybackSpeed();
-          this.reshader();
         });
       } else {
         const textureSrc = isVideoAsset(content)
@@ -373,7 +371,6 @@ export class VideoLayer extends DisplayLayer {
           application.stage.addChild(this.mainSprite);
           this.reposition();
           this.applyPlaybackSpeed();
-          this.reshader();
         });
       }
       this.content = content;
@@ -411,5 +408,7 @@ export class VideoLayer extends DisplayLayer {
 
     this.mainSprite.scale.x *= this.getFieldValue("hFlip") ? -1 : 1;
     this.mainSprite.scale.y *= this.getFieldValue("vFlip") ? -1 : 1;
+
+    this.mainSprite.visible = this.getFieldBoolean("visible");
   }
 }

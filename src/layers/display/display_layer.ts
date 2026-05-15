@@ -78,6 +78,10 @@ import {
   LumaKeyShader,
   type LumaKeyShaderState,
 } from "../shaders/luma_key/luma_key_shader.js";
+import {
+  MaskToShader,
+  type MaskToShaderState,
+} from "../shaders/mask_to/mask_to_shader.js";
 
 export type DisplayLayerState = LayerState & {
   shaders: ShaderLayerState[];
@@ -113,6 +117,7 @@ export abstract class DisplayLayer extends BaseLayer {
   }
 
   reshader(): void {
+    console.trace();
     for (const shader of this._state.shaders) {
       let layer = this.shaders.find((l) => l.id === shader.id);
       if (!layer) {
@@ -271,6 +276,13 @@ export abstract class DisplayLayer extends BaseLayer {
               this.sceneStateId + ".layers.!" + this._state.id + ".shaders",
             );
             break;
+          case "mask_to":
+            layer = new MaskToShader(
+              this.sceneStateId,
+              shader as MaskToShaderState,
+              this.sceneStateId + ".layers.!" + this._state.id + ".shaders",
+            );
+            break;
           default:
             layer = new PixelateShader(
               this.sceneStateId,
@@ -294,10 +306,15 @@ export abstract class DisplayLayer extends BaseLayer {
       }
     }
 
+    this.shaders = this._state.shaders.map((shaderState) => {
+      return this.shaders.find((l) => l.id === shaderState.id);
+    }) as ShaderLayer[];
+
     if (!this.mainSprite || this.mainSprite.destroyed) {
       return;
     }
     this.mainSprite.filters = this.shaders.map((s) => s.shader);
+    console.log("RESHADER", this.mainSprite.filters);
   }
 
   bind(): void {

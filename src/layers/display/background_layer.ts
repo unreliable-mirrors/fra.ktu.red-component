@@ -1,4 +1,4 @@
-import { Application, Graphics, Point, Ticker } from "pixi.js";
+import { Application, Graphics, Point, Sprite, Ticker } from "pixi.js";
 import { DisplayLayer, type DisplayLayerState } from "./display_layer.js";
 import { DataStore } from "../../index.js";
 import { getCount } from "../../helpers/ids.js";
@@ -12,7 +12,8 @@ export class BackgroundLayer extends DisplayLayer {
   declare _state: BackgroundLayerState;
   backgroundSize: Point;
 
-  declare mainSprite: Graphics;
+  graphics: Graphics;
+  declare mainSprite: Sprite;
 
   static getDefaultState(sceneStateId: string): BackgroundLayerState {
     return {
@@ -29,7 +30,8 @@ export class BackgroundLayer extends DisplayLayer {
     owner: string,
   ) {
     super(sceneStateId, state, owner);
-    this.mainSprite = new Graphics();
+    this.mainSprite = new Sprite();
+    this.graphics = new Graphics();
 
     const application = DataStore.getInstance().getStore(
       "application",
@@ -60,10 +62,14 @@ export class BackgroundLayer extends DisplayLayer {
   }
 
   innerRepaint() {
-    this.mainSprite.clear();
-    this.mainSprite
+    this.graphics.clear();
+    this.graphics
       .rect(0, 0, this.backgroundSize.x, this.backgroundSize.y)
       .fill({ color: this.getFieldValue("color") });
+    const texture = DataStore.getInstance()
+      .getStore("application")
+      .renderer.generateTexture(this.graphics);
+    this.mainSprite.texture = texture;
     this.mainSprite.visible = this._state.visible;
   }
 }
