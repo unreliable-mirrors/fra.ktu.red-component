@@ -348,7 +348,7 @@ export class VideoLayer extends DisplayLayer {
             onFrameChange: (_currentFrame: number) => {
               EventDispatcher.getInstance().dispatchEvent(
                 this.sceneStateId + ".layers.!" + this._state.id,
-                "change",
+                "frame",
                 { sprite: this.mainSprite },
               );
             },

@@ -12,6 +12,7 @@ import { ShaderLayer, type ShaderLayerState } from "../shader_layer.js";
 import fragment from "./mask_to_shader.frag?raw";
 import vertex from "./mask_to_shader.vert?raw";
 import { DataStore } from "../../../ktu/ui/core/data_store.js";
+import { EventDispatcher } from "../../../ktu/ui/core/event_dispatcher.js";
 
 export type MaskToShaderState = ShaderLayerState & {
   lowThreshold: number;
@@ -22,6 +23,7 @@ export type MaskToShaderState = ShaderLayerState & {
 
 type MaskToTexture = {
   name: "base";
+  layerId?: number;
   texture: Texture;
   sprite: Sprite;
   matrix: TextureMatrix;
@@ -32,6 +34,8 @@ export class MaskToShader extends ShaderLayer {
   fragment: string = fragment;
 
   base!: MaskToTexture;
+
+  handleLayerChangeWrapper: Function = this.handleLayerChange.bind(this);
 
   static getDefaultState(sceneStateId: string): MaskToShaderState {
     return {
@@ -54,7 +58,7 @@ export class MaskToShader extends ShaderLayer {
 
   tick(time: any, loop: boolean): void {
     super.tick(time, loop);
-    this.setupTexture();
+    this.evaluateTexture();
   }
 
   setupUniformValues(): { [key: string]: UniformData } {
@@ -105,6 +109,7 @@ export class MaskToShader extends ShaderLayer {
 
     return {
       name: name,
+      layerId: this._state.baseLayerId,
       texture,
       sprite,
       matrix: new TextureMatrix(texture),
@@ -127,31 +132,54 @@ export class MaskToShader extends ShaderLayer {
     }
   }
 
-  setupTexture() {
+  evaluateTexture(force: boolean = false) {
+    const baseSprite = this.getBaseSprite();
+    if (baseSprite) {
+      const different = this.base.sprite.texture !== baseSprite.texture;
+      if (different || force) {
+        if (this.base.layerId && different) {
+          EventDispatcher.getInstance().removeEventListener(
+            this.sceneStateId + ".layers.!" + this.base.layerId,
+            "frame",
+            this.handleLayerChangeWrapper,
+          );
+        }
+        this.base = this.buildTexture("base", baseSprite);
+        this.setBaseTexture(this.base);
+        if (this.base.layerId && different) {
+          EventDispatcher.getInstance().addEventListener(
+            this.sceneStateId + ".layers.!" + this.base.layerId,
+            "frame",
+            this.handleLayerChangeWrapper,
+          );
+          console.log("Listening to layer", this.base.layerId);
+        }
+      }
+    }
+  }
+
+  handleLayerChange() {
+    this.evaluateTexture(true);
+  }
+
+  getBaseSprite(): Sprite | null {
     const baseLayerId = this.getFieldValue("baseLayerId");
     if (baseLayerId !== undefined) {
       const baseLayer = DataStore.getInstance().getStore(
         "instances." + this.sceneStateId + ".layers.!" + baseLayerId,
       );
       if (baseLayer) {
-        const baseSprite = baseLayer.mainSprite;
-        if (baseSprite) {
-          this.base = this.buildTexture("base", baseSprite);
-          this.setBaseTexture(this.base);
-        } else {
-          console.log("Base layer has no sprite", baseLayer);
-        }
+        return baseLayer.mainSprite;
       } else {
         console.log("No layer found with id", baseLayerId);
       }
-    } else {
-      console.log("No baseLayerId set for MaskToShader", this.id);
     }
+    return null;
   }
 
   onStateChange(): void {
     super.onStateChange();
     console.log("ON STATE CHANGE", this.id, this._state);
-    this.setupTexture();
+    this.evaluateTexture();
   }
 }

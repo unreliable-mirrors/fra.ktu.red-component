@@ -117,7 +117,6 @@ export abstract class DisplayLayer extends BaseLayer {
   }
 
   reshader(): void {
-    console.trace();
     for (const shader of this._state.shaders) {
       let layer = this.shaders.find((l) => l.id === shader.id);
       if (!layer) {
