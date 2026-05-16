@@ -5,6 +5,7 @@ import {
   AnaglyphShader,
   BnwShader,
   DataStore,
+  EventDispatcher,
   MontecarloShader,
   PixelateShader,
   VLinesShader,
@@ -106,10 +107,20 @@ export abstract class DisplayLayer extends BaseLayer {
   onStateChange(): void {
     this.repaint();
     this.reshader();
+    EventDispatcher.getInstance().dispatchEvent(
+      this.sceneStateId + ".layers.!" + this._state.id,
+      "frame",
+      { state: this._state },
+    );
   }
 
   onSignalChange(): void {
     this.repaint();
+    EventDispatcher.getInstance().dispatchEvent(
+      this.sceneStateId + ".layers.!" + this._state.id,
+      "frame",
+      { state: this._state },
+    );
   }
 
   repaint(): void {

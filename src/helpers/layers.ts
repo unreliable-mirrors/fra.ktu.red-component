@@ -1,4 +1,4 @@
-export type LayerType = "background" | "video";
+export type LayerType = "background" | "video" | "camera";
 export type ShaderType =
   | "pixelate"
   | "adjustment"
@@ -25,7 +25,7 @@ export type ShaderType =
   | "mask_to";
 export type ModulatorType = "lfo" | "random" | "ring" | "compressor";
 
-export const AVAILABLE_LAYERS: LayerType[] = ["background", "video"];
+export const AVAILABLE_LAYERS: LayerType[] = ["background", "video", "camera"];
 export const AVAILABLE_SHADERS: ShaderType[] = [
   "pixelate",
   "adjustment",

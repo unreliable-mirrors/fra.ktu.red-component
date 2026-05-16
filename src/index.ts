@@ -13,6 +13,8 @@ export type { BackgroundLayerState } from "./layers/display/background_layer.js"
 export { BackgroundLayer } from "./layers/display/background_layer.js";
 export type { VideoLayerState } from "./layers/display/video_layer.js";
 export { VideoLayer } from "./layers/display/video_layer.js";
+export type { CameraLayerState } from "./layers/display/camera_layer.js";
+export { CameraLayer } from "./layers/display/camera_layer.js";
 
 export type { ShaderLayerState } from "./layers/shaders/shader_layer.js";
 export type { PixelateShaderState } from "./layers/shaders/pixelate/pixelate_shader.js";

@@ -11,6 +11,10 @@ import {
   VideoLayer,
   type VideoLayerState,
 } from "../layers/display/video_layer.js";
+import {
+  CameraLayer,
+  type CameraLayerState,
+} from "../layers/display/camera_layer.js";
 
 let lastElapsedTime: number = 0;
 
@@ -65,6 +69,13 @@ export const subscribeToLayerUpdates = (sceneStateId: string) => {
               layer = new VideoLayer(
                 sceneStateId,
                 layerState as VideoLayerState,
+                sceneStateId + ".layers",
+              );
+              break;
+            case "camera":
+              layer = new CameraLayer(
+                sceneStateId,
+                layerState as CameraLayerState,
                 sceneStateId + ".layers",
               );
               break;
