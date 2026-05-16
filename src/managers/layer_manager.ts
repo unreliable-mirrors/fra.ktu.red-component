@@ -59,6 +59,20 @@ const getTopLayerAtPoint = (
   return undefined;
 };
 
+const dispatchLayerMouseMove = (
+  sceneStateId: string,
+  layer: DisplayLayer,
+  x: number,
+  y: number,
+) => {
+  EventDispatcher.getInstance().dispatchEvent(sceneStateId, "mouseMove", {
+    state: layer._state,
+    layerId: layer.id,
+    x,
+    y,
+  });
+};
+
 const bindCanvasPointerHandlers = (
   sceneStateId: string,
   application: Application,
@@ -122,6 +136,25 @@ const bindCanvasPointerHandlers = (
     );
   });
 
+  application.stage.on("pointermove", (event: any) => {
+    const x = event?.global?.x;
+    const y = event?.global?.y;
+    if (x === undefined || y === undefined) {
+      return;
+    }
+
+    const pressedLayerId = activePressedLayerByScene.get(sceneStateId);
+    const layer =
+      (pressedLayerId !== undefined
+        ? getLayerById(sceneStateId, pressedLayerId)
+        : undefined) || getTopLayerAtPoint(sceneStateId, x, y);
+    if (!layer) {
+      return;
+    }
+
+    dispatchLayerMouseMove(sceneStateId, layer, x, y);
+  });
+
   if (typeof window !== "undefined") {
     window.addEventListener("pointerup", (event: PointerEvent) => {
       const pressedLayerId = activePressedLayerByScene.get(sceneStateId);
@@ -153,6 +186,37 @@ const bindCanvasPointerHandlers = (
           y,
         },
       );
+    });
+
+    window.addEventListener("pointermove", (event: PointerEvent) => {
+      const pressedLayerId = activePressedLayerByScene.get(sceneStateId);
+      if (pressedLayerId === undefined) {
+        return;
+      }
+
+      const rect = application.canvas.getBoundingClientRect();
+      const isOutsideCanvas =
+        event.clientX < rect.left ||
+        event.clientX > rect.right ||
+        event.clientY < rect.top ||
+        event.clientY > rect.bottom;
+      if (!isOutsideCanvas) {
+        return;
+      }
+
+      const layer = getLayerById(sceneStateId, pressedLayerId);
+      if (!layer) {
+        return;
+      }
+
+      const x =
+        ((event.clientX - rect.left) / Math.max(rect.width, 1)) *
+        application.screen.width;
+      const y =
+        ((event.clientY - rect.top) / Math.max(rect.height, 1)) *
+        application.screen.height;
+
+      dispatchLayerMouseMove(sceneStateId, layer, x, y);
     });
   }
 
