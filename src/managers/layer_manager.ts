@@ -17,12 +17,154 @@ import {
 } from "../layers/display/camera_layer.js";
 
 let lastElapsedTime: number = 0;
+const pointerHandlersAttached = new Set<string>();
+const activePressedLayerByScene = new Map<string, number>();
+
+const getLayerById = (
+  sceneStateId: string,
+  layerId: number,
+): DisplayLayer | undefined => {
+  const layers = DataStore.getInstance().getStore(
+    "instances." + sceneStateId + ".layers",
+  ) as DisplayLayer[];
+  return layers.find((layer) => layer.id === layerId);
+};
+
+const getTopLayerAtPoint = (
+  sceneStateId: string,
+  x: number,
+  y: number,
+): DisplayLayer | undefined => {
+  const layers = DataStore.getInstance().getStore(
+    "instances." + sceneStateId + ".layers",
+  ) as DisplayLayer[];
+  for (let i = layers.length - 1; i >= 0; i--) {
+    const layer = layers[i];
+    if (!layer || !layer.mainSprite || layer.mainSprite.destroyed) {
+      continue;
+    }
+    if (!layer.mainSprite.visible) {
+      continue;
+    }
+    const bounds = layer.mainSprite.getBounds() as any;
+    if (
+      x >= bounds.minX &&
+      x <= bounds.maxX &&
+      y >= bounds.minY &&
+      y <= bounds.maxY
+    ) {
+      return layer;
+    }
+  }
+  return undefined;
+};
+
+const bindCanvasPointerHandlers = (
+  sceneStateId: string,
+  application: Application,
+) => {
+  if (pointerHandlersAttached.has(sceneStateId)) {
+    return;
+  }
+
+  application.stage.eventMode = "static";
+  application.stage.hitArea = application.screen;
+
+  application.stage.on("pointerdown", (event: any) => {
+    const x = event?.global?.x;
+    const y = event?.global?.y;
+    if (x === undefined || y === undefined) {
+      return;
+    }
+
+    const layer = getTopLayerAtPoint(sceneStateId, x, y);
+    if (!layer) {
+      activePressedLayerByScene.delete(sceneStateId);
+      return;
+    }
+
+    activePressedLayerByScene.set(sceneStateId, layer.id);
+
+    EventDispatcher.getInstance().dispatchEvent(sceneStateId, "layerClick", {
+      state: layer._state,
+      layerId: layer.id,
+      x,
+      y,
+    });
+  });
+
+  application.stage.on("pointerup", (event: any) => {
+    const x = event?.global?.x;
+    const y = event?.global?.y;
+    if (x === undefined || y === undefined) {
+      return;
+    }
+
+    const pressedLayerId = activePressedLayerByScene.get(sceneStateId);
+    const layer =
+      (pressedLayerId !== undefined
+        ? getLayerById(sceneStateId, pressedLayerId)
+        : undefined) || getTopLayerAtPoint(sceneStateId, x, y);
+    activePressedLayerByScene.delete(sceneStateId);
+    if (!layer) {
+      return;
+    }
+
+    EventDispatcher.getInstance().dispatchEvent(
+      sceneStateId,
+      "layerClickRelease",
+      {
+        state: layer._state,
+        layerId: layer.id,
+        x,
+        y,
+      },
+    );
+  });
+
+  if (typeof window !== "undefined") {
+    window.addEventListener("pointerup", (event: PointerEvent) => {
+      const pressedLayerId = activePressedLayerByScene.get(sceneStateId);
+      if (pressedLayerId === undefined) {
+        return;
+      }
+
+      activePressedLayerByScene.delete(sceneStateId);
+      const layer = getLayerById(sceneStateId, pressedLayerId);
+      if (!layer) {
+        return;
+      }
+
+      const rect = application.canvas.getBoundingClientRect();
+      const x =
+        ((event.clientX - rect.left) / Math.max(rect.width, 1)) *
+        application.screen.width;
+      const y =
+        ((event.clientY - rect.top) / Math.max(rect.height, 1)) *
+        application.screen.height;
+
+      EventDispatcher.getInstance().dispatchEvent(
+        sceneStateId,
+        "layerClickRelease",
+        {
+          state: layer._state,
+          layerId: layer.id,
+          x,
+          y,
+        },
+      );
+    });
+  }
+
+  pointerHandlersAttached.add(sceneStateId);
+};
 
 export const subscribeToLayerUpdates = (sceneStateId: string) => {
   DataStore.getInstance().setStore("instances." + sceneStateId + ".layers", []);
   const application = DataStore.getInstance().getStore(
     "application",
   ) as Application;
+  bindCanvasPointerHandlers(sceneStateId, application);
   application.ticker.add((time) => {
     let loop = false;
     if (
