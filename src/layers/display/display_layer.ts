@@ -90,8 +90,11 @@ export type DisplayLayerState = LayerState & {
 
 export abstract class DisplayLayer extends BaseLayer {
   declare _state: DisplayLayerState;
-  mainSprite!: Sprite | Graphics;
+  mainSprite!: Sprite;
   shaders: ShaderLayer[] = [];
+  private clickBoundSprite?: Sprite;
+  private handleSpriteClickWrapper: Function =
+    this.handleSpriteClick.bind(this);
 
   static getDefaultState(sceneStateId: string): DisplayLayerState {
     return {
@@ -125,6 +128,46 @@ export abstract class DisplayLayer extends BaseLayer {
 
   repaint(): void {
     this.innerRepaint();
+    this.bindSpriteClick();
+  }
+
+  private bindSpriteClick(): void {
+    if (!this.mainSprite) {
+      this.unbindSpriteClick();
+      return;
+    }
+
+    if (this.clickBoundSprite === this.mainSprite) {
+      return;
+    }
+
+    this.unbindSpriteClick();
+    this.mainSprite.eventMode = "static";
+    this.mainSprite.on("pointertap", this.handleSpriteClickWrapper as any);
+    this.clickBoundSprite = this.mainSprite;
+  }
+
+  private unbindSpriteClick(): void {
+    if (this.clickBoundSprite) {
+      this.clickBoundSprite.off(
+        "pointertap",
+        this.handleSpriteClickWrapper as any,
+      );
+      this.clickBoundSprite = undefined;
+    }
+  }
+
+  private handleSpriteClick(event: any): void {
+    EventDispatcher.getInstance().dispatchEvent(
+      this.sceneStateId,
+      "layerClick",
+      {
+        state: this._state,
+        layerId: this._state.id,
+        x: event?.global?.x,
+        y: event?.global?.y,
+      },
+    );
   }
 
   reshader(): void {
@@ -333,6 +376,7 @@ export abstract class DisplayLayer extends BaseLayer {
 
   unbind() {
     super.unbind();
+    this.unbindSpriteClick();
     const application = DataStore.getInstance().getStore(
       "application",
     ) as Application;

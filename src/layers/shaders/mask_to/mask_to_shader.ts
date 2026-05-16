@@ -52,8 +52,14 @@ export class MaskToShader extends ShaderLayer {
     super(sceneStateId, state, owner);
   }
 
-  bind(): void {
-    super.bind();
+  unbind(): void {
+    super.unbind();
+    EventDispatcher.getInstance().removeEventListener(
+      this.sceneStateId + ".layers.!" + this.base.layerId,
+      "frame",
+      this.handleLayerChangeWrapper,
+    );
+    this.base = undefined as any;
   }
 
   tick(time: any, loop: boolean): void {
