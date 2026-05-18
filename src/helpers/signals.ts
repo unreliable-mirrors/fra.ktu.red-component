@@ -12,6 +12,33 @@ export type SignalValue = {
   emulator?: number;
 };
 
+const getNormalizedMousePosition = (
+  sceneStateId: string,
+  axis: "x" | "y",
+): number => {
+  const dimension =
+    axis === "x"
+      ? DataStore.getInstance().getStore(sceneStateId + ".width")
+      : DataStore.getInstance().getStore(sceneStateId + ".height");
+  const mouse =
+    axis === "x"
+      ? DataStore.getInstance().getStore(
+          "instances." + sceneStateId + ".mouseX",
+        )
+      : DataStore.getInstance().getStore(
+          "instances." + sceneStateId + ".mouseY",
+        );
+
+  const safeDimension = Number(dimension) || 0;
+  const safeMouse = Number(mouse) || 0;
+  if (safeDimension <= 0) {
+    return 0;
+  }
+
+  const value = safeMouse / safeDimension;
+  return Math.min(1, Math.max(0, value));
+};
+
 export const getSignalValue = (
   signal: string,
   sceneStateId: string,
@@ -50,6 +77,16 @@ export const getAvailableSignals = (sceneStateId: string): Signal[] => {
       getValue: () =>
         DataStore.getInstance().getStore(sceneStateId + ".height") || 0,
       changed: false,
+    },
+    {
+      name: "scene.mouseX",
+      getValue: () => getNormalizedMousePosition(sceneStateId, "x"),
+      changed: true,
+    },
+    {
+      name: "scene.mouseY",
+      getValue: () => getNormalizedMousePosition(sceneStateId, "y"),
+      changed: true,
     },
     {
       name: "scene.elapsedTime",

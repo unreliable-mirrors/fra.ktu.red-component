@@ -73,6 +73,11 @@ const dispatchLayerMouseMove = (
   });
 };
 
+const setMousePosition = (sceneStateId: string, x: number, y: number) => {
+  DataStore.getInstance().setStore("instances." + sceneStateId + ".mouseX", x);
+  DataStore.getInstance().setStore("instances." + sceneStateId + ".mouseY", y);
+};
+
 const bindCanvasPointerHandlers = (
   sceneStateId: string,
   application: Application,
@@ -90,6 +95,8 @@ const bindCanvasPointerHandlers = (
     if (x === undefined || y === undefined) {
       return;
     }
+
+    setMousePosition(sceneStateId, x, y);
 
     const layer = getTopLayerAtPoint(sceneStateId, x, y);
     if (!layer) {
@@ -113,6 +120,8 @@ const bindCanvasPointerHandlers = (
     if (x === undefined || y === undefined) {
       return;
     }
+
+    setMousePosition(sceneStateId, x, y);
 
     const pressedLayerId = activePressedLayerByScene.get(sceneStateId);
     const layer =
@@ -142,6 +151,8 @@ const bindCanvasPointerHandlers = (
     if (x === undefined || y === undefined) {
       return;
     }
+
+    setMousePosition(sceneStateId, x, y);
 
     const pressedLayerId = activePressedLayerByScene.get(sceneStateId);
     const layer =
@@ -175,6 +186,8 @@ const bindCanvasPointerHandlers = (
       const y =
         ((event.clientY - rect.top) / Math.max(rect.height, 1)) *
         application.screen.height;
+
+      setMousePosition(sceneStateId, x, y);
 
       EventDispatcher.getInstance().dispatchEvent(
         sceneStateId,
@@ -216,6 +229,8 @@ const bindCanvasPointerHandlers = (
         ((event.clientY - rect.top) / Math.max(rect.height, 1)) *
         application.screen.height;
 
+      setMousePosition(sceneStateId, x, y);
+
       dispatchLayerMouseMove(sceneStateId, layer, x, y);
     });
   }
@@ -225,6 +240,8 @@ const bindCanvasPointerHandlers = (
 
 export const subscribeToLayerUpdates = (sceneStateId: string) => {
   DataStore.getInstance().setStore("instances." + sceneStateId + ".layers", []);
+  DataStore.getInstance().setStore("instances." + sceneStateId + ".mouseX", 0);
+  DataStore.getInstance().setStore("instances." + sceneStateId + ".mouseY", 0);
   const application = DataStore.getInstance().getStore(
     "application",
   ) as Application;
