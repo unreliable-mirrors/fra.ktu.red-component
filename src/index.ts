@@ -38,6 +38,7 @@ export type { AdjustmentShaderState } from "./layers/shaders/adjustment/adjustme
 export type { PaletteRecolourShaderState } from "./layers/shaders/palette_recolour/palette_recolour_shader.js";
 export type { LumaKeyShaderState } from "./layers/shaders/luma_key/luma_key_shader.js";
 export type { MaskToShaderState } from "./layers/shaders/mask_to/mask_to_shader.js";
+export type { MaskFromShaderState } from "./layers/shaders/mask_from/mask_from_shader.js";
 export { PixelateShader } from "./layers/shaders/pixelate/pixelate_shader.js";
 export { AdjustmentShader } from "./layers/shaders/adjustment/adjustment_shader.js";
 export { BlurShader } from "./layers/shaders/blur/blur_shader.js";
@@ -61,6 +62,7 @@ export { LightSplitShader } from "./layers/shaders/light_split/light_split_shade
 export { PosterizeShader } from "./layers/shaders/posterize/posterize_shader.js";
 export { LumaKeyShader } from "./layers/shaders/luma_key/luma_key_shader.js";
 export { MaskToShader } from "./layers/shaders/mask_to/mask_to_shader.js";
+export { MaskFromShader } from "./layers/shaders/mask_from/mask_from_shader.js";
 export type { ModulatorState } from "./modulators/imodulator.js";
 export type { LfoModulatorState } from "./modulators/lfo_modulator.js";
 export type { RingModulatorState } from "./modulators/ring_modulator.js";

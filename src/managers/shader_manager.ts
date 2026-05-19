@@ -89,6 +89,10 @@ import {
   MaskToShader,
   type MaskToShaderState,
 } from "../layers/shaders/mask_to/mask_to_shader.js";
+import {
+  MaskFromShader,
+  type MaskFromShaderState,
+} from "../layers/shaders/mask_from/mask_from_shader.js";
 
 export const subscribeToShaderUpdates = (sceneStateId: string) => {
   DataStore.getInstance().setStore(
@@ -282,6 +286,13 @@ export const subscribeToShaderUpdates = (sceneStateId: string) => {
               shaderInstance = new MaskToShader(
                 sceneStateId,
                 shader as MaskToShaderState,
+                sceneStateId + ".shaders",
+              );
+              break;
+            case "mask_from":
+              shaderInstance = new MaskFromShader(
+                sceneStateId,
+                shader as MaskFromShaderState,
                 sceneStateId + ".shaders",
               );
               break;

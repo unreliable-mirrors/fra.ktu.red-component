@@ -83,6 +83,10 @@ import {
   MaskToShader,
   type MaskToShaderState,
 } from "../shaders/mask_to/mask_to_shader.js";
+import {
+  MaskFromShader,
+  type MaskFromShaderState,
+} from "../shaders/mask_from/mask_from_shader.js";
 
 export type DisplayLayerState = LayerState & {
   shaders: ShaderLayerState[];
@@ -290,6 +294,13 @@ export abstract class DisplayLayer extends BaseLayer {
             layer = new MaskToShader(
               this.sceneStateId,
               shader as MaskToShaderState,
+              this.sceneStateId + ".layers.!" + this._state.id + ".shaders",
+            );
+            break;
+          case "mask_from":
+            layer = new MaskFromShader(
+              this.sceneStateId,
+              shader as MaskFromShaderState,
               this.sceneStateId + ".layers.!" + this._state.id + ".shaders",
             );
             break;

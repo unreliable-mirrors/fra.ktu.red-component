@@ -1,0 +1,191 @@
+import {
+  type UniformData,
+  Application,
+  Matrix,
+  Sprite,
+  Texture,
+  TextureMatrix,
+  TextureSource,
+} from "pixi.js";
+import { getCount } from "../../../helpers/ids.js";
+import { ShaderLayer, type ShaderLayerState } from "../shader_layer.js";
+import fragment from "./mask_from_shader.frag?raw";
+import vertex from "./mask_from_shader.vert?raw";
+import { DataStore } from "../../../ktu/ui/core/data_store.js";
+import { EventDispatcher } from "../../../ktu/ui/core/event_dispatcher.js";
+
+export type MaskFromShaderState = ShaderLayerState & {
+  lowThreshold: number;
+  topThreshold: number;
+  inverse: boolean;
+  baseLayerId?: number;
+};
+
+type MaskFromTexture = {
+  name: "base";
+  layerId?: number;
+  texture: Texture;
+  sprite: Sprite;
+  matrix: TextureMatrix;
+};
+
+export class MaskFromShader extends ShaderLayer {
+  declare _state: MaskFromShaderState;
+  fragment: string = fragment;
+
+  base!: MaskFromTexture;
+
+  handleLayerChangeWrapper: Function = this.handleLayerChange.bind(this);
+
+  static getDefaultState(sceneStateId: string): MaskFromShaderState {
+    return {
+      ...ShaderLayer.getDefaultState(sceneStateId),
+      type: "mask_from",
+      name: "mask_from_" + getCount(sceneStateId),
+      lowThreshold: 0.35,
+      topThreshold: 0.65,
+      inverse: false,
+    };
+  }
+
+  constructor(sceneStateId: string, state: MaskFromShaderState, owner: string) {
+    super(sceneStateId, state, owner);
+  }
+
+  unbind(): void {
+    super.unbind();
+    EventDispatcher.getInstance().removeEventListener(
+      this.sceneStateId + ".layers.!" + this.base.layerId,
+      "frame",
+      this.handleLayerChangeWrapper,
+    );
+    this.base = undefined as any;
+  }
+
+  tick(time: any, loop: boolean): void {
+    super.tick(time, loop);
+    this.evaluateTexture();
+  }
+
+  setupUniformValues(): { [key: string]: UniformData } {
+    const lowThreshold = this.getFieldValue("lowThreshold");
+    const topThreshold = this.getFieldValue("topThreshold");
+
+    return {
+      uBaseMatrix: { value: new Matrix(), type: "mat3x3<f32>" },
+      uLowThreshold: { value: lowThreshold, type: "f32" },
+      uTopThreshold: { value: topThreshold, type: "f32" },
+      uInverse: { value: this.getFieldBoolean("inverse") ? 1 : 0, type: "i32" },
+    };
+  }
+
+  updateUniforms(): void {
+    super.updateUniforms();
+    const legacyThreshold = this.getFieldValue("threshold") ?? 0.5;
+    this.uniforms.uniforms.uLowThreshold =
+      this.getFieldValue("lowThreshold") ?? legacyThreshold;
+    this.uniforms.uniforms.uTopThreshold =
+      this.getFieldValue("topThreshold") ?? legacyThreshold;
+    this.uniforms.uniforms.uInverse = this.getFieldBoolean("inverse") ? 1 : 0;
+  }
+
+  getExtraTextures(): { [key: string]: TextureSource } {
+    if (this.base === undefined) {
+      this.base = this.buildTexture("base", new Sprite());
+    }
+    return {
+      uBaseTexture: this.base.texture.source,
+    };
+  }
+
+  getVertex(): string {
+    return vertex;
+  }
+
+  buildTexture(name: "base", sprite: Sprite | null): MaskFromTexture {
+    if (!sprite) {
+      console.log("No sprite for", name);
+      sprite = Sprite.from(Texture.EMPTY);
+    }
+    let texture = sprite.texture;
+    if (!texture) {
+      console.log("No texture for", name);
+      texture = Texture.EMPTY;
+    }
+
+    return {
+      name: name,
+      layerId: this._state.baseLayerId,
+      texture,
+      sprite,
+      matrix: new TextureMatrix(texture),
+    };
+  }
+
+  setBaseTexture(maskTex: MaskFromTexture) {
+    const uniformMatrix = this.uniforms.uniforms.uBaseMatrix as Matrix;
+
+    if (maskTex.sprite.texture) {
+      (
+        DataStore.getInstance().getStore("application") as Application
+      ).renderer.filter
+        .calculateSpriteMatrix(uniformMatrix, maskTex.sprite)
+        .prepend(maskTex.matrix.mapCoord);
+
+      this.shader.resources.uBaseTexture = maskTex.texture.source;
+    } else {
+      console.log("No sprite texture for", maskTex.name);
+    }
+  }
+
+  evaluateTexture(force: boolean = false) {
+    const baseSprite = this.getBaseSprite();
+    if (baseSprite) {
+      const different = this.base.sprite.texture !== baseSprite.texture;
+      if (different || force) {
+        if (this.base.layerId && different) {
+          EventDispatcher.getInstance().removeEventListener(
+            this.sceneStateId + ".layers.!" + this.base.layerId,
+            "frame",
+            this.handleLayerChangeWrapper,
+          );
+        }
+        this.base = this.buildTexture("base", baseSprite);
+        this.setBaseTexture(this.base);
+        if (this.base.layerId && different) {
+          EventDispatcher.getInstance().addEventListener(
+            this.sceneStateId + ".layers.!" + this.base.layerId,
+            "frame",
+            this.handleLayerChangeWrapper,
+          );
+          console.log("Listening to layer", this.base.layerId);
+        }
+      }
+    }
+  }
+
+  handleLayerChange() {
+    this.evaluateTexture(true);
+  }
+
+  getBaseSprite(): Sprite | null {
+    const baseLayerId = this.getFieldValue("baseLayerId");
+    if (baseLayerId !== undefined) {
+      const baseLayer = DataStore.getInstance().getStore(
+        "instances." + this.sceneStateId + ".layers.!" + baseLayerId,
+      );
+      if (baseLayer) {
+        return baseLayer.mainSprite;
+      } else {
+        console.log("No layer found with id", baseLayerId);
+      }
+    }
+    return null;
+  }
+
+  onStateChange(): void {
+    super.onStateChange();
+    console.log("ON STATE CHANGE", this.id, this._state);
+    this.evaluateTexture();
+  }
+}
