@@ -1,8 +1,8 @@
 in vec2 vTextureCoord;
-in vec2 vBaseCoord;
+in vec2 vMaskCoord;
 
 uniform sampler2D uTexture;
-uniform sampler2D uBaseTexture;
+uniform sampler2D uMaskTexture;
 
 uniform float uLowThreshold;
 uniform float uTopThreshold;
@@ -33,9 +33,9 @@ void main(){
     float topThreshold = max(uLowThreshold, uTopThreshold);
     float thresholdRange = max(topThreshold - lowThreshold, 0.00001);
 
-    vec4 tex = texture(uBaseTexture, vBaseCoord);
+    vec4 tex = texture(uTexture, vTextureCoord);
 
-    vec4 maskTex = texture(uTexture, vTextureCoord);;
+    vec4 maskTex = texture(uMaskTexture, vMaskCoord);;
 
     float maskLightness = rgb2hsv(maskTex.xyz).z;
     float alphaFactor = 1.0;
@@ -50,7 +50,7 @@ void main(){
     }
 
     gl_FragColor = vec4(0.0,0.0,0.0,0.0);
-    if((vBaseCoord.x > 0.0 && vBaseCoord.x < 1.0) && (vBaseCoord.y > 0.0 && vBaseCoord.y < 1.0)){
+    if((vMaskCoord.x > 0.0 && vMaskCoord.x < 1.0) && (vMaskCoord.y > 0.0 && vMaskCoord.y < 1.0)){
         if(alphaFactor > 0.0){
             gl_FragColor = tex;
             gl_FragColor *= min(alphaFactor, tex.a);

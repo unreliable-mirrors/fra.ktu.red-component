@@ -1,29 +1,36 @@
-attribute vec2 aPosition;
+in vec2 aPosition;
 
-uniform mat3 projectionMatrix;
-uniform mat3 uBaseMatrix;
+out vec2 vTextureCoord;
+out vec2 vMaskCoord;
 
-varying vec2 vTextureCoord;
-varying vec2 vBaseCoord;
+uniform vec4 uInputSize;
+uniform vec4 uOutputFrame;
+uniform vec4 uOutputTexture;
+uniform mat3 uMaskMatrix;
 
-uniform vec4 inputSize;
-uniform vec4 outputFrame;
-
-vec4 filterVertexPosition( void )
+vec4 filterVertexPosition(  vec2 aPosition )
 {
-    vec2 position = aPosition * max(outputFrame.zw, vec2(0.)) + outputFrame.xy;
+    vec2 position = aPosition * uOutputFrame.zw + uOutputFrame.xy;
+       
+    position.x = position.x * (2.0 / uOutputTexture.x) - 1.0;
+    position.y = position.y * (2.0*uOutputTexture.z / uOutputTexture.y) - uOutputTexture.z;
 
-    return vec4((projectionMatrix * vec3(position, 1.0)).xy, 0.0, 1.0);
+    return vec4(position, 0.0, 1.0);
 }
 
-vec2 filterTextureCoord( void )
+vec2 filterTextureCoord(  vec2 aPosition )
 {
-    return aPosition * (outputFrame.zw * inputSize.zw);
+    return aPosition * (uOutputFrame.zw * uInputSize.zw);
 }
+
+vec2 getColourCoord( mat3 colourMatrix, vec2 aPosition )
+{
+    return  ( colourMatrix * vec3( filterTextureCoord(aPosition), 1.0)  ).xy;
+}   
 
 void main(void)
 {
-   gl_Position = filterVertexPosition();
-   vTextureCoord = filterTextureCoord();
-   vBaseCoord = ( uBaseMatrix * vec3( vTextureCoord, 1.0)  ).xy;
+    gl_Position = filterVertexPosition(aPosition);
+    vTextureCoord = filterTextureCoord(aPosition);
+    vMaskCoord = getColourCoord(uMaskMatrix, aPosition);
 }

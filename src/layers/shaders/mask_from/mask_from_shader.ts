@@ -18,11 +18,11 @@ export type MaskFromShaderState = ShaderLayerState & {
   lowThreshold: number;
   topThreshold: number;
   inverse: boolean;
-  baseLayerId?: number;
+  maskLayerId?: number;
 };
 
 type MaskFromTexture = {
-  name: "base";
+  name: "mask";
   layerId?: number;
   texture: Texture;
   sprite: Sprite;
@@ -33,7 +33,7 @@ export class MaskFromShader extends ShaderLayer {
   declare _state: MaskFromShaderState;
   fragment: string = fragment;
 
-  base!: MaskFromTexture;
+  mask!: MaskFromTexture;
 
   handleLayerChangeWrapper: Function = this.handleLayerChange.bind(this);
 
@@ -55,11 +55,11 @@ export class MaskFromShader extends ShaderLayer {
   unbind(): void {
     super.unbind();
     EventDispatcher.getInstance().removeEventListener(
-      this.sceneStateId + ".layers.!" + this.base.layerId,
+      this.sceneStateId + ".layers.!" + this.mask.layerId,
       "frame",
       this.handleLayerChangeWrapper,
     );
-    this.base = undefined as any;
+    this.mask = undefined as any;
   }
 
   tick(time: any, loop: boolean): void {
@@ -72,7 +72,7 @@ export class MaskFromShader extends ShaderLayer {
     const topThreshold = this.getFieldValue("topThreshold");
 
     return {
-      uBaseMatrix: { value: new Matrix(), type: "mat3x3<f32>" },
+      uMaskMatrix: { value: new Matrix(), type: "mat3x3<f32>" },
       uLowThreshold: { value: lowThreshold, type: "f32" },
       uTopThreshold: { value: topThreshold, type: "f32" },
       uInverse: { value: this.getFieldBoolean("inverse") ? 1 : 0, type: "i32" },
@@ -90,11 +90,11 @@ export class MaskFromShader extends ShaderLayer {
   }
 
   getExtraTextures(): { [key: string]: TextureSource } {
-    if (this.base === undefined) {
-      this.base = this.buildTexture("base", new Sprite());
+    if (this.mask === undefined) {
+      this.mask = this.buildTexture("mask", new Sprite());
     }
     return {
-      uBaseTexture: this.base.texture.source,
+      uMaskTexture: this.mask.texture.source,
     };
   }
 
@@ -102,7 +102,7 @@ export class MaskFromShader extends ShaderLayer {
     return vertex;
   }
 
-  buildTexture(name: "base", sprite: Sprite | null): MaskFromTexture {
+  buildTexture(name: "mask", sprite: Sprite | null): MaskFromTexture {
     if (!sprite) {
       console.log("No sprite for", name);
       sprite = Sprite.from(Texture.EMPTY);
@@ -115,15 +115,15 @@ export class MaskFromShader extends ShaderLayer {
 
     return {
       name: name,
-      layerId: this._state.baseLayerId,
+      layerId: this._state.maskLayerId,
       texture,
       sprite,
       matrix: new TextureMatrix(texture),
     };
   }
 
-  setBaseTexture(maskTex: MaskFromTexture) {
-    const uniformMatrix = this.uniforms.uniforms.uBaseMatrix as Matrix;
+  setMaskTexture(maskTex: MaskFromTexture) {
+    const uniformMatrix = this.uniforms.uniforms.uMaskMatrix as Matrix;
 
     if (maskTex.sprite.texture) {
       (
@@ -132,33 +132,33 @@ export class MaskFromShader extends ShaderLayer {
         .calculateSpriteMatrix(uniformMatrix, maskTex.sprite)
         .prepend(maskTex.matrix.mapCoord);
 
-      this.shader.resources.uBaseTexture = maskTex.texture.source;
+      this.shader.resources.uMaskTexture = maskTex.texture.source;
     } else {
       console.log("No sprite texture for", maskTex.name);
     }
   }
 
   evaluateTexture(force: boolean = false) {
-    const baseSprite = this.getBaseSprite();
-    if (baseSprite) {
-      const different = this.base.sprite.texture !== baseSprite.texture;
+    const maskSprite = this.getMaskSprite();
+    if (maskSprite) {
+      const different = this.mask.sprite.texture !== maskSprite.texture;
       if (different || force) {
-        if (this.base.layerId && different) {
+        if (this.mask.layerId && different) {
           EventDispatcher.getInstance().removeEventListener(
-            this.sceneStateId + ".layers.!" + this.base.layerId,
+            this.sceneStateId + ".layers.!" + this.mask.layerId,
             "frame",
             this.handleLayerChangeWrapper,
           );
         }
-        this.base = this.buildTexture("base", baseSprite);
-        this.setBaseTexture(this.base);
-        if (this.base.layerId && different) {
+        this.mask = this.buildTexture("mask", maskSprite);
+        this.setMaskTexture(this.mask);
+        if (this.mask.layerId && different) {
           EventDispatcher.getInstance().addEventListener(
-            this.sceneStateId + ".layers.!" + this.base.layerId,
+            this.sceneStateId + ".layers.!" + this.mask.layerId,
             "frame",
             this.handleLayerChangeWrapper,
           );
-          console.log("Listening to layer", this.base.layerId);
+          console.log("Listening to layer", this.mask.layerId);
         }
       }
     }
@@ -168,16 +168,16 @@ export class MaskFromShader extends ShaderLayer {
     this.evaluateTexture(true);
   }
 
-  getBaseSprite(): Sprite | null {
-    const baseLayerId = this.getFieldValue("baseLayerId");
-    if (baseLayerId !== undefined) {
-      const baseLayer = DataStore.getInstance().getStore(
-        "instances." + this.sceneStateId + ".layers.!" + baseLayerId,
+  getMaskSprite(): Sprite | null {
+    const maskLayerId = this.getFieldValue("maskLayerId");
+    if (maskLayerId !== undefined) {
+      const maskLayer = DataStore.getInstance().getStore(
+        "instances." + this.sceneStateId + ".layers.!" + maskLayerId,
       );
-      if (baseLayer) {
-        return baseLayer.mainSprite;
+      if (maskLayer) {
+        return maskLayer.mainSprite;
       } else {
-        console.log("No layer found with id", baseLayerId);
+        console.log("No layer found with id", maskLayerId);
       }
     }
     return null;
