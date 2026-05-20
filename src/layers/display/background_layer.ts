@@ -15,12 +15,15 @@ export class BackgroundLayer extends DisplayLayer {
   graphics: Graphics;
   declare mainSprite: Sprite;
 
-  static getDefaultState(sceneStateId: string): BackgroundLayerState {
+  static getDefaultState(
+    sceneStateId: string,
+    color?: string,
+  ): BackgroundLayerState {
     return {
       ...DisplayLayer.getDefaultState(sceneStateId),
       type: "background",
       name: "background_" + getCount(sceneStateId),
-      color: getFunColor(),
+      color: color || getFunColor(),
     };
   }
 

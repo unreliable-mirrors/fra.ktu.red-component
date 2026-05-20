@@ -25,7 +25,11 @@ class RedViewer extends KTUComponent {
     const options: Partial<ApplicationOptions> = {
       background: "#000000",
       sharedTicker: true,
+      clearBeforeRender: false,
+      preserveDrawingBuffer: true,
     };
+
+    console.log("Starting with options fart", options);
 
     if (props.resizeTo) {
       options.resizeTo = props.resizeTo;
@@ -112,6 +116,7 @@ class RedViewer extends KTUComponent {
         width: 800,
         height: 600,
         layers: [],
+        clearOnEveryFrame: false,
       },
     };
   }
