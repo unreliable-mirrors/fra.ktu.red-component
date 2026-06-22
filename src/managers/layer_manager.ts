@@ -336,6 +336,11 @@ export const subscribeToLayerUpdates = (sceneStateId: string) => {
         const layerState = sceneState.layers[i];
         const layer = layers.find((l) => l.id === layerState.id);
         if (layer) {
+          console.log(
+            "MAIN SPRITE",
+            layer,
+            application.stage.children.indexOf(layer.mainSprite),
+          );
           application.stage.setChildIndex(layer.mainSprite, i);
         }
       }

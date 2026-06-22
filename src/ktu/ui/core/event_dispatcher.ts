@@ -18,6 +18,12 @@ export class EventDispatcher {
     const i = this._listeners[target][event].indexOf(callback);
     if (i !== -1) {
       this._listeners[target][event].splice(i, 1);
+      if (this._listeners[target][event].length === 0) {
+        delete this._listeners[target][event];
+      }
+      if (Object.keys(this._listeners[target]).length === 0) {
+        delete this._listeners[target];
+      }
     }
   }
 
@@ -31,6 +37,10 @@ export class EventDispatcher {
 
   listenerKeys() {
     return Object.keys(this._listeners);
+  }
+
+  logListeners() {
+    console.log("EventDispatcher listeners:", this._listeners);
   }
 
   static getInstance() {

@@ -335,8 +335,8 @@ export class VideoLayer extends DisplayLayer {
         content.startsWith("data:image/gif;") ||
         content.indexOf(".gif") >= 0
       ) {
-        this.mainSprite.destroy();
         Assets.load(content).then((tex) => {
+          this.mainSprite.destroy();
           this.mainSprite = new GifSprite({
             source: tex,
             animationSpeed: 1,
@@ -356,6 +356,7 @@ export class VideoLayer extends DisplayLayer {
           application.stage.addChild(this.mainSprite);
           this.reposition();
           this.applyPlaybackSpeed();
+          this.reshader();
         });
       } else {
         const textureSrc = isVideoAsset(content)
@@ -371,6 +372,7 @@ export class VideoLayer extends DisplayLayer {
           application.stage.addChild(this.mainSprite);
           this.reposition();
           this.applyPlaybackSpeed();
+          this.reshader();
         });
       }
       this.content = content;

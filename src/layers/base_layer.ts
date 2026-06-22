@@ -24,6 +24,8 @@ export abstract class BaseLayer implements ILayer {
     this._state = state;
     this.owner = owner;
 
+    console.log("Creating layer", this._state.id, "with state", this._state);
+
     EventDispatcher.getInstance().addEventListener(
       owner + ".!" + this._state.id,
       "update",

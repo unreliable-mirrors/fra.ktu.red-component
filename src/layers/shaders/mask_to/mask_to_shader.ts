@@ -158,7 +158,6 @@ export class MaskToShader extends ShaderLayer {
             "frame",
             this.handleLayerChangeWrapper,
           );
-          console.log("Listening to layer", this.base.layerId);
         }
       }
     }
@@ -185,7 +184,6 @@ export class MaskToShader extends ShaderLayer {
 
   onStateChange(): void {
     super.onStateChange();
-    console.log("ON STATE CHANGE", this.id, this._state);
     this.evaluateTexture();
   }
 }

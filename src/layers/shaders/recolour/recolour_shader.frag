@@ -32,6 +32,11 @@ vec3 hsv2rgb(vec3 c)
 void main(){
     vec4 oTex = texture2D(uTexture, vTextureCoord);
     
+    if(oTex.a == 0.0){
+        gl_FragColor = oTex;
+        return;
+    }
+
     vec4 tex = vec4(oTex.r, oTex.g, oTex.b, oTex.a);
 
     vec4 color = vec4(uToColor.r, uToColor.g, uToColor.b, oTex.a);
