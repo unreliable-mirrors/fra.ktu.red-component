@@ -40,6 +40,7 @@ export type { LumaKeyShaderState } from "./layers/shaders/luma_key/luma_key_shad
 export type { MaskToShaderState } from "./layers/shaders/mask_to/mask_to_shader.js";
 export type { MaskFromShaderState } from "./layers/shaders/mask_from/mask_from_shader.js";
 export type { BayerDitheringShaderState } from "./layers/shaders/bayer_dithering/bayer_dithering_shader.js";
+export type { PrimaryDitheringShaderState } from "./layers/shaders/primary_dithering/primary_dithering_shader.js";
 export { PixelateShader } from "./layers/shaders/pixelate/pixelate_shader.js";
 export { AdjustmentShader } from "./layers/shaders/adjustment/adjustment_shader.js";
 export { BlurShader } from "./layers/shaders/blur/blur_shader.js";
@@ -65,6 +66,7 @@ export { LumaKeyShader } from "./layers/shaders/luma_key/luma_key_shader.js";
 export { MaskToShader } from "./layers/shaders/mask_to/mask_to_shader.js";
 export { MaskFromShader } from "./layers/shaders/mask_from/mask_from_shader.js";
 export { BayerDitheringShader } from "./layers/shaders/bayer_dithering/bayer_dithering_shader.js";
+export { PrimaryDitheringShader } from "./layers/shaders/primary_dithering/primary_dithering_shader.js";
 export type { ModulatorState } from "./modulators/imodulator.js";
 export type { LfoModulatorState } from "./modulators/lfo_modulator.js";
 export type { RingModulatorState } from "./modulators/ring_modulator.js";

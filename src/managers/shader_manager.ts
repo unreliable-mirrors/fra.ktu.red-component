@@ -97,6 +97,10 @@ import {
   BayerDitheringShader,
   type BayerDitheringShaderState,
 } from "../layers/shaders/bayer_dithering/bayer_dithering_shader.js";
+import {
+  PrimaryDitheringShader,
+  type PrimaryDitheringShaderState,
+} from "../layers/shaders/primary_dithering/primary_dithering_shader.js";
 
 export const subscribeToShaderUpdates = (sceneStateId: string) => {
   DataStore.getInstance().setStore(
@@ -304,6 +308,13 @@ export const subscribeToShaderUpdates = (sceneStateId: string) => {
               shaderInstance = new BayerDitheringShader(
                 sceneStateId,
                 shader as BayerDitheringShaderState,
+                sceneStateId + ".shaders",
+              );
+              break;
+            case "primary_dithering":
+              shaderInstance = new PrimaryDitheringShader(
+                sceneStateId,
+                shader as PrimaryDitheringShaderState,
                 sceneStateId + ".shaders",
               );
               break;

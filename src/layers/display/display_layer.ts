@@ -91,6 +91,10 @@ import {
   BayerDitheringShader,
   type BayerDitheringShaderState,
 } from "../shaders/bayer_dithering/bayer_dithering_shader.js";
+import {
+  PrimaryDitheringShader,
+  type PrimaryDitheringShaderState,
+} from "../shaders/primary_dithering/primary_dithering_shader.js";
 
 export type DisplayLayerState = LayerState & {
   shaders: ShaderLayerState[];
@@ -312,6 +316,13 @@ export abstract class DisplayLayer extends BaseLayer {
             layer = new BayerDitheringShader(
               this.sceneStateId,
               shader as BayerDitheringShaderState,
+              this.sceneStateId + ".layers.!" + this._state.id + ".shaders",
+            );
+            break;
+          case "primary_dithering":
+            layer = new PrimaryDitheringShader(
+              this.sceneStateId,
+              shader as PrimaryDitheringShaderState,
               this.sceneStateId + ".layers.!" + this._state.id + ".shaders",
             );
             break;
