@@ -7,7 +7,6 @@ export type BayerDitheringShaderState = ShaderLayerState & {
   matrixSize: number;
   levels: number;
   pixelSize: number;
-  rgb: boolean;
 };
 
 export class BayerDitheringShader extends ShaderLayer {
@@ -22,7 +21,6 @@ export class BayerDitheringShader extends ShaderLayer {
       matrixSize: 4,
       levels: 4,
       pixelSize: 1,
-      rgb: false,
     };
   }
 
@@ -40,7 +38,6 @@ export class BayerDitheringShader extends ShaderLayer {
       uMatrixSize: { value: this.getFieldValue("matrixSize"), type: "f32" },
       uLevels: { value: this.getFieldValue("levels"), type: "f32" },
       uPixelSize: { value: this.getFieldValue("pixelSize"), type: "f32" },
-      uRgb: { value: this.getFieldBoolean("rgb") ? 1 : 0, type: "i32" },
     };
   }
 
@@ -49,6 +46,5 @@ export class BayerDitheringShader extends ShaderLayer {
     this.uniforms.uniforms.uMatrixSize = this.getFieldValue("matrixSize");
     this.uniforms.uniforms.uLevels = this.getFieldValue("levels");
     this.uniforms.uniforms.uPixelSize = this.getFieldValue("pixelSize");
-    this.uniforms.uniforms.uRgb = this.getFieldBoolean("rgb") ? 1 : 0;
   }
 }

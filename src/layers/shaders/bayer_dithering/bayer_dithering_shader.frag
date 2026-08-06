@@ -7,7 +7,6 @@ uniform vec4 uInputSize;
 uniform float uMatrixSize;
 uniform float uLevels;
 uniform float uPixelSize;
-uniform int uRgb;
 
 uniform vec4 uDryWet;
 
@@ -75,15 +74,9 @@ void main(){
     float scale = levels - 1.0;
 
     vec3 dithered;
-    if (uRgb == 1) {
-        dithered.r = clamp(floor(tex.r * scale + threshold), 0.0, scale) / scale;
-        dithered.g = clamp(floor(tex.g * scale + threshold), 0.0, scale) / scale;
-        dithered.b = clamp(floor(tex.b * scale + threshold), 0.0, scale) / scale;
-    } else {
-        float gray = dot(tex.rgb, vec3(0.2126, 0.7152, 0.0722));
-        float d = clamp(floor(gray * scale + threshold), 0.0, scale) / scale;
-        dithered = vec3(d);
-    }
+    dithered.r = clamp(floor(tex.r * scale + threshold), 0.0, scale) / scale;
+    dithered.g = clamp(floor(tex.g * scale + threshold), 0.0, scale) / scale;
+    dithered.b = clamp(floor(tex.b * scale + threshold), 0.0, scale) / scale;
 
     vec4 dtex = vec4(dithered, tex.a);
 
