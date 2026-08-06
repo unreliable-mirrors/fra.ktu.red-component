@@ -6,6 +6,8 @@ uniform vec4 uInputSize;
 
 uniform float uMatrixSize;
 uniform float uPixelSize;
+uniform int uBlack;
+uniform int uWhite;
 
 uniform vec4 uDryWet;
 
@@ -75,14 +77,28 @@ void main(){
     float blackAmount = 1.0 - maxChannel;
     float pureAmount = maxChannel - white;
 
-    vec3 dithered = vec3(1.0);
+    float sr = tex.r - white;
+    float sg = tex.g - white;
+    float sb = tex.b - white;
+    float saturation = sr + sg + sb;
+
+    vec3 dominantPrimary = vec3(1.0, 0.0, 0.0);
+    if (sr >= sg && sr >= sb) {
+        dominantPrimary = vec3(1.0, 0.0, 0.0);
+    } else if (sg >= sb) {
+        dominantPrimary = vec3(0.0, 1.0, 0.0);
+    } else {
+        dominantPrimary = vec3(0.0, 0.0, 1.0);
+    }
+
+    vec3 dithered;
     if (threshold < blackAmount) {
-        dithered = vec3(0.0);
+        dithered = uBlack == 1 ? vec3(0.0) : dominantPrimary;
     } else if (threshold < blackAmount + pureAmount) {
-        float saturation = (tex.r - white) + (tex.g - white) + (tex.b - white);
+        dithered = dominantPrimary;
         if (saturation > 0.0) {
-            float red = (tex.r - white) / saturation;
-            float green = (tex.g - white) / saturation;
+            float red = sr / saturation;
+            float green = sg / saturation;
             if (threshold < blackAmount + pureAmount * red) {
                 dithered = vec3(1.0, 0.0, 0.0);
             } else if (threshold < blackAmount + pureAmount * (red + green)) {
@@ -91,6 +107,8 @@ void main(){
                 dithered = vec3(0.0, 0.0, 1.0);
             }
         }
+    } else {
+        dithered = uWhite == 1 ? vec3(1.0) : dominantPrimary;
     }
 
     vec4 dtex = vec4(dithered, tex.a);

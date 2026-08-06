@@ -6,6 +6,8 @@ import fragment from "./primary_dithering_shader.frag?raw";
 export type PrimaryDitheringShaderState = ShaderLayerState & {
   matrixSize: number;
   pixelSize: number;
+  black: boolean;
+  white: boolean;
 };
 
 export class PrimaryDitheringShader extends ShaderLayer {
@@ -19,6 +21,8 @@ export class PrimaryDitheringShader extends ShaderLayer {
       name: "primary_dithering_" + getCount(sceneStateId),
       matrixSize: 4,
       pixelSize: 1,
+      black: true,
+      white: true,
     };
   }
 
@@ -35,6 +39,8 @@ export class PrimaryDitheringShader extends ShaderLayer {
     return {
       uMatrixSize: { value: this.getFieldValue("matrixSize"), type: "f32" },
       uPixelSize: { value: this.getFieldValue("pixelSize"), type: "f32" },
+      uBlack: { value: this.getFieldBoolean("black") ? 1 : 0, type: "i32" },
+      uWhite: { value: this.getFieldBoolean("white") ? 1 : 0, type: "i32" },
     };
   }
 
@@ -42,5 +48,7 @@ export class PrimaryDitheringShader extends ShaderLayer {
     super.updateUniforms();
     this.uniforms.uniforms.uMatrixSize = this.getFieldValue("matrixSize");
     this.uniforms.uniforms.uPixelSize = this.getFieldValue("pixelSize");
+    this.uniforms.uniforms.uBlack = this.getFieldBoolean("black") ? 1 : 0;
+    this.uniforms.uniforms.uWhite = this.getFieldBoolean("white") ? 1 : 0;
   }
 }
