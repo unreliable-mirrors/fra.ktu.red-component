@@ -93,6 +93,10 @@ import {
   MaskFromShader,
   type MaskFromShaderState,
 } from "../layers/shaders/mask_from/mask_from_shader.js";
+import {
+  BayerDitheringShader,
+  type BayerDitheringShaderState,
+} from "../layers/shaders/bayer_dithering/bayer_dithering_shader.js";
 
 export const subscribeToShaderUpdates = (sceneStateId: string) => {
   DataStore.getInstance().setStore(
@@ -293,6 +297,13 @@ export const subscribeToShaderUpdates = (sceneStateId: string) => {
               shaderInstance = new MaskFromShader(
                 sceneStateId,
                 shader as MaskFromShaderState,
+                sceneStateId + ".shaders",
+              );
+              break;
+            case "bayer_dithering":
+              shaderInstance = new BayerDitheringShader(
+                sceneStateId,
+                shader as BayerDitheringShaderState,
                 sceneStateId + ".shaders",
               );
               break;

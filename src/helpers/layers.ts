@@ -23,7 +23,8 @@ export type ShaderType =
   | "posterize"
   | "luma_key"
   | "mask_to"
-  | "mask_from";
+  | "mask_from"
+  | "bayer_dithering";
 export type ModulatorType = "lfo" | "random" | "ring" | "compressor";
 
 export const AVAILABLE_LAYERS: LayerType[] = ["background", "video", "camera"];
@@ -52,6 +53,7 @@ export const AVAILABLE_SHADERS: ShaderType[] = [
   "luma_key",
   "mask_to",
   "mask_from",
+  "bayer_dithering",
 ];
 export const AVAILABLE_MODULATORS: ModulatorType[] = [
   "lfo",
@@ -74,6 +76,13 @@ export const CATEGORIZED_SHADERS: Record<string, ShaderType[]> = {
     "adjustment",
   ],
   distortion: ["montecarlo", "pixelate", "scramble", "blur", "hsb_blur"],
-  stylize: ["anaglyph", "crosses", "hlines", "hnoise", "vlines"],
+  stylize: [
+    "anaglyph",
+    "crosses",
+    "hlines",
+    "hnoise",
+    "vlines",
+    "bayer_dithering",
+  ],
   keying: ["chroma", "luma_key", "mask_to", "mask_from"],
 };

@@ -87,6 +87,10 @@ import {
   MaskFromShader,
   type MaskFromShaderState,
 } from "../shaders/mask_from/mask_from_shader.js";
+import {
+  BayerDitheringShader,
+  type BayerDitheringShaderState,
+} from "../shaders/bayer_dithering/bayer_dithering_shader.js";
 
 export type DisplayLayerState = LayerState & {
   shaders: ShaderLayerState[];
@@ -301,6 +305,13 @@ export abstract class DisplayLayer extends BaseLayer {
             layer = new MaskFromShader(
               this.sceneStateId,
               shader as MaskFromShaderState,
+              this.sceneStateId + ".layers.!" + this._state.id + ".shaders",
+            );
+            break;
+          case "bayer_dithering":
+            layer = new BayerDitheringShader(
+              this.sceneStateId,
+              shader as BayerDitheringShaderState,
               this.sceneStateId + ".layers.!" + this._state.id + ".shaders",
             );
             break;
