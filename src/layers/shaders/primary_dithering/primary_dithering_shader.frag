@@ -8,6 +8,9 @@ uniform float uMatrixSize;
 uniform float uPixelSize;
 uniform int uBlack;
 uniform int uWhite;
+uniform vec4 uColor1;
+uniform vec4 uColor2;
+uniform vec4 uColor3;
 
 uniform vec4 uDryWet;
 
@@ -48,6 +51,45 @@ vec2 unmapCoord( vec2 coord )
     return coord;
 }
 
+vec3 primaryProportions(vec3 residual)
+{
+    vec3 u = uColor1.rgb - uColor3.rgb;
+    vec3 v = uColor2.rgb - uColor3.rgb;
+    vec3 mR = -residual;
+    vec3 b = -uColor3.rgb;
+
+    vec3 p;
+    float det = dot(u, cross(v, mR));
+    if (abs(det) > 1e-8) {
+        float det1 = dot(b, cross(v, mR));
+        float det2 = dot(u, cross(b, mR));
+        float p1 = det1 / det;
+        float p2 = det2 / det;
+        p = vec3(p1, p2, 1.0 - p1 - p2);
+    } else {
+        float s = residual.x + residual.y + residual.z;
+        p = s > 0.0 ? residual / s : vec3(1.0, 0.0, 0.0);
+    }
+
+    p = max(p, vec3(0.0));
+    float s = p.x + p.y + p.z;
+    return s > 0.0 ? p / s : vec3(1.0, 0.0, 0.0);
+}
+
+vec3 dominant(vec3 p)
+{
+    vec3 c = uColor1.rgb;
+    float m = p.x;
+    if (p.y > m) {
+        m = p.y;
+        c = uColor2.rgb;
+    }
+    if (p.z > m) {
+        c = uColor3.rgb;
+    }
+    return c;
+}
+
 void main(){
     vec4 oTex = texture(uTexture, vTextureCoord);
 
@@ -77,35 +119,20 @@ void main(){
     float blackAmount = 1.0 - maxChannel;
     float pureAmount = maxChannel - white;
 
-    float sr = tex.r - white;
-    float sg = tex.g - white;
-    float sb = tex.b - white;
-    float saturation = sr + sg + sb;
-
-    vec3 dominantPrimary = vec3(1.0, 0.0, 0.0);
-    if (sr >= sg && sr >= sb) {
-        dominantPrimary = vec3(1.0, 0.0, 0.0);
-    } else if (sg >= sb) {
-        dominantPrimary = vec3(0.0, 1.0, 0.0);
-    } else {
-        dominantPrimary = vec3(0.0, 0.0, 1.0);
-    }
+    vec3 residual = tex.rgb - vec3(white);
+    vec3 p = primaryProportions(residual);
+    vec3 dominantPrimary = dominant(p);
 
     vec3 dithered;
     if (threshold < blackAmount) {
         dithered = uBlack == 1 ? vec3(0.0) : dominantPrimary;
     } else if (threshold < blackAmount + pureAmount) {
-        dithered = dominantPrimary;
-        if (saturation > 0.0) {
-            float red = sr / saturation;
-            float green = sg / saturation;
-            if (threshold < blackAmount + pureAmount * red) {
-                dithered = vec3(1.0, 0.0, 0.0);
-            } else if (threshold < blackAmount + pureAmount * (red + green)) {
-                dithered = vec3(0.0, 1.0, 0.0);
-            } else {
-                dithered = vec3(0.0, 0.0, 1.0);
-            }
+        if (threshold < blackAmount + pureAmount * p.x) {
+            dithered = uColor1.rgb;
+        } else if (threshold < blackAmount + pureAmount * (p.x + p.y)) {
+            dithered = uColor2.rgb;
+        } else {
+            dithered = uColor3.rgb;
         }
     } else {
         dithered = uWhite == 1 ? vec3(1.0) : dominantPrimary;
