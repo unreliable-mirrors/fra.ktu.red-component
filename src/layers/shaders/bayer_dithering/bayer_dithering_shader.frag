@@ -8,6 +8,7 @@ uniform float uMatrixSize;
 uniform float uLevels;
 uniform float uPixelSize;
 uniform int uNot;
+uniform int uRgb;
 
 uniform vec4 uDryWet;
 
@@ -57,7 +58,6 @@ void main(){
     vec2 blockCoord = (floor(pixelCoord / vec2(pixelSize)) * vec2(pixelSize)) + (pixelSize / 2.0);
 
     vec4 tex = texture(uTexture, unmapCoord(blockCoord));
-    float gray = dot(tex.rgb, vec3(0.2126, 0.7152, 0.0722));
 
     vec2 blockIndex = floor(pixelCoord / vec2(pixelSize));
 
@@ -74,14 +74,23 @@ void main(){
 
     float levels = max(uLevels, 2.0);
     float scale = levels - 1.0;
-    float q = floor(gray * scale + threshold);
-    float dithered = clamp(q, 0.0, scale) / scale;
+
+    vec3 dithered;
+    if (uRgb == 1) {
+        dithered.r = clamp(floor(tex.r * scale + threshold), 0.0, scale) / scale;
+        dithered.g = clamp(floor(tex.g * scale + threshold), 0.0, scale) / scale;
+        dithered.b = clamp(floor(tex.b * scale + threshold), 0.0, scale) / scale;
+    } else {
+        float gray = dot(tex.rgb, vec3(0.2126, 0.7152, 0.0722));
+        float d = clamp(floor(gray * scale + threshold), 0.0, scale) / scale;
+        dithered = vec3(d);
+    }
 
     if (uNot == 1) {
         dithered = 1.0 - dithered;
     }
 
-    vec4 dtex = vec4(dithered, dithered, dithered, tex.a);
+    vec4 dtex = vec4(dithered, tex.a);
 
     //DRY/WET
     gl_FragColor = (1.0-uDryWet)*oTex +uDryWet * dtex;

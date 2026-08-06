@@ -8,6 +8,7 @@ export type BayerDitheringShaderState = ShaderLayerState & {
   levels: number;
   pixelSize: number;
   not: boolean;
+  rgb: boolean;
 };
 
 export class BayerDitheringShader extends ShaderLayer {
@@ -23,6 +24,7 @@ export class BayerDitheringShader extends ShaderLayer {
       levels: 4,
       pixelSize: 1,
       not: false,
+      rgb: false,
     };
   }
 
@@ -41,6 +43,7 @@ export class BayerDitheringShader extends ShaderLayer {
       uLevels: { value: this.getFieldValue("levels"), type: "f32" },
       uPixelSize: { value: this.getFieldValue("pixelSize"), type: "f32" },
       uNot: { value: this.getFieldBoolean("not") ? 1 : 0, type: "i32" },
+      uRgb: { value: this.getFieldBoolean("rgb") ? 1 : 0, type: "i32" },
     };
   }
 
@@ -50,5 +53,6 @@ export class BayerDitheringShader extends ShaderLayer {
     this.uniforms.uniforms.uLevels = this.getFieldValue("levels");
     this.uniforms.uniforms.uPixelSize = this.getFieldValue("pixelSize");
     this.uniforms.uniforms.uNot = this.getFieldBoolean("not") ? 1 : 0;
+    this.uniforms.uniforms.uRgb = this.getFieldBoolean("rgb") ? 1 : 0;
   }
 }
