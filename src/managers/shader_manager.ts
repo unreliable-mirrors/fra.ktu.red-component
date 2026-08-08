@@ -101,6 +101,10 @@ import {
   PrimaryDitheringShader,
   type PrimaryDitheringShaderState,
 } from "../layers/shaders/primary_dithering/primary_dithering_shader.js";
+import {
+  OuterStrokeShader,
+  type OuterStrokeShaderState,
+} from "../layers/shaders/outer_stroke/outer_stroke_shader.js";
 
 export const subscribeToShaderUpdates = (sceneStateId: string) => {
   DataStore.getInstance().setStore(
@@ -315,6 +319,13 @@ export const subscribeToShaderUpdates = (sceneStateId: string) => {
               shaderInstance = new PrimaryDitheringShader(
                 sceneStateId,
                 shader as PrimaryDitheringShaderState,
+                sceneStateId + ".shaders",
+              );
+              break;
+            case "outer_stroke":
+              shaderInstance = new OuterStrokeShader(
+                sceneStateId,
+                shader as OuterStrokeShaderState,
                 sceneStateId + ".shaders",
               );
               break;

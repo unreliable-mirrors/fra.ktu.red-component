@@ -95,6 +95,10 @@ import {
   PrimaryDitheringShader,
   type PrimaryDitheringShaderState,
 } from "../shaders/primary_dithering/primary_dithering_shader.js";
+import {
+  OuterStrokeShader,
+  type OuterStrokeShaderState,
+} from "../shaders/outer_stroke/outer_stroke_shader.js";
 
 export type DisplayLayerState = LayerState & {
   shaders: ShaderLayerState[];
@@ -326,6 +330,13 @@ export abstract class DisplayLayer extends BaseLayer {
               this.sceneStateId + ".layers.!" + this._state.id + ".shaders",
             );
             break;
+          case "outer_stroke":
+            layer = new OuterStrokeShader(
+              this.sceneStateId,
+              shader as OuterStrokeShaderState,
+              this.sceneStateId + ".layers.!" + this._state.id + ".shaders",
+            );
+            break;
           default:
             layer = new PixelateShader(
               this.sceneStateId,
@@ -362,6 +373,8 @@ export abstract class DisplayLayer extends BaseLayer {
 
   bind(): void {
     this.repaint();
+    this.reshader();
+    console.log("RESHADER FIRED ON BIND", this.mainSprite.filters);
   }
 
   unbind() {

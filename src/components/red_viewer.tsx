@@ -29,7 +29,7 @@ class RedViewer extends KTUComponent {
       preserveDrawingBuffer: true,
     };
 
-    console.log("Starting with options fart", options);
+    console.log("Starting with options", options);
 
     if (props.resizeTo) {
       options.resizeTo = props.resizeTo;
