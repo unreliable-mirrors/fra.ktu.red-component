@@ -399,6 +399,9 @@ export class VideoLayer extends DisplayLayer {
     this.mainSprite.x = application.canvas.width * this.getFieldValue("panX");
     this.mainSprite.y = application.canvas.height * this.getFieldValue("panY");
 
+    this.mainSprite.scale.x = 1;
+    this.mainSprite.scale.y = 1;
+
     if (this.mainSprite.width > 0 && this.mainSprite.height > 0) {
       if (this.getFieldBoolean("fillCanvas")) {
         const imageAspect = this.mainSprite.width / this.mainSprite.height;

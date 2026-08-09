@@ -142,27 +142,43 @@ export class CameraLayer extends DisplayLayer {
       "application",
     ) as Application;
 
+    console.log("reposition");
+
     this.mainSprite.anchor.set(0.5, 0.5);
     this.mainSprite.x = application.canvas.width * this.getFieldValue("panX");
     this.mainSprite.y = application.canvas.height * this.getFieldValue("panY");
 
+    this.mainSprite.scale.x = 1;
+    this.mainSprite.scale.y = 1;
+
     if (this.mainSprite.width > 0 && this.mainSprite.height > 0) {
       console.log(
-        "Repositioning camera layer",
+        "Repositioning camera layerrr",
         this.getFieldBoolean("fillCanvas"),
       );
       if (this.getFieldBoolean("fillCanvas")) {
         const imageAspect = this.mainSprite.width / this.mainSprite.height;
         const canvasAspect =
           application.canvas.width / application.canvas.height;
+        console.log("Aspect ratios", imageAspect, canvasAspect);
         if (imageAspect > canvasAspect) {
           this.mainSprite.height =
             application.canvas.height * this.getFieldValue("scale");
           this.mainSprite.scale.x = this.mainSprite.scale.y;
+          console.log(
+            "Repositioning camera layer A",
+            this.mainSprite.width,
+            this.mainSprite.height,
+          );
         } else {
           this.mainSprite.width =
             application.canvas.width * this.getFieldValue("scale");
           this.mainSprite.scale.y = this.mainSprite.scale.x;
+          console.log(
+            "Repositioning camera layer B",
+            this.mainSprite.width,
+            this.mainSprite.height,
+          );
         }
       } else if (this.mainSprite.width < this.mainSprite.height) {
         this.mainSprite.width =
