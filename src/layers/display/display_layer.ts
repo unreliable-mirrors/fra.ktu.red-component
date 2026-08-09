@@ -1,4 +1,4 @@
-import { Application, Sprite } from "pixi.js";
+import { Application, Graphics, Sprite } from "pixi.js";
 import { BaseLayer } from "../base_layer.js";
 import type { LayerState } from "../ilayer.js";
 import {
@@ -102,17 +102,20 @@ import {
 
 export type DisplayLayerState = LayerState & {
   shaders: ShaderLayerState[];
+  boundingBox: boolean;
 };
 
 export abstract class DisplayLayer extends BaseLayer {
   declare _state: DisplayLayerState;
   mainSprite!: Sprite;
   shaders: ShaderLayer[] = [];
+  boundingBoxGraphics?: Graphics;
 
   static getDefaultState(sceneStateId: string): DisplayLayerState {
     return {
       ...BaseLayer.getDefaultState(sceneStateId),
       shaders: [],
+      boundingBox: true,
     };
   }
 
@@ -382,6 +385,11 @@ export abstract class DisplayLayer extends BaseLayer {
     const application = DataStore.getInstance().getStore(
       "application",
     ) as Application;
+    if (this.boundingBoxGraphics) {
+      application.stage.removeChild(this.boundingBoxGraphics);
+      this.boundingBoxGraphics.destroy();
+      this.boundingBoxGraphics = undefined;
+    }
     application.stage.removeChild(this.mainSprite);
     this.mainSprite.destroy();
     this.mainSprite = undefined as any;
@@ -398,5 +406,36 @@ export abstract class DisplayLayer extends BaseLayer {
     for (const shader of this.shaders) {
       shader.tick(time, loop);
     }
+    this.updateBoundingBox();
+  }
+
+  private updateBoundingBox(): void {
+    const application = DataStore.getInstance().getStore(
+      "application",
+    ) as Application;
+    if (
+      !this._state.boundingBox ||
+      !this.mainSprite ||
+      this.mainSprite.destroyed
+    ) {
+      if (this.boundingBoxGraphics) {
+        this.boundingBoxGraphics.visible = false;
+      }
+      return;
+    }
+    if (!this.boundingBoxGraphics) {
+      this.boundingBoxGraphics = new Graphics();
+      application.stage.addChild(this.boundingBoxGraphics);
+    }
+    const bounds = this.mainSprite.getBounds();
+    this.boundingBoxGraphics.clear();
+    this.boundingBoxGraphics
+      .rect(bounds.x, bounds.y, bounds.width, bounds.height)
+      .stroke({ color: 0xff0000, width: 3 });
+    this.boundingBoxGraphics.visible = this.mainSprite.visible;
+    application.stage.setChildIndex(
+      this.boundingBoxGraphics,
+      application.stage.children.length - 1,
+    );
   }
 }
