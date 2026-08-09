@@ -10,6 +10,7 @@ export type CameraLayerState = DisplayLayerState & {
   vFlip: boolean;
   hFlip: boolean;
   fillCanvas: boolean;
+  rotation: number;
 };
 
 export class CameraLayer extends DisplayLayer {
@@ -31,6 +32,7 @@ export class CameraLayer extends DisplayLayer {
       vFlip: false,
       hFlip: false,
       fillCanvas: false,
+      rotation: 0,
     };
   }
 
@@ -178,6 +180,7 @@ export class CameraLayer extends DisplayLayer {
 
     this.mainSprite.scale.x *= this.getFieldValue("hFlip") ? -1 : 1;
     this.mainSprite.scale.y *= this.getFieldValue("vFlip") ? -1 : 1;
+    this.mainSprite.rotation = this.getFieldValue("rotation");
     this.mainSprite.visible = this.getFieldBoolean("visible");
   }
 }

@@ -24,6 +24,7 @@ export type VideoLayerState = DisplayLayerState & {
   vFlip: boolean;
   hFlip: boolean;
   fillCanvas: boolean;
+  rotation: number;
   imageHash: string;
   timeFrom: number;
   timeLength: number;
@@ -56,6 +57,7 @@ export class VideoLayer extends DisplayLayer {
       vFlip: false,
       hFlip: false,
       fillCanvas: false,
+      rotation: 0,
       imageHash: "",
       timeFrom: 0,
       timeLength: -1,
@@ -429,6 +431,8 @@ export class VideoLayer extends DisplayLayer {
 
     this.mainSprite.scale.x *= this.getFieldValue("hFlip") ? -1 : 1;
     this.mainSprite.scale.y *= this.getFieldValue("vFlip") ? -1 : 1;
+
+    this.mainSprite.rotation = this.getFieldValue("rotation");
 
     this.mainSprite.visible = this.getFieldBoolean("visible");
   }

@@ -115,7 +115,7 @@ export abstract class DisplayLayer extends BaseLayer {
     return {
       ...BaseLayer.getDefaultState(sceneStateId),
       shaders: [],
-      boundingBox: true,
+      boundingBox: false,
     };
   }
 
@@ -371,13 +371,11 @@ export abstract class DisplayLayer extends BaseLayer {
       return;
     }
     this.mainSprite.filters = this.shaders.map((s) => s.shader);
-    console.log("RESHADER", this.mainSprite.filters);
   }
 
   bind(): void {
     this.repaint();
     this.reshader();
-    console.log("RESHADER FIRED ON BIND", this.mainSprite.filters);
   }
 
   unbind() {
