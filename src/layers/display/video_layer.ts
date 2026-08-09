@@ -23,6 +23,7 @@ export type VideoLayerState = DisplayLayerState & {
   scale: number;
   vFlip: boolean;
   hFlip: boolean;
+  fillCanvas: boolean;
   imageHash: string;
   timeFrom: number;
   timeLength: number;
@@ -54,6 +55,7 @@ export class VideoLayer extends DisplayLayer {
       scale: 1,
       vFlip: false,
       hFlip: false,
+      fillCanvas: false,
       imageHash: "",
       timeFrom: 0,
       timeLength: -1,
@@ -397,16 +399,30 @@ export class VideoLayer extends DisplayLayer {
     this.mainSprite.x = application.canvas.width * this.getFieldValue("panX");
     this.mainSprite.y = application.canvas.height * this.getFieldValue("panY");
 
-    if (this.mainSprite.width < this.mainSprite.height) {
-      this.mainSprite.width =
-        application.canvas.width * this.getFieldValue("scale");
-      this.mainSprite.scale.y = this.mainSprite.scale.x;
-    } else {
-      this.mainSprite.height =
-        application.canvas.height * this.getFieldValue("scale");
-      this.mainSprite.scale.x = this.mainSprite.scale.y;
+    if (this.mainSprite.width > 0 && this.mainSprite.height > 0) {
+      if (this.getFieldBoolean("fillCanvas")) {
+        const imageAspect = this.mainSprite.width / this.mainSprite.height;
+        const canvasAspect =
+          application.canvas.width / application.canvas.height;
+        if (imageAspect > canvasAspect) {
+          this.mainSprite.height =
+            application.canvas.height * this.getFieldValue("scale");
+          this.mainSprite.scale.x = this.mainSprite.scale.y;
+        } else {
+          this.mainSprite.width =
+            application.canvas.width * this.getFieldValue("scale");
+          this.mainSprite.scale.y = this.mainSprite.scale.x;
+        }
+      } else if (this.mainSprite.width < this.mainSprite.height) {
+        this.mainSprite.width =
+          application.canvas.width * this.getFieldValue("scale");
+        this.mainSprite.scale.y = this.mainSprite.scale.x;
+      } else {
+        this.mainSprite.height =
+          application.canvas.height * this.getFieldValue("scale");
+        this.mainSprite.scale.x = this.mainSprite.scale.y;
+      }
     }
-    //this.mainSprite.scale.set(this.getFieldValue("scale"));
 
     this.mainSprite.scale.x *= this.getFieldValue("hFlip") ? -1 : 1;
     this.mainSprite.scale.y *= this.getFieldValue("vFlip") ? -1 : 1;
