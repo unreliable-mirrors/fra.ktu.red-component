@@ -11,6 +11,7 @@ export type CameraLayerState = DisplayLayerState & {
   hFlip: boolean;
   fillCanvas: boolean;
   rotation: number;
+  cameraId: string;
 };
 
 export class CameraLayer extends DisplayLayer {
@@ -20,6 +21,7 @@ export class CameraLayer extends DisplayLayer {
   private stream?: MediaStream;
   private videoElement?: HTMLVideoElement;
   private streamPromise?: Promise<void>;
+  private activeCameraId?: string;
 
   static getDefaultState(sceneStateId: string): CameraLayerState {
     return {
@@ -33,6 +35,7 @@ export class CameraLayer extends DisplayLayer {
       hFlip: false,
       fillCanvas: false,
       rotation: 0,
+      cameraId: "",
     };
   }
 
@@ -47,6 +50,9 @@ export class CameraLayer extends DisplayLayer {
   }
 
   innerRepaint(): void {
+    if (this.stream && this._state.cameraId !== this.activeCameraId) {
+      this.stopCameraStream();
+    }
     void this.ensureCameraStream();
     this.reposition();
   }
@@ -80,18 +86,35 @@ export class CameraLayer extends DisplayLayer {
     return this.streamPromise;
   }
 
-  private async startCameraStream(): Promise<void> {
+  private async resolveCameraId(): Promise<string> {
     const devices = await navigator.mediaDevices.enumerateDevices();
-    const firstCamera = devices.find((device) => device.kind === "videoinput");
+    const cameras = devices.filter((device) => device.kind === "videoinput");
+
+    const storedCameraId = this._state.cameraId;
+    const cameraExists = cameras.some(
+      (camera) => camera.deviceId === storedCameraId,
+    );
+
+    if (storedCameraId && cameraExists) {
+      return storedCameraId;
+    }
+
+    const firstCameraId = cameras[0]?.deviceId || "";
+    this._state.cameraId = firstCameraId;
+    return firstCameraId;
+  }
+
+  private async startCameraStream(): Promise<void> {
+    const cameraId = await this.resolveCameraId();
 
     const constraintsToTry: MediaStreamConstraints[] = [];
-    if (firstCamera?.deviceId) {
+    if (cameraId) {
       constraintsToTry.push({
-        video: { deviceId: { exact: firstCamera.deviceId } },
+        video: { deviceId: { exact: cameraId } },
         audio: false,
       });
       constraintsToTry.push({
-        video: { deviceId: { ideal: firstCamera.deviceId } },
+        video: { deviceId: { ideal: cameraId } },
         audio: false,
       });
     }
@@ -122,6 +145,7 @@ export class CameraLayer extends DisplayLayer {
     this.stream = stream;
     this.videoElement = videoElement;
     this.mainSprite.texture = Texture.from(videoElement);
+    this.activeCameraId = cameraId;
     this.reposition();
   }
 
@@ -137,6 +161,7 @@ export class CameraLayer extends DisplayLayer {
       }
       this.stream = undefined;
     }
+    this.activeCameraId = undefined;
   }
 
   private reposition(): void {
