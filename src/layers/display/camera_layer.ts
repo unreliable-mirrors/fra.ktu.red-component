@@ -169,8 +169,6 @@ export class CameraLayer extends DisplayLayer {
       "application",
     ) as Application;
 
-    console.log("reposition");
-
     this.mainSprite.anchor.set(0.5, 0.5);
     this.mainSprite.x = application.canvas.width * this.getFieldValue("panX");
     this.mainSprite.y = application.canvas.height * this.getFieldValue("panY");

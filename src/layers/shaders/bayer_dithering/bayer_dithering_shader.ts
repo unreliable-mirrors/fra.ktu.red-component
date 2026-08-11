@@ -30,7 +30,6 @@ export class BayerDitheringShader extends ShaderLayer {
     owner: string,
   ) {
     super(sceneStateId, state, owner);
-    console.trace();
   }
 
   setupUniformValues(): { [key: string]: UniformData } {

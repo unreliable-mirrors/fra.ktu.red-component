@@ -61,9 +61,15 @@ export class DataStore {
       if (k.startsWith("!")) {
         const id = k.slice(1);
         current = current.filter((item: any) => item.id == id)[0];
+        if (current === undefined) {
+          return undefined;
+        }
       } else if (k.startsWith("#")) {
         const position = parseInt(k.slice(1));
         current = current[position];
+        if (current === undefined) {
+          return undefined;
+        }
       } else {
         if (current[k] === undefined) {
           return undefined;
