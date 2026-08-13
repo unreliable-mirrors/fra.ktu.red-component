@@ -2,10 +2,11 @@ in vec2 vTextureCoord;
 
 uniform sampler2D uTexture;
 uniform float uLevels;
+uniform float uThreshold;
 uniform vec4 uDryWet;
 
 float roundValue(float x) {
-    return x - floor(x) > 0.5 ? ceil(x) : floor(x);
+    return x - floor(x) > uThreshold ? ceil(x) : floor(x);
 }
 
 void main() {

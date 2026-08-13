@@ -5,6 +5,7 @@ import fragment from "./posterize_shader.frag?raw";
 
 export type PosterizeShaderState = ShaderLayerState & {
   levels: number;
+  threshold: number;
 };
 
 export class PosterizeShader extends ShaderLayer {
@@ -17,6 +18,7 @@ export class PosterizeShader extends ShaderLayer {
       type: "posterize",
       name: "posterize_" + getCount(sceneStateId),
       levels: 3,
+      threshold: 0.5,
     };
   }
 
@@ -32,11 +34,13 @@ export class PosterizeShader extends ShaderLayer {
   setupUniformValues(): { [key: string]: UniformData } {
     return {
       uLevels: { value: this.getFieldValue("levels"), type: "f32" },
+      uThreshold: { value: this.getFieldValue("threshold"), type: "f32" },
     };
   }
 
   updateUniforms(): void {
     super.updateUniforms();
     this.uniforms.uniforms.uLevels = this.getFieldValue("levels");
+    this.uniforms.uniforms.uThreshold = this.getFieldValue("threshold");
   }
 }
